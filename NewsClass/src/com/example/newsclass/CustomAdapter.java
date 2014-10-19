@@ -1,7 +1,6 @@
 package com.example.newsclass;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +17,14 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 	private boolean _updating;	
 	private int _scrollFirst;
 	private int _scrollCount;
+	private Clazz [] classes;
 
-	public CustomAdapter(Context ctx, int layout){
+	public CustomAdapter(Context ctx, int layout, Clazz [] classes){
 		_layout = layout;
 		_layoutInflater = (LayoutInflater)ctx.getSystemService
-			      (Context.LAYOUT_INFLATER_SERVICE);	
-		//_count = 16 ;
+			      (Context.LAYOUT_INFLATER_SERVICE);
+		this.classes = classes;
+		_count = 20 ;
 	}
 	
 	@Override
@@ -32,19 +33,18 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 	}
 
 	@Override
-	public Object getItem(int arg0) {
-		return null;
+	public Object getItem(int idx) {
+		return getModel(idx);
 	}
 	
-	public Clazz getModel(int i) {
-		return null;
+	public Clazz getModel(int idx) {
+		return classes[idx];
 		
 	}
 
 	@Override
-	public long getItemId(int arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+	public long getItemId(int idx) {
+		return idx;
 	}
 
 	@Override
@@ -99,8 +99,8 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 	
 	private void bindModel(Clazz clazz, Object viewModelObject){
 		ViewModel viewModel = (ViewModel) viewModelObject;
-		viewModel.fullNameClass.setText(clazz.fullname);
-		viewModel.selectionBox.setChecked(clazz.showNews);
+		viewModel.fullNameClass.setText(clazz.getFullname());
+		viewModel.selectionBox.setChecked(clazz.getShowNews());
 	}
 	
 	private ViewModel createViewHolderFor(View newView) {

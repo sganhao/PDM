@@ -1,16 +1,12 @@
 package com.example.newsclass;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class SettingsActivity extends Activity{
@@ -25,6 +21,7 @@ public class SettingsActivity extends Activity{
 		setContentView(R.layout.settings_layout);
 		_tv2 = (TextView) findViewById(R.id.tv2);
 		_listView2 = (ListView) findViewById(R.id.ListView2);
+		_listView2.addFooterView(new ProgressBar(this));
 		_pref = getSharedPreferences("classes", 0);
 		ClassesAsyncTask n = new ClassesAsyncTask(_pref){
 			@Override
@@ -32,14 +29,14 @@ public class SettingsActivity extends Activity{
 				if(result == null) {
 					_tv2.setText("error");
 				}else {
-					List<Map<String,String>> list = new LinkedList<Map<String,String>>();
+					/*List<Map<String,String>> list = new LinkedList<Map<String,String>>();
 
 					for (int i = 0; i < result.length; ++i) {
 						Map<String, String> map = new HashMap<String, String>();
-						map.put("fullname", result[i].fullname);
+						map.put("fullname", result[i].getFullname());
 						list.add(map);
-					}
-					CustomAdapter adapter = new CustomAdapter(SettingsActivity.this, R.layout.item_layout); 
+					}*/
+					CustomAdapter adapter = new CustomAdapter(SettingsActivity.this, R.layout.item_layout, result); 
 					_listView2.setAdapter(adapter);
 					_listView2.setOnScrollListener(adapter);	    			
 				}

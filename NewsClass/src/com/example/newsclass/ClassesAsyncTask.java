@@ -51,14 +51,13 @@ public class ClassesAsyncTask extends AsyncTask<SharedPreferences,Void,Clazz[]>{
 
 		for (int i = 0; i < jclasses.length(); ++i) {
 			JSONObject jclass = jclasses.getJSONObject(i);
-			Clazz item = new Clazz();
-			item.fullname = jclass.getString("fullName");
-			item.id = jclass.getInt("id");
+			Clazz item = new Clazz(
+									jclass.getInt("id"), 
+									jclass.getString("fullName"), 
+									false
+									);
 			classes[i] = item;
-			spref.edit()
-				.putBoolean(Integer.toString(item.id), false);
 		}
-		spref.edit().commit();
 		return classes;
 	}
 
