@@ -1,5 +1,8 @@
 package com.example.newsclass;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -19,6 +22,7 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 	private int _scrollFirst;
 	private int _scrollCount;
 	private Clazz [] classes;
+	public Set<String> listIds;
 
 	public CustomAdapter(Context ctx, int layout, Clazz [] classes){
 		_layout = layout;
@@ -26,6 +30,7 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 			      (Context.LAYOUT_INFLATER_SERVICE);
 		this.classes = classes;
 		_count = 10 ;
+  	  	listIds = new LinkedHashSet<String>();
 	}
 	
 	@Override
@@ -50,17 +55,22 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 
 	@Override
 	public View getView(int i, View view, ViewGroup parent) {
+		
 		if(view == null){
 			view = _layoutInflater.inflate(_layout, null);
 			view.setTag(createViewHolderFor(view));
 			bindModel(getModel(i), view.getTag());
+			
 			((ViewModel)view.getTag()).selectionBox.setOnClickListener(new View.OnClickListener() {
-		          public void onClick(View v) {
+		        
+				public void onClick(View v) {
 		              CheckBox cb = (CheckBox) v ;
 		              Clazz c = (Clazz) cb.getTag();
+		              
 		              c.setShowNews(cb.isChecked());
-		              if(c.getShowNews()){
-		            	  
+		              
+		              if(c.getShowNews()){	
+		            	listIds.add(Integer.toString(c.getId()));
 		              }else{
 		            	  
 		              }
@@ -123,7 +133,8 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 		
 	}
 	
-	
-	
+	public Set<String> getSetListIds() {
+		return listIds;
+	}
 
 }

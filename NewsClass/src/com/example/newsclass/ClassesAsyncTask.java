@@ -11,20 +11,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
-public class ClassesAsyncTask extends AsyncTask<SharedPreferences,Void,Clazz[]>{
+public class ClassesAsyncTask extends AsyncTask<Void,Void,Clazz[]>{
 
 	List<Clazz> clazz;	
-	SharedPreferences spref;
-
-	public ClassesAsyncTask(SharedPreferences _pref) {
-		spref = _pref;
-	}
-
+	
 	@Override
-	protected Clazz[] doInBackground(SharedPreferences... pref0) {
+	protected Clazz[] doInBackground(Void... arg0) {
 		try {
 			URL url = new URL("http://thoth.cc.e.ipl.pt/api/v1/classes/");
 			HttpURLConnection urlcon = (HttpURLConnection)url.openConnection();
