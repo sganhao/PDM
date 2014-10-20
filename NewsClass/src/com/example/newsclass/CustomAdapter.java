@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 
 public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 	
@@ -24,7 +25,7 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 		_layoutInflater = (LayoutInflater)ctx.getSystemService
 			      (Context.LAYOUT_INFLATER_SERVICE);
 		this.classes = classes;
-		_count = 20 ;
+		_count = 10 ;
 	}
 	
 	@Override
@@ -50,14 +51,39 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 	@Override
 	public View getView(int i, View view, ViewGroup parent) {
 		if(view == null){
-			View newView = _layoutInflater.inflate(_layout, null);
-			newView.setTag(createViewHolderFor(newView));
-			bindModel(getModel(i), newView.getTag());
-			return newView;
+			view = _layoutInflater.inflate(_layout, null);
+			view.setTag(createViewHolderFor(view));
+			bindModel(getModel(i), view.getTag());
+			((ViewModel)view.getTag()).selectionBox.setOnClickListener(new View.OnClickListener() {
+		          public void onClick(View v) {
+		              CheckBox cb = (CheckBox) v ;
+		              Clazz c = (Clazz) cb.getTag();
+		              c.setShowNews(cb.isChecked());
+		              if(c.getShowNews()){
+		            	  
+		              }else{
+		            	  
+		              }
+		            }  
+		          });          
 		}else{
 			bindModel(getModel(i), view.getTag());
-			return view;
-		}		
+		}
+		/*Associa à checkbox desta view a turma correspondente de forma a alterar o showNews
+		  quando o user clicar na checkbox
+		*/
+		((ViewModel)view.getTag()).selectionBox.setTag(this.getModel(i));
+		return view;
+	}
+	
+	private void bindModel(Clazz clazz, Object viewModelObject){
+		ViewModel viewModel = (ViewModel) viewModelObject;
+		viewModel.fullNameClass.setText(clazz.getFullname());
+		viewModel.selectionBox.setChecked(clazz.getShowNews());
+	}
+	
+	private ViewModel createViewHolderFor(View newView) {
+		return new ViewModel(newView);
 	}
 
 	@Override
@@ -97,15 +123,7 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 		
 	}
 	
-	private void bindModel(Clazz clazz, Object viewModelObject){
-		ViewModel viewModel = (ViewModel) viewModelObject;
-		viewModel.fullNameClass.setText(clazz.getFullname());
-		viewModel.selectionBox.setChecked(clazz.getShowNews());
-	}
 	
-	private ViewModel createViewHolderFor(View newView) {
-		return new ViewModel(newView);
-	}
 	
 
 }

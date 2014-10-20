@@ -16,6 +16,10 @@ public class Clazz {
 		return showNews;
 	}
 	
+	public void setShowNews(boolean flag){
+		showNews = flag;
+	}
+	
 	public String getFullname() {
 		return fullname;
 	}
