@@ -20,7 +20,10 @@ import android.text.format.DateFormat;
 public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 
 	private String _link = "http://thoth.cc.e.ipl.pt/api/v1/classes/{newsId}/newsitems";
-		
+	private NewItem[] newsarray;
+	private int numElems = 0;
+	
+	
 	// Pedido às noticias de cada turma
 	@Override
 	protected NewItem[] doInBackground(Set<String>... params) {
@@ -34,8 +37,8 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 				try {
 					InputStream is = urlCon.getInputStream();
 					String data = readAllFrom(is);
-					return parseFrom(data);
-					
+					parseFrom(data);
+					return newsarray;
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -50,10 +53,10 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 	}
 	
 	@SuppressWarnings("deprecation")
-	private NewItem[] parseFrom(String data) throws JSONException {
+	private void parseFrom(String data) throws JSONException {
 		JSONObject root = new JSONObject(data);
 		JSONArray jnews = root.getJSONArray("newsItems");
-		NewItem[] newsarray = new NewItem[jnews.length()];
+		newsarray = new NewItem[jnews.length()];
 
 		
 
@@ -74,9 +77,8 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			newsarray[i] = item;
+			insertInArray(item);
 		}
-		return newsarray;
 	}
 
 	private String readAllFrom(InputStream is) {
@@ -113,5 +115,23 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private void insertInArray(NewItem item){
+		if(numElems == 0){
+			newsarray[numElems] = item;
+			numElems++;
+			return;
+		}
+		for(int i = 0 ; i < numElems ; i++){
+			if(item.when.compareTo(newsarray[i].when) <= 0){
+				for(int j = numElems ; j > i ; j--){
+					newsarray[j] = newsarray[j-1];
+				}
+				newsarray[i] = item;
+				numElems++;
+				break;
+			}
+		}
 	}
 }
