@@ -14,7 +14,7 @@ public class SettingsActivity extends Activity{
 
 	private TextView _tv2;
 	private ListView _listView2;
-	private CustomAdapter adapter;
+	private ClassesCustomAdapter adapter;
 	public SharedPreferences _pref;
 
 	@Override
@@ -46,7 +46,7 @@ public class SettingsActivity extends Activity{
 				if(result == null) {
 					_tv2.setText("error");
 				}else {
-					adapter = new CustomAdapter(SettingsActivity.this, R.layout.item_layout, result); 
+					adapter = new ClassesCustomAdapter(SettingsActivity.this, R.layout.item_layout, result); 
 					_listView2.setAdapter(adapter);
 					_listView2.setOnScrollListener(adapter);			
 				}

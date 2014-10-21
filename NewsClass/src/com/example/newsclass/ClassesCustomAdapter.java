@@ -13,7 +13,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 
-public class CustomAdapter extends BaseAdapter implements OnScrollListener {
+public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListener {
 	
 	private int _layout;
 	private int _count = 0;
@@ -24,7 +24,7 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 	private Clazz [] classes;
 	public Set<String> listIds;
 
-	public CustomAdapter(Context ctx, int layout, Clazz [] classes){
+	public ClassesCustomAdapter(Context ctx, int layout, Clazz [] classes){
 		_layout = layout;
 		_layoutInflater = (LayoutInflater)ctx.getSystemService
 			      (Context.LAYOUT_INFLATER_SERVICE);
@@ -125,7 +125,7 @@ public class CustomAdapter extends BaseAdapter implements OnScrollListener {
 				@Override
 				protected void onPostExecute(Void arg){
 					_count += 10;
-					CustomAdapter.this.notifyDataSetChanged();
+					ClassesCustomAdapter.this.notifyDataSetChanged();
 					_updating = false;
 				}
 			}.execute();

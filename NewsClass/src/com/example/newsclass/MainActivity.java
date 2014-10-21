@@ -8,17 +8,22 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ExpandableListView;
 
 
 public class MainActivity extends Activity {
 	
 	private SharedPreferences _pref;
-
+	private ExpandableListView _exList;
+	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
         _pref = getSharedPreferences("classesIds",0);
+        _exList = (ExpandableListView) findViewById(R.id.expandableListView1);
+        
         Set<String> ids = _pref.getStringSet("ids", null);
         
         if(ids != null) {
