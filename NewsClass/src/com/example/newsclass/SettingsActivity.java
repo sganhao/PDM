@@ -37,7 +37,7 @@ public class SettingsActivity extends Activity{
 		_tv2 = (TextView) findViewById(R.id.tv2);
 		_listView2 = (ListView) findViewById(R.id.ListView2);
 		_listView2.addFooterView(new ProgressBar(this));
-		_pref = getSharedPreferences("classesIds1", 0);
+		_pref = getSharedPreferences("classesIds", 0);
 		
 		ClassesAsyncTask n = new ClassesAsyncTask(){
 			
@@ -46,7 +46,7 @@ public class SettingsActivity extends Activity{
 				if(result == null) {
 					_tv2.setText("error");
 				}else {
-					CustomAdapter adapter = new CustomAdapter(SettingsActivity.this, R.layout.item_layout, result); 
+					adapter = new CustomAdapter(SettingsActivity.this, R.layout.item_layout, result); 
 					_listView2.setAdapter(adapter);
 					_listView2.setOnScrollListener(adapter);			
 				}
