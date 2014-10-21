@@ -15,6 +15,7 @@ public class MainActivity extends Activity {
 	
 	private SharedPreferences _pref;
 	private ExpandableListView _exList;
+	private NewsCustomAdapter newsAdapter;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +32,9 @@ public class MainActivity extends Activity {
         		
         		@Override
         		protected void onPostExecute(NewItem[] result) {
-        			if (result == null) {
-        				
+        			if (result != null) {
+        				newsAdapter = new NewsCustomAdapter(MainActivity.this, result);
+        				_exList.setAdapter(newsAdapter);
         			}
         		}
         	};
