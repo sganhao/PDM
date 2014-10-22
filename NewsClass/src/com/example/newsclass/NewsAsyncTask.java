@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -23,10 +25,12 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 	private int numElems = 0;
 	private int firstViewedItemIdx = 0;
 	private Set<String> viewedNewsIds;
+	private List<NewItem> newsList;
 
 	// Pedido às noticias de cada turma
 	@Override
 	protected NewItem[] doInBackground(Set<String>... params) {
+		newsList = new LinkedList<NewItem>();
 		viewedNewsIds = params[1];
 		for (String set : params[0]) {
 			String auxUrl = _link.replace("{newsId}", set);
@@ -38,7 +42,6 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 					InputStream is = urlCon.getInputStream();
 					String data = readAllFrom(is);
 					parseFrom(data);
-					return newsarray;
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -49,7 +52,16 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 			}
 
 		}
-		return null;
+		
+		listToOrderedArray();
+		return newsarray;
+	}
+	
+	private void listToOrderedArray(){
+		newsarray = new NewItem[newsList.size()];
+		for(NewItem item : newsList){
+			insertInArray(item);
+		}
 	}
 
 
@@ -71,13 +83,13 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 						jnew.getString("title"), 
 						format.parse(jnew.getString("when")),
 						getContent(jnew.getInt("id")),
-						viewedNewsIds.contains(jnew.getInt("id"))
+						viewedNewsIds.contains(Integer.toString(jnew.getInt("id")))
 						);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			insertInArray(item);
+			newsList.add(item);
 		}
 	}
 
@@ -118,7 +130,7 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 	}
 
 	private void insertInArray(NewItem item){
-		if(viewedNewsIds.contains(item.id)){
+		if(viewedNewsIds.contains(Integer.toString(item.id))){
 			for(int i = firstViewedItemIdx ; i < numElems ; i++){
 				if(item.when.compareTo(newsarray[i].when) >= 0){
 					for(int j = numElems ; j > i ; j--){
@@ -126,12 +138,12 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 					}
 					newsarray[i] = item;
 					numElems++;
-					firstViewedItemIdx++;
-					break;
+					return;
 				}
-				newsarray[numElems] = item;
-				numElems++;
+				
 			}
+			newsarray[numElems] = item;
+			numElems++;
 		}else{
 			for(int i = 0 ; i < firstViewedItemIdx ; i++){
 				if(item.when.compareTo(newsarray[i].when) >= 0){
@@ -141,8 +153,11 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 					newsarray[i] = item;
 					firstViewedItemIdx++;
 					numElems++;
-					break;
+					return;
 				}
+			}
+			for(int j = numElems ; j > firstViewedItemIdx ; j--){
+				newsarray[j] = newsarray[j-1];
 			}
 			newsarray[firstViewedItemIdx] = item;
 			firstViewedItemIdx++;

@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.TextView;
 
 public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGroupClickListener{
 	
@@ -108,6 +107,8 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
 		viewModel._date.setText(newItem.when.toString());
 		if(!newItem.isViewed) {
 			viewModel._title.setTextColor(Color.BLUE);
+		}else{
+			viewModel._title.setTextColor(Color.BLACK);
 		}
 	}
 	
@@ -125,11 +126,8 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
     	final NewItem item = (NewItem) getGroup(groupPosition);
     	if(!viewedNewsIds.contains(Integer.toString(item.id))){
     		viewedNewsIds.add(Integer.toString(item.id));
-    		_pref.edit()
-    		.putStringSet("viewedNewsIds",viewedNewsIds)
-    		.commit();
-    		TextView tv = (TextView) v.findViewById(R.id.item_title);
-    		tv.setTextColor(Color.BLACK);
+    		_pref.edit().putStringSet("viewedNewsIds",viewedNewsIds).commit();
+    		item.isViewed = true;
     	}
 		return false;
 	}
@@ -137,6 +135,4 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
 	public Set<String> getSetListViewedNewsIds() {
 		return viewedNewsIds;
 	}
-
-
 }
