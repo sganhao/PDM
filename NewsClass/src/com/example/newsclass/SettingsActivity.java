@@ -37,7 +37,7 @@ public class SettingsActivity extends Activity{
 		_tv2 = (TextView) findViewById(R.id.tv2);
 		_listView2 = (ListView) findViewById(R.id.ListView2);
 		_listView2.addFooterView(new ProgressBar(this));
-		_pref = getSharedPreferences("classesIds", 0);
+		_pref = getSharedPreferences("workprefs", 0);
 		
 		ClassesAsyncTask n = new ClassesAsyncTask(){
 			

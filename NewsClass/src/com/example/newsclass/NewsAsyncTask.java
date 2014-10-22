@@ -15,25 +15,25 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
-import android.text.format.DateFormat;
 
 public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 
 	private String _link = "http://thoth.cc.e.ipl.pt/api/v1/classes/{newsId}/newsitems";
 	private NewItem[] newsarray;
 	private int numElems = 0;
-	
-	
+	private int firstViewedItemIdx = 0;
+	private Set<String> viewedNewsIds;
+
 	// Pedido às noticias de cada turma
 	@Override
 	protected NewItem[] doInBackground(Set<String>... params) {
-
+		viewedNewsIds = params[1];
 		for (String set : params[0]) {
 			String auxUrl = _link.replace("{newsId}", set);
 			try {
 				URL url = new URL(auxUrl);
 				HttpURLConnection urlCon = (HttpURLConnection)url.openConnection();
-				
+
 				try {
 					InputStream is = urlCon.getInputStream();
 					String data = readAllFrom(is);
@@ -47,32 +47,32 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 		return null;
 	}
-	
-	@SuppressWarnings("deprecation")
+
+
 	private void parseFrom(String data) throws JSONException {
 		JSONObject root = new JSONObject(data);
 		JSONArray jnews = root.getJSONArray("newsItems");
 		newsarray = new NewItem[jnews.length()];
 
-		
+
 
 		for (int i = 0; i < jnews.length(); ++i) {
 			JSONObject jnew = jnews.getJSONObject(i);
-			
+
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 			NewItem item = null;
 			try {
 				item = new NewItem(
-										jnew.getInt("id"), 
-										jnew.getString("title"), 
-										format.parse(jnew.getString("when")),
-										getContent(jnew.getInt("id")),
-										false
-										);
+						jnew.getInt("id"), 
+						jnew.getString("title"), 
+						format.parse(jnew.getString("when")),
+						getContent(jnew.getInt("id")),
+						viewedNewsIds.contains(jnew.getInt("id"))
+						);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -95,14 +95,14 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 		try {
 			URL url = new URL("http://thoth.cc.e.ipl.pt/api/v1/newsitems/"+ id);
 			HttpURLConnection urlCon = (HttpURLConnection)url.openConnection();
-			
+
 			try {
 				InputStream is = urlCon.getInputStream();
 				String data = readAllFrom(is);
-				
+
 				JSONObject root = new JSONObject(data);
 				return root.getString("content");				
-				
+
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -116,22 +116,39 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 		}
 		return null;
 	}
-	
+
 	private void insertInArray(NewItem item){
-		if(numElems == 0){
-			newsarray[numElems] = item;
-			numElems++;
-			return;
-		}
-		for(int i = 0 ; i < numElems ; i++){
-			if(item.when.compareTo(newsarray[i].when) <= 0){
-				for(int j = numElems ; j > i ; j--){
-					newsarray[j] = newsarray[j-1];
+		if(viewedNewsIds.contains(item.id)){
+			for(int i = firstViewedItemIdx ; i < numElems ; i++){
+				if(item.when.compareTo(newsarray[i].when) >= 0){
+					for(int j = numElems ; j > i ; j--){
+						newsarray[j] = newsarray[j-1];
+					}
+					newsarray[i] = item;
+					numElems++;
+					firstViewedItemIdx++;
+					break;
 				}
-				newsarray[i] = item;
+				newsarray[numElems] = item;
 				numElems++;
-				break;
 			}
+		}else{
+			for(int i = 0 ; i < firstViewedItemIdx ; i++){
+				if(item.when.compareTo(newsarray[i].when) >= 0){
+					for(int j = numElems ; j > i ; j--){
+						newsarray[j] = newsarray[j-1];
+					}
+					newsarray[i] = item;
+					firstViewedItemIdx++;
+					numElems++;
+					break;
+				}
+			}
+			newsarray[firstViewedItemIdx] = item;
+			firstViewedItemIdx++;
+			numElems++;
 		}
+
+
 	}
 }

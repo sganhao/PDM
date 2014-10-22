@@ -1,24 +1,32 @@
 package com.example.newsclass;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import android.content.Context;
-import android.graphics.Typeface;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.TextView;
 
-public class NewsCustomAdapter extends BaseExpandableListAdapter{
+public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGroupClickListener{
 	
-	private Context _context;
-    private NewItem[] news; 
+	private LayoutInflater _layoutInflater;
+    private NewItem[] news;
+    private Set<String> viewedNewsIds;
+    private SharedPreferences _pref;
   
-    public NewsCustomAdapter(Context context, NewItem[] news) {
-        this._context = context;
+    public NewsCustomAdapter(Context context, NewItem[] news, SharedPreferences pref) {
+        _layoutInflater = (LayoutInflater) context.getSystemService
+        		(Context.LAYOUT_INFLATER_SERVICE);
         this.news = news;
+        viewedNewsIds = pref.getStringSet("viewedNewsIds", new LinkedHashSet<String>());
+        _pref = pref;
     }
  
     @Override
@@ -35,18 +43,14 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter{
     public View getChildView(int parentPosition, final int childPosition,
             boolean isLastChild, View convertView, ViewGroup parent) {
  
-        final String childText = (String) getChild(parentPosition, childPosition);
+        final NewItem item = (NewItem) getChild(parentPosition, childPosition);
  
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.item2_explist_layout, null);
+            convertView = _layoutInflater.inflate(R.layout.item2_explist_layout, null);
+            convertView.setTag(new ViewModelChild(convertView));
         }
  
-        TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.item_content);
- 
-        txtListChild.setText(childText);
+        bindModelChild(item, convertView.getTag());
         return convertView;
     }
  
@@ -74,20 +78,14 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter{
     public View getGroupView(int parentPosition, boolean isExpanded,
             View convertView, ViewGroup parent) {
     	
-        String headerTitle = (String) getGroup(parentPosition);
+    	final NewItem item = (NewItem) getGroup(parentPosition);
+    	 
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.item1_explist_layout, null);
+        	convertView = _layoutInflater.inflate(R.layout.item1_explist_layout, null);
+            convertView.setTag(new ViewModelParent(convertView));
         }
- 
-        TextView labelParentTitle = (TextView) convertView
-                .findViewById(R.id.item_title);
-        TextView labelParentDate = (TextView) convertView
-                .findViewById(R.id.item_date);
-        
-        labelParentTitle.setTypeface(null, Typeface.BOLD);
-        labelParentTitle.setText(headerTitle);
+         
+        bindModelParent(item, convertView.getTag());
  
         return convertView;
     }
@@ -96,9 +94,49 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter{
     public boolean hasStableIds() {
         return false;
     }
+    
+	@Override
+	public boolean isChildSelectable(int groupPosition, int childPosition) {
+		return false;
+	}
  
-    @Override
-    public boolean isChildSelectable(int parentPosition, int childPosition) {
-        return true;
-    }
+   
+    
+	private void bindModelParent(NewItem newItem, Object viewModelObject){
+		ViewModelParent viewModel = (ViewModelParent) viewModelObject;
+		viewModel._title.setText(newItem.title);
+		viewModel._date.setText(newItem.when.toString());
+		if(!newItem.isViewed) {
+			viewModel._title.setTextColor(Color.BLUE);
+		}
+	}
+	
+	private void bindModelChild(NewItem newItem, Object viewModelObject) {
+		ViewModelChild viewModel = (ViewModelChild) viewModelObject;
+		viewModel._content.setText(newItem.content);
+	}
+
+
+	@Override
+	public boolean onGroupClick(ExpandableListView parent, View v,
+			int groupPosition, long id) {
+		// Do Stuff
+		
+    	final NewItem item = (NewItem) getGroup(groupPosition);
+    	if(!viewedNewsIds.contains(Integer.toString(item.id))){
+    		viewedNewsIds.add(Integer.toString(item.id));
+    		_pref.edit()
+    		.putStringSet("viewedNewsIds",viewedNewsIds)
+    		.commit();
+    		TextView tv = (TextView) v.findViewById(R.id.item_title);
+    		tv.setTextColor(Color.BLACK);
+    	}
+		return false;
+	}
+	
+	public Set<String> getSetListViewedNewsIds() {
+		return viewedNewsIds;
+	}
+
+
 }

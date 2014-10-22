@@ -1,5 +1,6 @@
 package com.example.newsclass;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import android.app.Activity;
@@ -22,23 +23,25 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        _pref = getSharedPreferences("classesIds",0);
+        _pref = getSharedPreferences("workprefs",0);
         _exList = (ExpandableListView) findViewById(R.id.expandableListView1);
         
-        Set<String> ids = _pref.getStringSet("ids", null);
+        Set<String> classesIds = _pref.getStringSet("ids", null);
+        Set<String> newsIds = _pref.getStringSet("viewedNewsIds", new LinkedHashSet<String>());        
         
-        if(ids != null) {
+        if(classesIds != null) {
         	NewsAsyncTask newsAsync = new NewsAsyncTask() {
         		
         		@Override
         		protected void onPostExecute(NewItem[] result) {
         			if (result != null) {
-        				newsAdapter = new NewsCustomAdapter(MainActivity.this, result);
+        				newsAdapter = new NewsCustomAdapter(MainActivity.this, result, _pref);
         				_exList.setAdapter(newsAdapter);
+        				_exList.setOnGroupClickListener(newsAdapter);
         			}
         		}
         	};
-        	newsAsync.execute(ids);
+        	newsAsync.execute(classesIds, newsIds);
         }
         
     }
