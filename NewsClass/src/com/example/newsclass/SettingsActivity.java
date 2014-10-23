@@ -1,5 +1,8 @@
 package com.example.newsclass;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,8 +18,11 @@ public class SettingsActivity extends Activity{
 	private TextView _tv2;
 	private ListView _listView2;
 	private ClassesCustomAdapter adapter;
-	public SharedPreferences _pref;
+	private SharedPreferences _pref;
+	private final String CLASSES = "ids";
+	private Set<String> classesIds;
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -25,10 +31,10 @@ public class SettingsActivity extends Activity{
 		Button btn = (Button) findViewById(R.id.button1);
 		btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				_pref.edit()
-				.putStringSet("ids", adapter.getSetListIds())
-				.commit();
-				SettingsActivity.this.finish();
+				/*_pref.edit()
+				.putStringSet(CLASSES, adapter.getSetListIds())
+				.commit();*/
+				finish();
 			}
 			}
 		);          
@@ -39,6 +45,9 @@ public class SettingsActivity extends Activity{
 		_listView2.addFooterView(new ProgressBar(this));
 		_pref = getSharedPreferences("workprefs", 0);
 		
+		classesIds = _pref.getStringSet(CLASSES, new LinkedHashSet<String>());
+		
+		
 		ClassesAsyncTask n = new ClassesAsyncTask(){
 			
 			@Override
@@ -46,14 +55,20 @@ public class SettingsActivity extends Activity{
 				if(result == null) {
 					_tv2.setText("error");
 				}else {
-					adapter = new ClassesCustomAdapter(SettingsActivity.this, R.layout.item_layout, result); 
+					adapter = new ClassesCustomAdapter(SettingsActivity.this, R.layout.item_layout, result, _pref); 
 					_listView2.setAdapter(adapter);
 					_listView2.setOnScrollListener(adapter);			
 				}
 			}
 		};
-		n.execute();
+		n.execute(classesIds);
 	}
+	
+	 @Override
+	    public void onSaveInstanceState(Bundle outState){
+	    	super.onSaveInstanceState(outState);
+
+	    }
 }
 
 

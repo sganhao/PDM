@@ -14,6 +14,9 @@ import android.widget.ExpandableListView;
 
 public class MainActivity extends Activity {
 	
+	
+	private final String CLASSES = "ids";
+	private final String NEWS = "viewedNewsIds";
 	private SharedPreferences _pref;
 	private ExpandableListView _exList;
 	private NewsCustomAdapter newsAdapter;
@@ -26,8 +29,8 @@ public class MainActivity extends Activity {
         _pref = getSharedPreferences("workprefs",0);
         _exList = (ExpandableListView) findViewById(R.id.expandableListView1);
         
-        Set<String> classesIds = _pref.getStringSet("ids", null);
-        Set<String> newsIds = _pref.getStringSet("viewedNewsIds", new LinkedHashSet<String>());        
+        Set<String> classesIds = _pref.getStringSet(CLASSES, null);
+        Set<String> newsIds = _pref.getStringSet(NEWS, new LinkedHashSet<String>());        
         
         if(classesIds != null) {
         	NewsAsyncTask newsAsync = new NewsAsyncTask() {

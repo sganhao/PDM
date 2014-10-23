@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,12 +14,15 @@ import org.json.JSONObject;
 
 import android.os.AsyncTask;
 
-public class ClassesAsyncTask extends AsyncTask<Void,Void,Clazz[]>{
+public class ClassesAsyncTask extends AsyncTask<Set<String>,Void,Clazz[]>{
 
-	List<Clazz> clazz;	
+	List<Clazz> clazz;
+	private Set<String> classesSelected;
+	
 	
 	@Override
-	protected Clazz[] doInBackground(Void... arg0) {
+	protected Clazz[] doInBackground(Set<String>... params) {
+		classesSelected = params[0];
 		try {
 			URL url = new URL("http://thoth.cc.e.ipl.pt/api/v1/classes/");
 			HttpURLConnection urlcon = (HttpURLConnection)url.openConnection();
@@ -48,7 +52,7 @@ public class ClassesAsyncTask extends AsyncTask<Void,Void,Clazz[]>{
 			Clazz item = new Clazz(
 									jclass.getInt("id"), 
 									jclass.getString("fullName"), 
-									false
+									classesSelected.contains(Integer.toString(jclass.getInt("id")))
 									);
 			classes[i] = item;
 		}

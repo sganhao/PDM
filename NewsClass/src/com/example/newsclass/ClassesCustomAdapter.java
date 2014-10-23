@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +24,17 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 	private int _scrollCount;
 	private Clazz [] classes;
 	private Set<String> classesSelectedIds;
+	public SharedPreferences _pref;
+	private final String CLASSES = "ids";
 
-	public ClassesCustomAdapter(Context ctx, int layout, Clazz [] classes){
+	public ClassesCustomAdapter(Context ctx, int layout, Clazz [] classes, SharedPreferences pref){
 		_layout = layout;
 		_layoutInflater = (LayoutInflater)ctx.getSystemService
 			      (Context.LAYOUT_INFLATER_SERVICE);
 		this.classes = classes;
 		_count = 10 ;
-		classesSelectedIds = new LinkedHashSet<String>();
+		classesSelectedIds = pref.getStringSet(CLASSES, new LinkedHashSet<String>());
+		_pref = pref;
 	}
 	
 	@Override
@@ -71,17 +75,17 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 		              
 		              if(c.getShowNews()){	
 		            	  classesSelectedIds.add(Integer.toString(c.getId()));
+		            	  _pref.edit().putStringSet(CLASSES, classesSelectedIds).commit();
 		              }else{
-		            	  
+		            	  classesSelectedIds.remove(Integer.toString(c.getId()));
+		            	  _pref.edit().putStringSet(CLASSES, classesSelectedIds).commit();
 		              }
 		            }  
 		          });          
 		}else{
 			bindModel(getModel(i), view.getTag());
 		}
-		/*Associa à checkbox desta view a turma correspondente de forma a alterar o showNews
-		  quando o user clicar na checkbox
-		*/
+		
 		((ViewModel)view.getTag()).selectionBox.setTag(this.getModel(i));
 		return view;
 	}
