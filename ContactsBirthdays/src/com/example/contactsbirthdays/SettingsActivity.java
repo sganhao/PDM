@@ -54,7 +54,7 @@ public class SettingsActivity extends Activity{
 			@Override
 			public void onSelectedDayChange(CalendarView view, int year, int month,
 					int dayOfMonth) {
-				String data = "" + dayOfMonth +"/" +  month + "/" + year;
+				String data = "" + dayOfMonth +"/" +  (month+1) + "/" + year;
 				
 				Calendar c = Calendar.getInstance();
 				c.set(year, month, dayOfMonth);
