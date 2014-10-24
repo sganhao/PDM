@@ -75,10 +75,10 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 		              
 		              if(c.getShowNews()){	
 		            	  classesSelectedIds.add(Integer.toString(c.getId()));
-		            	  _pref.edit().putStringSet(CLASSES, classesSelectedIds).commit();
+		            	  //_pref.edit().putStringSet(CLASSES, classesSelectedIds).commit();
 		              }else{
 		            	  classesSelectedIds.remove(Integer.toString(c.getId()));
-		            	  _pref.edit().putStringSet(CLASSES, classesSelectedIds).commit();
+		            	  //_pref.edit().putStringSet(CLASSES, classesSelectedIds).commit();
 		              }
 		            }  
 		          });          
@@ -118,11 +118,11 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 
 				@Override
 				protected Void doInBackground(Void... arg0) {
-					try {
+					/*try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						// ignore it
-					}
+					}*/
 					return null;
 				}
 				

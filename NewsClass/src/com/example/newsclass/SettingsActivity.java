@@ -27,13 +27,13 @@ public class SettingsActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_layout);
-		
+		_pref = getSharedPreferences("workprefs", 0);
 		Button btn = (Button) findViewById(R.id.button1);
 		btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				/*_pref.edit()
-				.putStringSet(CLASSES, adapter.getSetListIds())
-				.commit();*/
+				_pref.edit()
+				.putStringSet("ids", adapter.getSetListIds())
+				.commit();
 				finish();
 			}
 			}
@@ -43,7 +43,7 @@ public class SettingsActivity extends Activity{
 		_tv2 = (TextView) findViewById(R.id.tv2);
 		_listView2 = (ListView) findViewById(R.id.ListView2);
 		_listView2.addFooterView(new ProgressBar(this));
-		_pref = getSharedPreferences("workprefs", 0);
+		
 		
 		classesIds = _pref.getStringSet(CLASSES, new LinkedHashSet<String>());
 		
@@ -66,8 +66,10 @@ public class SettingsActivity extends Activity{
 	
 	 @Override
 	    public void onSaveInstanceState(Bundle outState){
+		 	_pref.edit()
+			.putStringSet(CLASSES, adapter.getSetListIds())
+			.commit();
 	    	super.onSaveInstanceState(outState);
-
 	    }
 }
 

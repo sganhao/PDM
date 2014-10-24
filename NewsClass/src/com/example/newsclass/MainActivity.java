@@ -32,8 +32,11 @@ public class MainActivity extends Activity {
         Set<String> classesIds = _pref.getStringSet(CLASSES, null);
         Set<String> newsIds = _pref.getStringSet(NEWS, new LinkedHashSet<String>());        
         
-        if(classesIds != null) {
-        	NewsAsyncTask newsAsync = new NewsAsyncTask() {
+        if(classesIds == null) {
+        	Intent i = new Intent(this, SettingsActivity.class);
+			startActivity(i);
+        }
+        NewsAsyncTask newsAsync = new NewsAsyncTask() {
         		
         		@Override
         		protected void onPostExecute(NewItem[] result) {
@@ -45,8 +48,6 @@ public class MainActivity extends Activity {
         		}
         	};
         	newsAsync.execute(classesIds, newsIds);
-        }
-        
     }
 
 
