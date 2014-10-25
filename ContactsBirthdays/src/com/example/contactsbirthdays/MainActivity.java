@@ -16,18 +16,19 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.DatePicker;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 
 public class MainActivity extends Activity {
 
 	private Uri _contactUri;
-	static final int DATE_DIALOG_ID = 999;
 	private String birthday;
 	private int year;
 	private int month;
 	private int day;
-	
+
+	private ListView _listView;	
 	private SimpleCursorAdapter adapter;
 
 
@@ -35,36 +36,39 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+		_listView = (ListView) findViewById(R.id.listView1);		
+
 		final String cols[] = new String[] {
-				ContactsContract.Contacts.DISPLAY_NAME,
 				ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
+				ContactsContract.Contacts.DISPLAY_NAME,
 				ContactsContract.CommonDataKinds.Event.START_DATE
 		};
-		
+
 		final int widgets[] = new int[]{
 				R.id.imageView1,
 				R.id.textView1,
 				R.id.textView2				
 		};
-		
+
 		ContactsAsyncTask cAsync = new ContactsAsyncTask() {
-			
+
 			@Override
 			protected void onPostExecute(Cursor result) {
 				if(result != null){
 
 					adapter = new SimpleCursorAdapter(
-														MainActivity.this, 
-														R.layout.item_layout,
-														result, 
-														cols,
-														widgets,
-														0);
+									MainActivity.this, 
+									R.layout.item_layout,
+									result, 
+									cols,
+									widgets,
+									0);
+					
+					_listView.setAdapter(adapter);
 				}
 			}
 		};
-		
+
 		cAsync.execute(getContentResolver());
 	}
 
@@ -97,7 +101,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onActivityResult(int reqCode, int resCode, Intent data){
 		final Intent dat = data;
-		
+
 		if(reqCode == 0 && resCode == RESULT_OK){
 
 			final Calendar ca = Calendar.getInstance();
@@ -112,7 +116,7 @@ public class MainActivity extends Activity {
 						// when dialog box is closed, below method will be called.
 						public void onDateSet(DatePicker view, int selectedYear,
 								int selectedMonth, int selectedDay) {
-							
+
 							year = selectedYear;
 							month = selectedMonth;
 							day = selectedDay;
