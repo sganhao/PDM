@@ -16,6 +16,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.DatePicker;
+import android.widget.SimpleCursorAdapter;
 
 
 public class MainActivity extends Activity {
@@ -26,13 +27,45 @@ public class MainActivity extends Activity {
 	private int year;
 	private int month;
 	private int day;
-
+	
+	private SimpleCursorAdapter adapter;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		final String cols[] = new String[] {
+				ContactsContract.Contacts.DISPLAY_NAME,
+				ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
+				ContactsContract.CommonDataKinds.Event.START_DATE
+		};
+		
+		final int widgets[] = new int[]{
+				R.id.imageView1,
+				R.id.textView1,
+				R.id.textView2				
+		};
+		
+		ContactsAsyncTask cAsync = new ContactsAsyncTask() {
+			
+			@Override
+			protected void onPostExecute(Cursor result) {
+				if(result != null){
+
+					adapter = new SimpleCursorAdapter(
+														MainActivity.this, 
+														R.layout.item_layout,
+														result, 
+														cols,
+														widgets,
+														0);
+				}
+			}
+		};
+		
+		cAsync.execute(getContentResolver());
 	}
 
 
@@ -64,22 +97,22 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onActivityResult(int reqCode, int resCode, Intent data){
 		final Intent dat = data;
+		
 		if(reqCode == 0 && resCode == RESULT_OK){
-			
-			
 
 			final Calendar ca = Calendar.getInstance();
 			year = ca.get(Calendar.YEAR);
 			month = ca.get(Calendar.MONTH);
 			day = ca.get(Calendar.DAY_OF_MONTH);
 
-			DatePickerDialog datep = new DatePickerDialog(
+			new DatePickerDialog(
 					this, 
 					new DatePickerDialog.OnDateSetListener() {
 
 						// when dialog box is closed, below method will be called.
 						public void onDateSet(DatePicker view, int selectedYear,
 								int selectedMonth, int selectedDay) {
+							
 							year = selectedYear;
 							month = selectedMonth;
 							day = selectedDay;
@@ -117,49 +150,7 @@ public class MainActivity extends Activity {
 					}, 
 					year, 
 					month, 
-					day);
-
-			datep.show();
-			
-			//while(datep.isShowing());
-			
-			
-
-
-			/*getContentResolver().delete(ContactsContract.Data.CONTENT_URI, "RAW_CONTACT_ID = ? AND MIMETYPE = ?",
-					new String[] { "" + rawContactID, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE});
-			 */
-			
-
-
-
+					day).show();
 		}
-
 	}
-
-	private void datePicker(){
-		final Calendar c = Calendar.getInstance();
-		year = c.get(Calendar.YEAR);
-		month = c.get(Calendar.MONTH);
-		day = c.get(Calendar.DAY_OF_MONTH);
-
-		new DatePickerDialog(
-				this, 
-				new DatePickerDialog.OnDateSetListener() {
-
-					// when dialog box is closed, below method will be called.
-					public void onDateSet(DatePicker view, int selectedYear,
-							int selectedMonth, int selectedDay) {
-						year = selectedYear;
-						month = selectedMonth;
-						day = selectedDay;
-						birthday = "" + day + "/" + month + "/" + year;
-					}
-				}, 
-				year, 
-				month, 
-				day).show();
-		
-	}
-
 }
