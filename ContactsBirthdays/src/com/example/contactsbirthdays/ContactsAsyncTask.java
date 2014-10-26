@@ -36,21 +36,22 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 		
 		String[] selectionArgs = null;
 		String sortOrder = null;
-		Cursor cursor = _cr.query(uri, projection, selection, selectionArgs, sortOrder);		
+		Cursor cursor = _cr.query(uri, projection, selection, selectionArgs, sortOrder);	
+		
 		List<ContactInfo> list = checkDate(cursor);
 		ContactInfo [] res = new ContactInfo[list.size()];
+		
 		list.toArray(res);
 		return res;
 	}
 
-	private List<ContactInfo> checkDate(Cursor cursor) {
-		
-		
+	private List<ContactInfo> checkDate(Cursor cursor) {		
 		
 		if (cursor.moveToFirst()){
 			String[] lim = _limit.split("/");
 			do {
 				String[] date = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE)).split("/");
+				
 				Calendar contactDate = Calendar.getInstance();
 				contactDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(date[0]));
 				contactDate.set(Calendar.MONTH, Integer.parseInt(date[1]));

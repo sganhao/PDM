@@ -60,6 +60,7 @@ public class ContactsCustomAdapter extends BaseAdapter{
 		model.photo.setImageURI(contact.getImage());
 		model.contactName.setText(contact.getName());
 		model.contactBirthday.setText(contact.getBirthday());
+		model.contactName.setTag(contact.getId());
 		
 	}
 
@@ -67,5 +68,4 @@ public class ContactsCustomAdapter extends BaseAdapter{
 	private Object createViewHolderFor(View view) {
 		return new ViewModel(view);
 	}
-
 }

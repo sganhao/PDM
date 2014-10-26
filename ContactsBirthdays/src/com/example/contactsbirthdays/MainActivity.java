@@ -4,16 +4,19 @@ import java.util.Calendar;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Contacts.People;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ListView;
 
@@ -51,6 +54,21 @@ public class MainActivity extends Activity {
 									);
 					
 					_listView.setAdapter(adapter);
+//					_listView.setOnClickListener(new View.OnClickListener() {
+//						
+//						@Override
+//						public void onClick(View v) {
+//						ViewModel view = (ViewModel) v.getTag();
+////							Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://contacts/people/" + view.contactName.getTag().toString()));
+////							startActivity(i);
+////							
+//						int a = Integer.parseInt(view.contactName.getTag().toString());
+//						Uri contactUri = ContentUris.withAppendedId(People.CONTENT_URI, 23);
+//
+//							Intent intent = new Intent(Intent.ACTION_VIEW, contactUri);
+//							startActivity(intent);
+//						}
+//					});
 				}
 			}
 		};
@@ -79,6 +97,7 @@ public class MainActivity extends Activity {
 		}else if(id == R.id.display_contacts){
 			Intent i = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
 			i.setType(Phone.CONTENT_TYPE);
+			i.putExtra("finishActivityOnSaveCompleted", true);
 			startActivityForResult(i, 0);
 		}
 		return super.onOptionsItemSelected(item);
