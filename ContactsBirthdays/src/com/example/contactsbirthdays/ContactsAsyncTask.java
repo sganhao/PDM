@@ -82,23 +82,4 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 		}
 			return cInfo;
 	}
-
-	/*
-	//checkMonth(contactDate, limitDate, actualDate) && checkDay(contactDate, limitDate, actualDate
-	private boolean checkDay(Calendar contactDate, Calendar limitDate, Calendar actualDate) {
-		if(contactDate.get(Calendar.MONTH) > actualDate.get(Calendar.MONTH) && contactDate.get(Calendar.MONTH) < limitDate.get(Calendar.MONTH))
-			return true;
-		if (actualDate.get(Calendar.DAY_OF_MONTH) <= contactDate.get(Calendar.DAY_OF_MONTH) && 
-				 contactDate.get(Calendar.DAY_OF_MONTH) <= limitDate.get(Calendar.DAY_OF_MONTH))		
-			return true;
-		return false;
-	}
-
-	private boolean checkMonth(Calendar contactDate, Calendar limitDate, Calendar actualDate) {
-		if (actualDate.get(Calendar.MONTH)+1 <= contactDate.get(Calendar.MONTH) + 1 && 
-				 contactDate.get(Calendar.MONTH) + 1 <= limitDate.get(Calendar.MONTH))		
-			return true;
-		return false;
-		
-	}*/
 }
