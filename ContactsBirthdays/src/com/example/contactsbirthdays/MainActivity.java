@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,8 +50,10 @@ public class MainActivity extends Activity {
 				R.id.textView1,
 				R.id.textView2				
 		};
+		
+		SharedPreferences prefs = getSharedPreferences("dateSelected",0);
 
-		ContactsAsyncTask cAsync = new ContactsAsyncTask() {
+		ContactsAsyncTask cAsync = new ContactsAsyncTask(prefs) {
 
 			@Override
 			protected void onPostExecute(Cursor result) {
