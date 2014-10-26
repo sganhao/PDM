@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
+import android.text.Html;
 
 public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 
@@ -113,7 +114,7 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 				String data = readAllFrom(is);
 
 				JSONObject root = new JSONObject(data);
-				return root.getString("content");				
+				return Html.fromHtml(root.getString("content")).toString();				
 
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
