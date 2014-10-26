@@ -1,17 +1,19 @@
 package com.example.contactsbirthdays;
 
+import android.net.Uri;
+
 public class ContactInfo {
 
 	private int id;
 	private String name;
-	private String image;
+	private Uri image;
 	private String birthday;
 	
 	public ContactInfo(int id, String name, String image, String birthday){
 		this.setId(id);
 		this.setName(name);
 		this.setBirthday(birthday);
-		this.setImage(image);
+		this.setImage(Uri.parse(image));
 	}
 
 	public int getId() {
@@ -38,11 +40,11 @@ public class ContactInfo {
 		this.birthday = birthday;
 	}
 
-	public String getImage() {
+	public Uri getImage() {
 		return image;
 	}
 
-	public void setImage(String image) {
+	public void setImage(Uri image) {
 		this.image = image;
 	}
 }

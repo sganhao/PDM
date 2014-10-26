@@ -1,7 +1,6 @@
 package com.example.contactsbirthdays;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -37,32 +36,20 @@ public class SettingsActivity extends Activity{
 		// inicia a semana à 2ªf
 		_c1.setFirstDayOfWeek(2);
 		
-		// coloca a semana selecionada coom destaque
-		//_c1.setSelectedWeekBackgroundColor(color.holo_blue_light);
-		
-		// cor para o mês q não está selecionado
-		//_c1.setUnfocusedMonthDateColor(color.transparent);
-		
-		// cor para as linhas separadoras das semanas
-		//_c1.setWeekSeparatorLineColor(color.black);
-		
-		// destacar o selecionado
-		//_c1.setSelectedDateVerticalBar(color.darker_gray);
-		
 		_c1.setOnDateChangeListener(new OnDateChangeListener() {
 			
 			@Override
 			public void onSelectedDayChange(CalendarView view, int year, int month,
 					int dayOfMonth) {
-				String data = "" + dayOfMonth +"/" +  (month+1) + "/" + year;
+				String data = "" + dayOfMonth +"/" +  month + "/" + year;
 				
 				Calendar c = Calendar.getInstance();
 				c.set(year, month, dayOfMonth);
 				if(c.compareTo(Calendar.getInstance()) >= 0){
 					_pref.edit().putString("data", data).commit();
 					finish();
-				}
-				Toast.makeText(SettingsActivity.this, "Data inválida", Toast.LENGTH_LONG).show();
+				}else
+					Toast.makeText(SettingsActivity.this, "Data inválida", Toast.LENGTH_LONG).show();
 				
 								
 			}

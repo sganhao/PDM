@@ -1,10 +1,9 @@
 package com.example.contactsbirthdays;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
 
+import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -21,6 +20,7 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 	
 	public ContactsAsyncTask(SharedPreferences prefs){
 		_prefs = prefs;
+		cInfo = new LinkedList<ContactInfo>();
 	}
 	
 	@Override
@@ -37,52 +37,56 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 		String[] selectionArgs = null;
 		String sortOrder = null;
 		Cursor cursor = _cr.query(uri, projection, selection, selectionArgs, sortOrder);		
-				
-		return checkDate(cursor);
+		List<ContactInfo> list = checkDate(cursor);
+		ContactInfo [] res = new ContactInfo[list.size()];
+		list.toArray(res);
+		return res;
 	}
 
-	private ContactInfo[] checkDate(Cursor cursor) {
+	private List<ContactInfo> checkDate(Cursor cursor) {
 		
-		final Calendar actualDate = Calendar.getInstance();
+		
 		
 		if (cursor.moveToFirst()){
+			String[] lim = _limit.split("/");
 			do {
-				String date = cursor.getColumnName(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
+				String[] date = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE)).split("/");
+				Calendar contactDate = Calendar.getInstance();
+				contactDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(date[0]));
+				contactDate.set(Calendar.MONTH, Integer.parseInt(date[1]));
 				
-				try {
+				Calendar actualDate = Calendar.getInstance();
+				contactDate.set(Calendar.YEAR, actualDate.get(Calendar.YEAR));
+				
+				Calendar limitDate = Calendar.getInstance();
+				limitDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(lim[0]));
+				limitDate.set(Calendar.MONTH, Integer.parseInt(lim[1]));
+				limitDate.set(Calendar.YEAR, Integer.parseInt(lim[2]));
 
-					SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");
-					 
-					Calendar contactDate = Calendar.getInstance();
-					contactDate.setTime(formatoData.parse(date));
+				if(contactDate.compareTo(actualDate) >= 0 && contactDate.compareTo(limitDate) <= 0){
+			
+					int id = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.RAW_CONTACT_ID));	
+					String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.DISPLAY_NAME));
+					String image = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.PHOTO_THUMBNAIL_URI));
+					int years = actualDate.get(Calendar.YEAR) - Integer.parseInt(date[2]);
 					
-					Calendar limitDate = Calendar.getInstance();
-					limitDate.setTime(formatoData.parse(_limit));
+					String birthday = "" + contactDate.get(Calendar.DAY_OF_MONTH) + "/" + (contactDate.get(Calendar.MONTH)+1) + " (" + years + " anos)";
 					
-					if(checkMonth(contactDate, limitDate, actualDate) && checkDay(contactDate, limitDate, actualDate) ){
-						
-						int id = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.RAW_CONTACT_ID));	
-						String name = cursor.getColumnName(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.DISPLAY_NAME));
-						String image = cursor.getColumnName(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.PHOTO_THUMBNAIL_URI));
-						int years = actualDate.get(Calendar.YEAR) - contactDate.get(Calendar.YEAR);
-						
-						String birthday = "" + contactDate.get(Calendar.DAY_OF_MONTH) + "/" + contactDate.get(Calendar.MONTH) + " (" + years + " anos)";
-						
-						ContactInfo newContactInfo = new ContactInfo(id, name, image, birthday);
-						
-						cInfo.add(newContactInfo);						
-					}
+					ContactInfo newContactInfo = new ContactInfo(id, name, image==null?"":image, birthday);
 					
-				} catch (ParseException e) {
-					e.printStackTrace();
+					cInfo.add(newContactInfo);						
 				}				
 			}
 			while(cursor.moveToNext());
-		}	
-		return (ContactInfo[]) cInfo.toArray();
+		}
+			return cInfo;
 	}
 
+	/*
+	//checkMonth(contactDate, limitDate, actualDate) && checkDay(contactDate, limitDate, actualDate
 	private boolean checkDay(Calendar contactDate, Calendar limitDate, Calendar actualDate) {
+		if(contactDate.get(Calendar.MONTH) > actualDate.get(Calendar.MONTH) && contactDate.get(Calendar.MONTH) < limitDate.get(Calendar.MONTH))
+			return true;
 		if (actualDate.get(Calendar.DAY_OF_MONTH) <= contactDate.get(Calendar.DAY_OF_MONTH) && 
 				 contactDate.get(Calendar.DAY_OF_MONTH) <= limitDate.get(Calendar.DAY_OF_MONTH))		
 			return true;
@@ -91,9 +95,9 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 
 	private boolean checkMonth(Calendar contactDate, Calendar limitDate, Calendar actualDate) {
 		if (actualDate.get(Calendar.MONTH)+1 <= contactDate.get(Calendar.MONTH) + 1 && 
-				 contactDate.get(Calendar.MONTH) + 1 <= limitDate.get(Calendar.MONTH) + 1)		
+				 contactDate.get(Calendar.MONTH) + 1 <= limitDate.get(Calendar.MONTH))		
 			return true;
 		return false;
 		
-	}
+	}*/
 }

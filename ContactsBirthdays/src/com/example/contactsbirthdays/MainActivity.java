@@ -4,8 +4,6 @@ import java.util.Calendar;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.DatePicker;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 
 public class MainActivity extends Activity {
@@ -30,7 +27,7 @@ public class MainActivity extends Activity {
 	private int day;
 
 	private ListView _listView;	
-	private SimpleCursorAdapter adapter;
+	private ContactsCustomAdapter adapter;
 
 
 	@Override
@@ -39,33 +36,19 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		_listView = (ListView) findViewById(R.id.listView1);		
 
-		final String cols[] = new String[] {
-				ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
-				ContactsContract.Contacts.DISPLAY_NAME,
-				ContactsContract.CommonDataKinds.Event.START_DATE
-		};
-
-		final int widgets[] = new int[]{
-				R.id.imageView1,
-				R.id.textView1,
-				R.id.textView2				
-		};
-		
 		SharedPreferences prefs = getSharedPreferences("dateSelected",0);
 
 		ContactsAsyncTask cAsync = new ContactsAsyncTask(prefs) {
 
 			@Override
-			protected void onPostExecute(Cursor result) {
+			protected void onPostExecute(ContactInfo[] result) {
 				if(result != null){
 
-					adapter = new SimpleCursorAdapter(
+					adapter = new ContactsCustomAdapter(
 									MainActivity.this, 
 									R.layout.item_layout,
-									result, 
-									cols,
-									widgets,
-									0);
+									result
+									);
 					
 					_listView.setAdapter(adapter);
 				}
@@ -145,6 +128,7 @@ public class MainActivity extends Activity {
 
 							if(c.getCount() == 0){
 								getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
+								c.close();
 							}else{
 								getContentResolver().update(
 										ContactsContract.Data.CONTENT_URI, 
@@ -152,6 +136,7 @@ public class MainActivity extends Activity {
 										"RAW_CONTACT_ID = ? AND MIMETYPE = ?",
 										new String[] { "" + rawContactID, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE}
 										);
+								c.close();
 							}
 						}
 					}, 
