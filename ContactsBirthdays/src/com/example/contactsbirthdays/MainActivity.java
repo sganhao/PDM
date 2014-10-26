@@ -17,6 +17,8 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
 import android.widget.ListView;
 
@@ -48,27 +50,22 @@ public class MainActivity extends Activity {
 				if(result != null){
 
 					adapter = new ContactsCustomAdapter(
-									MainActivity.this, 
-									R.layout.item_layout,
-									result
-									);
-					
+							MainActivity.this, 
+							R.layout.item_layout,
+							result
+							);
+
 					_listView.setAdapter(adapter);
-//					_listView.setOnClickListener(new View.OnClickListener() {
-//						
-//						@Override
-//						public void onClick(View v) {
-//						ViewModel view = (ViewModel) v.getTag();
-////							Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("content://contacts/people/" + view.contactName.getTag().toString()));
-////							startActivity(i);
-////							
-//						int a = Integer.parseInt(view.contactName.getTag().toString());
-//						Uri contactUri = ContentUris.withAppendedId(People.CONTENT_URI, 23);
-//
-//							Intent intent = new Intent(Intent.ACTION_VIEW, contactUri);
-//							startActivity(intent);
-//						}
-//					});
+					_listView.setOnItemClickListener(new OnItemClickListener() {
+
+						@Override
+						public void onItemClick(AdapterView<?> arg0, View v,
+								int arg2, long arg3) {
+							ViewModel view = (ViewModel) v.getTag();
+							Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(People.CONTENT_URI + "/" + view.contactName.getTag().toString()));
+							startActivity(i);
+						}
+					});
 				}
 			}
 		};
