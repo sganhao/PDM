@@ -10,41 +10,29 @@ public class ContactInfo {
 	private String birthday;
 	
 	public ContactInfo(int id, String name, String image, String birthday){
-		this.setId(id);
-		this.setName(name);
-		this.setBirthday(birthday);
-		this.setImage(Uri.parse(image));
+		this.id = id;
+		this.name = name;
+		this.birthday = birthday;
+		this.image = (Uri.parse(image));
 	}
 
 	public int getId() {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public String getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(String birthday) {
-		this.birthday = birthday;
-	}
 
 	public Uri getImage() {
 		return image;
 	}
 
-	public void setImage(Uri image) {
-		this.image = image;
-	}
 }
