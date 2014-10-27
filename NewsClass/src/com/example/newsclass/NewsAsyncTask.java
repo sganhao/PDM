@@ -21,7 +21,7 @@ import android.text.Html;
 
 public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 
-	private String _link = "http://thoth.cc.e.ipl.pt/api/v1/classes/{newsId}/newsitems";
+	final private String _link = "http://thoth.cc.e.ipl.pt/api/v1/classes/{newsId}/newsitems";
 	private NewItem[] newsarray;
 	private int numElems = 0;
 	private int firstViewedItemIdx = 0;
@@ -44,6 +44,8 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 					parseFrom(data);
 				} catch (JSONException e) {
 					e.printStackTrace();
+				}finally{
+					urlCon.disconnect();
 				}
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
@@ -113,6 +115,8 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 
 			} catch (JSONException e) {
 				e.printStackTrace();
+			}finally{
+				urlCon.disconnect();
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

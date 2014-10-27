@@ -16,7 +16,6 @@ import android.os.AsyncTask;
 
 public class ClassesAsyncTask extends AsyncTask<Set<String>,Void,Clazz[]>{
 
-	List<Clazz> clazz;
 	private Set<String> classesSelected;	
 	
 	@Override

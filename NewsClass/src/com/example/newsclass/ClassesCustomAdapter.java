@@ -29,10 +29,9 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 
 	public ClassesCustomAdapter(Context ctx, int layout, Clazz [] classes, SharedPreferences pref){
 		_layout = layout;
-		_layoutInflater = (LayoutInflater)ctx.getSystemService
-			      (Context.LAYOUT_INFLATER_SERVICE);
+		_layoutInflater = (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.classes = classes;
-		_count = 10 ;
+		_count = 30 ;
 		classesSelectedIds = new LinkedHashSet<String>(pref.getStringSet(CLASSES, new LinkedHashSet<String>()));
 		_pref = pref;
 	}
@@ -122,7 +121,7 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 				
 				@Override
 				protected void onPostExecute(Void arg){
-					_count += 10;
+					_count += 15;
 					ClassesCustomAdapter.this.notifyDataSetChanged();
 					_updating = false;
 				}

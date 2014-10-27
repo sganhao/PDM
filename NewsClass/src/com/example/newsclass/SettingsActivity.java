@@ -1,6 +1,5 @@
 package com.example.newsclass;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -33,7 +32,7 @@ public class SettingsActivity extends Activity{
 		btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				_pref.edit()
-				.putStringSet("ids", new HashSet<String>(adapter.getSetListIds()))
+				.putStringSet(CLASSES, new LinkedHashSet<String>(adapter.getSetListIds()))
 				.commit();
 				setResult(Activity.RESULT_OK);
 				finish();
@@ -65,7 +64,7 @@ public class SettingsActivity extends Activity{
 	@Override
 	public void onSaveInstanceState(Bundle outState){
 		_pref.edit()
-		.putStringSet(CLASSES,new HashSet<String>(adapter.getSetListIds()))
+		.putStringSet(CLASSES,new LinkedHashSet<String>(adapter.getSetListIds()))
 		.commit();
 		super.onSaveInstanceState(outState);
 	}

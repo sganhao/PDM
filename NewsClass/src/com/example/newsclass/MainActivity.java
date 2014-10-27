@@ -32,26 +32,14 @@ public class MainActivity extends Activity {
 		_pref = getSharedPreferences("workprefs",0);
 		_exList = (ExpandableListView) findViewById(R.id.expandableListView1);
 
-		classesIds = new LinkedHashSet<String>(_pref.getStringSet(CLASSES, null));
+		classesIds = new LinkedHashSet<String>(_pref.getStringSet(CLASSES, new LinkedHashSet<String>()));
 		newsIds = new LinkedHashSet<String>(_pref.getStringSet(NEWS, new LinkedHashSet<String>()));        
 
-		if(classesIds == null) {
+		if(classesIds.size() == 0) {
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivity(i);
-		}
-		
-		NewsAsyncTask newsAsync = new NewsAsyncTask() {
-
-			@Override
-			protected void onPostExecute(NewItem[] result) {
-				if (result != null) {
-					newsAdapter = new NewsCustomAdapter(MainActivity.this, result, _pref);
-					_exList.setAdapter(newsAdapter);
-					_exList.setOnGroupClickListener(newsAdapter);
-				}
-			}
-		};
-		newsAsync.execute(classesIds, newsIds);
+		}else
+			callAsyncTask();
 	}
 
 
@@ -75,20 +63,32 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onActivityResult(int reqCode, int resCode, Intent data){
 		if(reqCode == 0 && resCode == RESULT_OK){
-			classesIds = new LinkedHashSet<String>(_pref.getStringSet(CLASSES, null));
+			classesIds = new LinkedHashSet<String>(_pref.getStringSet(CLASSES, new LinkedHashSet<String>()));
 			newsIds = new LinkedHashSet<String>(_pref.getStringSet(NEWS, new LinkedHashSet<String>()));
-			NewsAsyncTask newsAsync = new NewsAsyncTask() {
-
-				@Override
-				protected void onPostExecute(NewItem[] result) {
-					if (result != null) {
-						newsAdapter = new NewsCustomAdapter(MainActivity.this, result, _pref);
-						_exList.setAdapter(newsAdapter);
-						_exList.setOnGroupClickListener(newsAdapter);
-					}
-				}
-			};
-			newsAsync.execute(classesIds, newsIds);
+			callAsyncTask();
 		}
+	}
+	
+	private void callAsyncTask(){
+		NewsAsyncTask newsAsync = new NewsAsyncTask() {
+
+			@Override
+			protected void onPostExecute(NewItem[] result) {
+				if (result != null) {
+					newsAdapter = new NewsCustomAdapter(MainActivity.this, result, _pref);
+					_exList.setAdapter(newsAdapter);
+					_exList.setOnGroupClickListener(newsAdapter);
+				}
+			}
+		};
+		newsAsync.execute(classesIds, newsIds);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState){
+		_pref.edit()
+		.putStringSet(NEWS,new LinkedHashSet<String>(newsAdapter.getSetListViewedNewsIds()))
+		.commit();
+		super.onSaveInstanceState(outState);
 	}
 }

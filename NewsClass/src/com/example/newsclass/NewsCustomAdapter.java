@@ -1,6 +1,5 @@
 package com.example.newsclass;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -16,16 +15,16 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 
 public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGroupClickListener{
 	
+	private final String NEWS = "viewedNewsIds";
 	private LayoutInflater _layoutInflater;
     private NewItem[] news;
     private Set<String> viewedNewsIds;
     private SharedPreferences _pref;
   
     public NewsCustomAdapter(Context context, NewItem[] news, SharedPreferences pref) {
-        _layoutInflater = (LayoutInflater) context.getSystemService
-        		(Context.LAYOUT_INFLATER_SERVICE);
+        _layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.news = news;
-        viewedNewsIds = pref.getStringSet("viewedNewsIds", new LinkedHashSet<String>());
+        viewedNewsIds = new LinkedHashSet<String>(pref.getStringSet("viewedNewsIds", new LinkedHashSet<String>()));
         _pref = pref;
     }
  
@@ -123,10 +122,10 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
 	public boolean onGroupClick(ExpandableListView parent, View v,
 			int groupPosition, long id) {
 		
-    	final NewItem item = (NewItem) getGroup(groupPosition);
+    	NewItem item = (NewItem) getGroup(groupPosition);
     	if(!viewedNewsIds.contains(Integer.toString(item.id))){
     		viewedNewsIds.add(Integer.toString(item.id));
-    		_pref.edit().putStringSet("viewedNewsIds",new HashSet<String>(viewedNewsIds)).commit();
+    		_pref.edit().putStringSet(NEWS, new LinkedHashSet<String>(viewedNewsIds)).commit();
     		item.isViewed = true;
     	}
 		return false;
