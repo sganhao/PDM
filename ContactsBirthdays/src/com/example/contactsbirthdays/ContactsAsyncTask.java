@@ -16,11 +16,12 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 	private ContentResolver _cr;
 	private SharedPreferences _prefs;
 	private String _limit;
-	private List<ContactInfo> cInfo;
+	private List<ContactInfo> _cInfo;
+	private ContactInfo [] _res;
 	
 	public ContactsAsyncTask(SharedPreferences prefs){
 		_prefs = prefs;
-		cInfo = new LinkedList<ContactInfo>();
+		_cInfo = new LinkedList<ContactInfo>();
 	}
 	
 	@Override
@@ -39,10 +40,55 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 		Cursor cursor = _cr.query(uri, projection, selection, selectionArgs, sortOrder);	
 		
 		List<ContactInfo> list = checkDate(cursor);
-		ContactInfo [] res = new ContactInfo[list.size()];
 		
-		list.toArray(res);
-		return res;
+		
+		listToOrderArray(list);
+		return _res;
+	}
+
+	private void listToOrderArray(List<ContactInfo> contactList) {
+			_res = new ContactInfo[contactList.size()];
+			int numElems = 0;
+			for(ContactInfo contact : contactList){
+				
+				if(numElems == 0){
+					_res[numElems] = contact;
+					numElems++;
+				}
+				else {
+					String dateOfContactToInsert = contact.getBirthday();
+					String[] auxDateOfContactToInsert = dateOfContactToInsert.split("/");
+					
+					Calendar dateToInsert = Calendar.getInstance();
+					dateToInsert.set(Calendar.DAY_OF_MONTH, Integer.parseInt(auxDateOfContactToInsert[0]));
+					dateToInsert.set(Calendar.MONTH, Integer.parseInt(getMonth(auxDateOfContactToInsert[1])));
+					
+					for(int i = 0; i < numElems; i++) {
+						
+						String dateOfContactInArray = _res[i].getBirthday();
+						String[] auxDateOfContactInArray = dateOfContactInArray.split("/");
+						
+						Calendar dateInArray = Calendar.getInstance();
+						dateInArray.set(Calendar.DAY_OF_MONTH, Integer.parseInt(auxDateOfContactInArray[0]));
+						dateInArray.set(Calendar.MONTH, Integer.parseInt(getMonth(auxDateOfContactInArray[1])));
+						
+						if(dateToInsert.compareTo(dateInArray) <= 0) {
+							for(int j = numElems; j > i; j--) {
+								_res[j] = _res[j-1];
+							}
+							_res[i] = contact;
+							numElems++;
+							break;
+						}
+					}
+				}				
+			}
+		}
+	
+	private String getMonth(String string) {
+		String[] month = string.split(" ");
+		
+		return month[0];
 	}
 
 	private List<ContactInfo> checkDate(Cursor cursor) {		
@@ -75,11 +121,11 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 					
 					ContactInfo newContactInfo = new ContactInfo(id, name, image==null?"":image, birthday);
 					
-					cInfo.add(newContactInfo);						
+					_cInfo.add(newContactInfo);						
 				}				
 			}
 			while(cursor.moveToNext());
 		}
-			return cInfo;
+			return _cInfo;
 	}
 }

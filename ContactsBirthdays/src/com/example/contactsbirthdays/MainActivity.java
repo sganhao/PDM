@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
 
 	private ListView _listView;	
 	private ContactsCustomAdapter adapter;
+	private SharedPreferences _prefs;
 
 
 	@Override
@@ -40,9 +41,9 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		_listView = (ListView) findViewById(R.id.listView1);		
 
-		SharedPreferences prefs = getSharedPreferences("dateSelected",0);
+		_prefs = getSharedPreferences("dateSelected",0);
 
-		ContactsAsyncTask cAsync = new ContactsAsyncTask(prefs) {
+		ContactsAsyncTask cAsync = new ContactsAsyncTask(_prefs) {
 
 			@Override
 			protected void onPostExecute(ContactInfo[] result) {
@@ -84,7 +85,7 @@ public class MainActivity extends Activity {
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			Intent i = new Intent(this, SettingsActivity.class);
-			startActivity(i);
+			startActivityForResult(i,1);
 			return true;
 		}else if(id == R.id.display_contacts){
 			Intent i = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
@@ -148,11 +149,52 @@ public class MainActivity extends Activity {
 										);
 								c.close();
 							}
+
+							ContactsAsyncTask cAsync = new ContactsAsyncTask(_prefs) {
+
+								@Override
+								protected void onPostExecute(ContactInfo[] result) {
+									if(result != null){
+
+										adapter = new ContactsCustomAdapter(
+												MainActivity.this, 
+												R.layout.item_layout,
+												result
+												);
+
+										_listView.setAdapter(adapter);						
+									}
+								}
+							};
+
+							cAsync.execute(getContentResolver());
 						}
 					}, 
 					year, 
 					month, 
 					day).show();
+		}
+		else {
+			if (reqCode == 1 && resCode == RESULT_OK) {
+				ContactsAsyncTask cAsync = new ContactsAsyncTask(_prefs) {
+
+					@Override
+					protected void onPostExecute(ContactInfo[] result) {
+						if(result != null){
+
+							adapter = new ContactsCustomAdapter(
+									MainActivity.this, 
+									R.layout.item_layout,
+									result
+									);
+
+							_listView.setAdapter(adapter);
+						}
+					}
+				};
+
+				cAsync.execute(getContentResolver());
+			}
 		}
 	}
 }
