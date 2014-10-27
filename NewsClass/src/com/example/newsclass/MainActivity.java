@@ -13,62 +13,89 @@ import android.widget.ExpandableListView;
 
 
 public class MainActivity extends Activity {
-	
-	
+
+
 	private final String CLASSES = "ids";
 	private final String NEWS = "viewedNewsIds";
 	private SharedPreferences _pref;
 	private ExpandableListView _exList;
 	private NewsCustomAdapter newsAdapter;
+
+	Set<String> classesIds;
+	Set<String> newsIds;
+	
+	
 	
 	@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        
-        _pref = getSharedPreferences("workprefs",0);
-        _exList = (ExpandableListView) findViewById(R.id.expandableListView1);
-        
-        Set<String> classesIds = _pref.getStringSet(CLASSES, null);
-        Set<String> newsIds = _pref.getStringSet(NEWS, new LinkedHashSet<String>());        
-        
-        if(classesIds == null) {
-        	Intent i = new Intent(this, SettingsActivity.class);
-			startActivity(i);
-        }
-        NewsAsyncTask newsAsync = new NewsAsyncTask() {
-        		
-        		@Override
-        		protected void onPostExecute(NewItem[] result) {
-        			if (result != null) {
-        				newsAdapter = new NewsCustomAdapter(MainActivity.this, result, _pref);
-        				_exList.setAdapter(newsAdapter);
-        				_exList.setOnGroupClickListener(newsAdapter);
-        			}
-        		}
-        	};
-        	newsAsync.execute(classesIds, newsIds);
-    }
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
 
+		_pref = getSharedPreferences("workprefs",0);
+		_exList = (ExpandableListView) findViewById(R.id.expandableListView1);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+		classesIds = _pref.getStringSet(CLASSES, null);
+		newsIds = _pref.getStringSet(NEWS, new LinkedHashSet<String>());        
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
+		if(classesIds == null) {
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivity(i);
+		}
+		NewsAsyncTask newsAsync = new NewsAsyncTask() {
+
+			@Override
+			protected void onPostExecute(NewItem[] result) {
+				if (result != null) {
+					newsAdapter = new NewsCustomAdapter(MainActivity.this, result, _pref);
+					_exList.setAdapter(newsAdapter);
+					_exList.setOnGroupClickListener(newsAdapter);
+				}
+			}
+		};
+		newsAsync.execute(classesIds, newsIds);
+	}
+
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			Intent i = new Intent(this, SettingsActivity.class);
+			//i.putExtra("finishActivityOnSaveCompleted", true);
+			startActivityForResult(i, 0);
 			return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	protected void onActivityResult(int reqCode, int resCode, Intent data){
+		if(reqCode == 0 && resCode == RESULT_OK){
+			classesIds = _pref.getStringSet(CLASSES, null);
+			newsIds = _pref.getStringSet(NEWS, new LinkedHashSet<String>());
+			NewsAsyncTask newsAsync = new NewsAsyncTask() {
+
+				@Override
+				protected void onPostExecute(NewItem[] result) {
+					if (result != null) {
+						newsAdapter = new NewsCustomAdapter(MainActivity.this, result, _pref);
+						_exList.setAdapter(newsAdapter);
+						_exList.setOnGroupClickListener(newsAdapter);
+					}
+				}
+			};
+			newsAsync.execute(classesIds, newsIds);
+		}
+	}
+
 }

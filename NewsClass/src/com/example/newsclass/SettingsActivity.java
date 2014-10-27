@@ -34,6 +34,7 @@ public class SettingsActivity extends Activity{
 				_pref.edit()
 				.putStringSet("ids", adapter.getSetListIds())
 				.commit();
+				setResult(Activity.RESULT_OK);
 				finish();
 			}
 			}
