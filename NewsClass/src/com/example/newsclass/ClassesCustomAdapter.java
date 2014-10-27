@@ -33,7 +33,7 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 			      (Context.LAYOUT_INFLATER_SERVICE);
 		this.classes = classes;
 		_count = 10 ;
-		classesSelectedIds = pref.getStringSet(CLASSES, new LinkedHashSet<String>());
+		classesSelectedIds = new LinkedHashSet<String>(pref.getStringSet(CLASSES, new LinkedHashSet<String>()));
 		_pref = pref;
 	}
 	

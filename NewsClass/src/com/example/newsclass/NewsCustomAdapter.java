@@ -1,5 +1,6 @@
 package com.example.newsclass;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -125,7 +126,7 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
     	final NewItem item = (NewItem) getGroup(groupPosition);
     	if(!viewedNewsIds.contains(Integer.toString(item.id))){
     		viewedNewsIds.add(Integer.toString(item.id));
-    		_pref.edit().putStringSet("viewedNewsIds",viewedNewsIds).commit();
+    		_pref.edit().putStringSet("viewedNewsIds",new HashSet<String>(viewedNewsIds)).commit();
     		item.isViewed = true;
     	}
 		return false;

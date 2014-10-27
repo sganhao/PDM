@@ -32,8 +32,8 @@ public class MainActivity extends Activity {
 		_pref = getSharedPreferences("workprefs",0);
 		_exList = (ExpandableListView) findViewById(R.id.expandableListView1);
 
-		classesIds = _pref.getStringSet(CLASSES, null);
-		newsIds = _pref.getStringSet(NEWS, new LinkedHashSet<String>());        
+		classesIds = new LinkedHashSet<String>(_pref.getStringSet(CLASSES, null));
+		newsIds = new LinkedHashSet<String>(_pref.getStringSet(NEWS, new LinkedHashSet<String>()));        
 
 		if(classesIds == null) {
 			Intent i = new Intent(this, SettingsActivity.class);
@@ -75,8 +75,8 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onActivityResult(int reqCode, int resCode, Intent data){
 		if(reqCode == 0 && resCode == RESULT_OK){
-			classesIds = _pref.getStringSet(CLASSES, null);
-			newsIds = _pref.getStringSet(NEWS, new LinkedHashSet<String>());
+			classesIds = new LinkedHashSet<String>(_pref.getStringSet(CLASSES, null));
+			newsIds = new LinkedHashSet<String>(_pref.getStringSet(NEWS, new LinkedHashSet<String>()));
 			NewsAsyncTask newsAsync = new NewsAsyncTask() {
 
 				@Override
