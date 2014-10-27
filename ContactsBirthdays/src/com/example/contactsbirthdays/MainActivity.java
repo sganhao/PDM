@@ -26,10 +26,6 @@ public class MainActivity extends Activity {
 
 	private Uri _contactUri;
 	private String birthday;
-	private int year;
-	private int month;
-	private int day;
-
 	private ListView _listView;	
 	private ContactsCustomAdapter adapter;
 	private SharedPreferences _prefs;
@@ -40,37 +36,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		_listView = (ListView) findViewById(R.id.listView1);		
-
 		_prefs = getSharedPreferences("dateSelected",0);
 
-		ContactsAsyncTask cAsync = new ContactsAsyncTask(_prefs) {
-
-			@Override
-			protected void onPostExecute(ContactInfo[] result) {
-				if(result != null){
-
-					adapter = new ContactsCustomAdapter(
-							MainActivity.this, 
-							R.layout.item_layout,
-							result
-							);
-
-					_listView.setAdapter(adapter);
-					_listView.setOnItemClickListener(new OnItemClickListener() {
-
-						@Override
-						public void onItemClick(AdapterView<?> arg0, View v,
-								int arg2, long arg3) {
-							ViewModel view = (ViewModel) v.getTag();
-							Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(People.CONTENT_URI + "/" + view.contactName.getTag().toString()));
-							startActivity(i);
-						}
-					});
-				}
-			}
-		};
-
-		cAsync.execute(getContentResolver());
+		callAsyncTask();
 	}
 
 
@@ -102,10 +70,7 @@ public class MainActivity extends Activity {
 
 		if(reqCode == 0 && resCode == RESULT_OK){
 
-			final Calendar ca = Calendar.getInstance();
-			year = ca.get(Calendar.YEAR);
-			month = ca.get(Calendar.MONTH);
-			day = ca.get(Calendar.DAY_OF_MONTH);
+			Calendar ca = Calendar.getInstance();
 
 			new DatePickerDialog(
 					this, 
@@ -114,87 +79,85 @@ public class MainActivity extends Activity {
 						public void onDateSet(DatePicker view, int selectedYear,
 								int selectedMonth, int selectedDay) {
 
-							year = selectedYear;
-							month = selectedMonth;
-							day = selectedDay;
-							birthday = "" + day + "/" + month + "/" + year;							
+							birthday = "" + selectedDay + "/" + selectedMonth + "/" + selectedYear;							
 							_contactUri = dat.getData();
-
-							Cursor c = getContentResolver().query(_contactUri, null, null, null, null);
-							c.moveToFirst();
-							int rawContactID = c.getInt(c.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID));
-
-							ContentValues values = new ContentValues();
-							values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE);
-							values.put(ContactsContract.CommonDataKinds.Event.TYPE, ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY);
-							values.put(ContactsContract.CommonDataKinds.Event.RAW_CONTACT_ID,rawContactID);
-							values.put(ContactsContract.CommonDataKinds.Event.START_DATE, birthday);
-
-							c = getContentResolver().query(
-									ContactsContract.Data.CONTENT_URI,
-									null,
-									"RAW_CONTACT_ID = ? AND " + ContactsContract.CommonDataKinds.Event.TYPE + " = ?",
-									new String[] { "" + rawContactID, ""+ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY},
-									null);
-
-							if(c.getCount() == 0){
-								getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
-								c.close();
-							}else{
-								getContentResolver().update(
-										ContactsContract.Data.CONTENT_URI, 
-										values,
-										"RAW_CONTACT_ID = ? AND MIMETYPE = ?",
-										new String[] { "" + rawContactID, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE}
-										);
-								c.close();
-							}
-
-							ContactsAsyncTask cAsync = new ContactsAsyncTask(_prefs) {
-
-								@Override
-								protected void onPostExecute(ContactInfo[] result) {
-									if(result != null){
-
-										adapter = new ContactsCustomAdapter(
-												MainActivity.this, 
-												R.layout.item_layout,
-												result
-												);
-
-										_listView.setAdapter(adapter);						
-									}
-								}
-							};
-
-							cAsync.execute(getContentResolver());
+							putDataIntoContact();
+							callAsyncTask();
 						}
 					}, 
-					year, 
-					month, 
-					day).show();
+					ca.get(Calendar.YEAR), 
+					ca.get(Calendar.MONTH), 
+					ca.get(Calendar.DAY_OF_MONTH)).show();
 		}
 		else {
-			if (reqCode == 1 && resCode == RESULT_OK) {
-				ContactsAsyncTask cAsync = new ContactsAsyncTask(_prefs) {
-
-					@Override
-					protected void onPostExecute(ContactInfo[] result) {
-						if(result != null){
-
-							adapter = new ContactsCustomAdapter(
-									MainActivity.this, 
-									R.layout.item_layout,
-									result
-									);
-
-							_listView.setAdapter(adapter);
-						}
-					}
-				};
-
-				cAsync.execute(getContentResolver());
-			}
+			if (reqCode == 1 && resCode == RESULT_OK)
+				callAsyncTask();
 		}
 	}
+	
+	
+	private void putDataIntoContact(){
+		Cursor c = getContentResolver().query(_contactUri, null, null, null, null);
+		c.moveToFirst();
+		int rawContactID = c.getInt(c.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID));
+
+		ContentValues values = new ContentValues();
+		values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE);
+		values.put(ContactsContract.CommonDataKinds.Event.TYPE, ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY);
+		values.put(ContactsContract.CommonDataKinds.Event.RAW_CONTACT_ID,rawContactID);
+		values.put(ContactsContract.CommonDataKinds.Event.START_DATE, birthday);
+
+		c = getContentResolver().query(
+				ContactsContract.Data.CONTENT_URI,
+				null,
+				"RAW_CONTACT_ID = ? AND " + ContactsContract.CommonDataKinds.Event.TYPE + " = ?",
+				new String[] { "" + rawContactID, ""+ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY},
+				null);
+
+		if(c.getCount() == 0){
+			getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
+			c.close();
+		}else{
+			getContentResolver().update(
+					ContactsContract.Data.CONTENT_URI, 
+					values,
+					"RAW_CONTACT_ID = ? AND MIMETYPE = ?",
+					new String[] { "" + rawContactID, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE}
+					);
+			c.close();
+		}
+	}
+	
+	private void callAsyncTask(){
+		ContactsAsyncTask cAsync = new ContactsAsyncTask(_prefs) {
+
+			@Override
+			protected void onPostExecute(ContactInfo[] result) {
+				if(result != null){
+
+					adapter = new ContactsCustomAdapter(
+							MainActivity.this, 
+							R.layout.item_layout,
+							result
+							);
+
+					_listView.setAdapter(adapter);
+					_listView.setOnItemClickListener(new OnItemClickListener() {
+
+						@Override
+						public void onItemClick(AdapterView<?> arg0, View v,
+								int arg2, long arg3) {
+							ViewModel view = (ViewModel) v.getTag();
+							Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(People.CONTENT_URI + "/" + 
+												view.contactName.getTag().toString()));
+							startActivity(i);
+						}
+					});
+				}
+			}
+		};
+
+		cAsync.execute(getContentResolver());
+	}
+	
 }

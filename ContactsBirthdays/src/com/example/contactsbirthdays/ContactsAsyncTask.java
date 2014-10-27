@@ -34,15 +34,14 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 		Uri uri = ContactsContract.Data.CONTENT_URI;
 		String [] projection = null;
 		String selection = String.format("%s = 'vnd.android.cursor.item/contact_event'", ContactsContract.Data.MIMETYPE);
-		
 		String[] selectionArgs = null;
 		String sortOrder = null;
 		Cursor cursor = _cr.query(uri, projection, selection, selectionArgs, sortOrder);	
 		
 		List<ContactInfo> list = checkDate(cursor);
 		
-		
 		listToOrderArray(list);
+		cursor.close();
 		return _res;
 	}
 
@@ -62,8 +61,8 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 					Calendar dateToInsert = Calendar.getInstance();
 					dateToInsert.set(Calendar.DAY_OF_MONTH, Integer.parseInt(auxDateOfContactToInsert[0]));
 					dateToInsert.set(Calendar.MONTH, Integer.parseInt(getMonth(auxDateOfContactToInsert[1])));
-					
-					for(int i = 0; i < numElems; i++) {
+					int i;
+					for(i = 0; i < numElems; i++) {
 						
 						String dateOfContactInArray = _res[i].getBirthday();
 						String[] auxDateOfContactInArray = dateOfContactInArray.split("/");
@@ -81,7 +80,11 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 							break;
 						}
 					}
-				}				
+					if(i == numElems){
+						_res[numElems] = contact;
+						numElems++;
+					}
+				}
 			}
 		}
 	
