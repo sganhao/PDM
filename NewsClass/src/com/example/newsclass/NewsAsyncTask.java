@@ -28,7 +28,6 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 	private Set<String> viewedNewsIds;
 	private List<NewItem> newsList;
 
-	// Pedido às noticias de cada turma
 	@Override
 	protected NewItem[] doInBackground(Set<String>... params) {
 		newsList = new LinkedList<NewItem>();
@@ -51,7 +50,6 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 		}
 		
 		listToOrderedArray();
@@ -71,8 +69,6 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 		JSONArray jnews = root.getJSONArray("newsItems");
 		newsarray = new NewItem[jnews.length()];
 
-
-
 		for (int i = 0; i < jnews.length(); ++i) {
 			JSONObject jnew = jnews.getJSONObject(i);
 
@@ -87,7 +83,6 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 						viewedNewsIds.contains(Integer.toString(jnew.getInt("id")))
 						);
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			newsList.add(item);
@@ -117,14 +112,11 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 				return Html.fromHtml(root.getString("content")).toString();				
 
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -140,8 +132,7 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 					newsarray[i] = item;
 					numElems++;
 					return;
-				}
-				
+				}				
 			}
 			newsarray[numElems] = item;
 			numElems++;
@@ -164,7 +155,5 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 			firstViewedItemIdx++;
 			numElems++;
 		}
-
-
 	}
 }

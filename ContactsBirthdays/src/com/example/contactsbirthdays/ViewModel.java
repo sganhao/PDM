@@ -4,8 +4,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ViewModel {
-	
+public class ViewModel {	
 	
 	public final ImageView photo;
 	public final TextView contactName;

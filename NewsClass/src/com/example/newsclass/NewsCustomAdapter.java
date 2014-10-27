@@ -121,7 +121,6 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
 	@Override
 	public boolean onGroupClick(ExpandableListView parent, View v,
 			int groupPosition, long id) {
-		// Do Stuff
 		
     	final NewItem item = (NewItem) getGroup(groupPosition);
     	if(!viewedNewsIds.contains(Integer.toString(item.id))){

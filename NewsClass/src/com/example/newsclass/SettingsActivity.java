@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,13 +21,14 @@ public class SettingsActivity extends Activity{
 	private final String CLASSES = "ids";
 	private Set<String> classesIds;
 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_layout);
+		
 		_pref = getSharedPreferences("workprefs", 0);
 		Button btn = (Button) findViewById(R.id.button1);
+		
 		btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				_pref.edit()
@@ -37,20 +37,16 @@ public class SettingsActivity extends Activity{
 				setResult(Activity.RESULT_OK);
 				finish();
 			}
-			}
-		);          
-		
-		
+		});    		
+
 		_tv2 = (TextView) findViewById(R.id.tv2);
 		_listView2 = (ListView) findViewById(R.id.ListView2);
-		_listView2.addFooterView(new ProgressBar(this));
-		
-		
-		classesIds = _pref.getStringSet(CLASSES, new LinkedHashSet<String>());
-		
-		
+		_listView2.addFooterView(new ProgressBar(this));		
+
+		classesIds = _pref.getStringSet(CLASSES, new LinkedHashSet<String>());		
+
 		ClassesAsyncTask n = new ClassesAsyncTask(){
-			
+
 			@Override
 			protected void onPostExecute(Clazz[] result) {
 				if(result == null) {
@@ -64,14 +60,14 @@ public class SettingsActivity extends Activity{
 		};
 		n.execute(classesIds);
 	}
-	
-	 @Override
-	    public void onSaveInstanceState(Bundle outState){
-		 	_pref.edit()
-			.putStringSet(CLASSES, adapter.getSetListIds())
-			.commit();
-	    	super.onSaveInstanceState(outState);
-	    }
+
+	@Override
+	public void onSaveInstanceState(Bundle outState){
+		_pref.edit()
+		.putStringSet(CLASSES, adapter.getSetListIds())
+		.commit();
+		super.onSaveInstanceState(outState);
+	}
 }
 
 

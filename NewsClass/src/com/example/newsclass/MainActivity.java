@@ -22,9 +22,7 @@ public class MainActivity extends Activity {
 	private NewsCustomAdapter newsAdapter;
 
 	Set<String> classesIds;
-	Set<String> newsIds;
-	
-	
+	Set<String> newsIds;	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +39,7 @@ public class MainActivity extends Activity {
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivity(i);
 		}
+		
 		NewsAsyncTask newsAsync = new NewsAsyncTask() {
 
 			@Override
@@ -58,20 +57,15 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			Intent i = new Intent(this, SettingsActivity.class);
-			//i.putExtra("finishActivityOnSaveCompleted", true);
 			startActivityForResult(i, 0);
 			return true;
 		}
@@ -97,5 +91,4 @@ public class MainActivity extends Activity {
 			newsAsync.execute(classesIds, newsIds);
 		}
 	}
-
 }

@@ -28,12 +28,9 @@ public class SettingsActivity extends Activity{
 		
 		Calendar calendar = Calendar.getInstance();
 		long date = calendar.getActualMinimum(Calendar.DATE);
+		
 		_c1.setMinDate(date);
-		
-		//indica se mostra o número da semana ou não
 		_c1.setShowWeekNumber(false);
-		
-		// inicia a semana à 2ªf
 		_c1.setFirstDayOfWeek(2);
 		
 		_c1.setOnDateChangeListener(new OnDateChangeListener() {
@@ -49,9 +46,7 @@ public class SettingsActivity extends Activity{
 					_pref.edit().putString("data", data).commit();
 					finish();
 				}else
-					Toast.makeText(SettingsActivity.this, "Data inválida", Toast.LENGTH_LONG).show();
-				
-								
+					Toast.makeText(SettingsActivity.this, "Data inválida", Toast.LENGTH_LONG).show();							
 			}
 		});
 	}

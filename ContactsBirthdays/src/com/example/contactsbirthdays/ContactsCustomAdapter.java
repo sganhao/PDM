@@ -17,12 +17,10 @@ public class ContactsCustomAdapter extends BaseAdapter{
 		_layout = layout;
 		_layoutInflater = (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.contacts = contacts;
-	}
-	
+	}	
 	
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return contacts.length;
 	}
 
@@ -30,8 +28,6 @@ public class ContactsCustomAdapter extends BaseAdapter{
 	public Object getItem(int i) {
 		return getModel(i);
 	}
-
-
 
 	private ContactInfo getModel(int i) {
 		return contacts[i];
@@ -54,16 +50,13 @@ public class ContactsCustomAdapter extends BaseAdapter{
 		return view;
 	}
 
-
 	private void bindModel(ContactInfo contact, Object viewModelObject) {
 		ViewModel model = (ViewModel) viewModelObject;
 		model.photo.setImageURI(contact.getImage());
 		model.contactName.setText(contact.getName());
 		model.contactBirthday.setText(contact.getBirthday());
-		model.contactName.setTag(contact.getId());
-		
+		model.contactName.setTag(contact.getId());		
 	}
-
 
 	private Object createViewHolderFor(View view) {
 		return new ViewModel(view);
