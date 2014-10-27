@@ -33,7 +33,10 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 		
 		Uri uri = ContactsContract.Data.CONTENT_URI;
 		String [] projection = null;
-		String selection = String.format("%s = 'vnd.android.cursor.item/contact_event'", ContactsContract.Data.MIMETYPE);
+		String selection = String.format("%s = 'vnd.android.cursor.item/contact_event' and %s = %s", 
+										ContactsContract.Data.MIMETYPE,
+										ContactsContract.CommonDataKinds.Event.TYPE,
+										ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY);
 		String[] selectionArgs = null;
 		String sortOrder = null;
 		Cursor cursor = _cr.query(uri, projection, selection, selectionArgs, sortOrder);	
