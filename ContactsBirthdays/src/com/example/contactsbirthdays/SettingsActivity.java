@@ -20,6 +20,7 @@ public class SettingsActivity extends Activity{
 		setContentView(R.layout.settings_layout);
 		initializeCalendar();
 		_pref = getSharedPreferences("dateSelected", 0);
+		setResult(Activity.RESULT_OK);
 	}
 	
 	private void initializeCalendar() {
