@@ -14,7 +14,6 @@ import android.widget.ExpandableListView;
 
 public class MainActivity extends Activity {
 
-
 	private final String CLASSES = "ids";
 	private final String NEWS = "viewedNewsIds";
 	private SharedPreferences _pref;

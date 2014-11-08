@@ -38,7 +38,6 @@ public class ClassesAsyncTask extends AsyncTask<Set<String>,Void,Clazz[]>{
 		}
 	}
 
-
 	private Clazz[] parseFrom(String data) throws JSONException {
 		JSONObject root = new JSONObject(data);
 		JSONArray jclasses = root.getJSONArray("classes");
