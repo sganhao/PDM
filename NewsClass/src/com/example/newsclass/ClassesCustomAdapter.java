@@ -4,7 +4,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,17 +22,14 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 	private int _scrollFirst;
 	private int _scrollCount;
 	private Clazz [] classes;
-	private Set<String> classesSelectedIds;
-	public SharedPreferences _pref;
-	private final String CLASSES = "ids";
+	private Set<Integer> classesSelectedIds;
 
-	public ClassesCustomAdapter(Context ctx, int layout, Clazz [] classes, SharedPreferences pref){
+	public ClassesCustomAdapter(Context ctx, int layout, Clazz [] classes, Set<Integer> classesSelected){
 		_layout = layout;
 		_layoutInflater = (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.classes = classes;
 		_count = 30 ;
-		classesSelectedIds = new LinkedHashSet<String>(pref.getStringSet(CLASSES, new LinkedHashSet<String>()));
-		_pref = pref;
+		classesSelectedIds = new LinkedHashSet<Integer>(classesSelected);
 	}
 	
 	@Override
@@ -73,9 +69,9 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 		              c.setShowNews(cb.isChecked());
 		              
 		              if(c.getShowNews()){	
-		            	  classesSelectedIds.add(Integer.toString(c.getId()));
+		            	  classesSelectedIds.add(c.getId());
 		              }else{
-		            	  classesSelectedIds.remove(Integer.toString(c.getId()));
+		            	  classesSelectedIds.remove(c.getId());
 		              }
 		            }  
 		          });          
@@ -129,7 +125,7 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 		}		
 	}
 	
-	public Set<String> getSetListIds() {
+	public Set<Integer> getSetListIds() {
 		return classesSelectedIds;
 	}
 }

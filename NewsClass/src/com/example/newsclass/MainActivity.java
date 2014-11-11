@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,29 +16,27 @@ import android.widget.ExpandableListView;
 public class MainActivity extends Activity {
 
 	private final String CLASSES = "ids";
-	private final String NEWS = "viewedNewsIds";
-	private SharedPreferences _pref;
+	private Set<Integer> viewedNewsIds;
 	private ExpandableListView _exList;
 	private NewsCustomAdapter newsAdapter;
+	private ContentResolver _cr;
 
-	Set<String> classesIds;
-	Set<String> newsIds;	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		_cr = getContentResolver();
 
-		_pref = getSharedPreferences("workprefs",0);
 		_exList = (ExpandableListView) findViewById(R.id.expandableListView1);
 
-		classesIds = new LinkedHashSet<String>(_pref.getStringSet(CLASSES, new LinkedHashSet<String>()));
-		newsIds = new LinkedHashSet<String>(_pref.getStringSet(NEWS, new LinkedHashSet<String>()));        
-
+		viewedNewsIds = new LinkedHashSet<Integer>(newsAdapter.getSetListViewedNewsIds());        
+/*
 		if(classesIds.size() == 0) {
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivity(i);
-		}else
+		}else*/
 			callAsyncTask();
 	}
 
@@ -62,32 +61,28 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onActivityResult(int reqCode, int resCode, Intent data){
 		if(reqCode == 0 && resCode == RESULT_OK){
-			classesIds = new LinkedHashSet<String>(_pref.getStringSet(CLASSES, new LinkedHashSet<String>()));
-			newsIds = new LinkedHashSet<String>(_pref.getStringSet(NEWS, new LinkedHashSet<String>()));
+			viewedNewsIds =  new LinkedHashSet<Integer>(newsAdapter.getSetListViewedNewsIds());
 			callAsyncTask();
 		}
 	}
 	
 	private void callAsyncTask(){
-		NewsAsyncTask newsAsync = new NewsAsyncTask() {
+		NewsAsyncTask newsAsync = new NewsAsyncTask(_cr) {
 
 			@Override
 			protected void onPostExecute(NewItem[] result) {
 				if (result != null) {
-					newsAdapter = new NewsCustomAdapter(MainActivity.this, result, _pref);
+					newsAdapter = new NewsCustomAdapter(MainActivity.this, result, viewedNewsIds);
 					_exList.setAdapter(newsAdapter);
 					_exList.setOnGroupClickListener(newsAdapter);
 				}
 			}
 		};
-		newsAsync.execute(classesIds, newsIds);
+		newsAsync.execute();
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState){
-		_pref.edit()
-		.putStringSet(NEWS,new LinkedHashSet<String>(newsAdapter.getSetListViewedNewsIds()))
-		.commit();
 		super.onSaveInstanceState(outState);
 	}
 }

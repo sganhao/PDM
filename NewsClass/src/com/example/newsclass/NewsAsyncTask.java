@@ -1,59 +1,54 @@
 package com.example.newsclass;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.text.Html;
 
-public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
+public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 
-	final private String _link = "http://thoth.cc.e.ipl.pt/api/v1/classes/{newsId}/newsitems";
 	private NewItem[] newsarray;
 	private int numElems = 0;
 	private int firstViewedItemIdx = 0;
 	private Set<String> viewedNewsIds;
 	private List<NewItem> newsList;
-
+	private Uri _thothNews;
+	private ContentResolver _cr;
+	
+	
+	public NewsAsyncTask (ContentResolver cr) {
+		_cr = cr;
+	}
+	
 	@Override
-	protected NewItem[] doInBackground(Set<String>... params) {
-		newsList = new LinkedList<NewItem>();
-		viewedNewsIds = params[1];
-		for (String set : params[0]) {
-			String auxUrl = _link.replace("{newsId}", set);
+	protected NewItem[] doInBackground(Void... args) {
+		_thothNews = Uri.parse("content://com.example.newsclassserver/thothClasses");
+		Cursor c = _cr.query(_thothNews, new String[] {"_newsId", "title", "when", "isViewed"}, null, null, null);
+		newsarray = new NewItem[c.getCount()];
+		int idx = 0;
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		
+		while (c.moveToNext()) {
 			try {
-				URL url = new URL(auxUrl);
-				HttpURLConnection urlCon = (HttpURLConnection)url.openConnection();
-
-				try {
-					InputStream is = urlCon.getInputStream();
-					String data = readAllFrom(is);
-					parseFrom(data);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}finally{
-					urlCon.disconnect();
-				}
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
+				newsarray[idx] = new NewItem(
+									c.getInt(c.getColumnIndex("id")), 
+									c.getString(c.getColumnIndex("title")),
+									format.parse(c.getString(c.getColumnIndex("when"))),
+									c.getString(c.getColumnIndex("content")),
+									c.getInt(c.getColumnIndex("isViewed")) == 1 ? true : false
+								);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			idx++;
 		}
-		
 		listToOrderedArray();
 		return newsarray;
 	}
@@ -66,42 +61,8 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 	}
 
 
-	private void parseFrom(String data) throws JSONException {
-		JSONObject root = new JSONObject(data);
-		JSONArray jnews = root.getJSONArray("newsItems");
-		newsarray = new NewItem[jnews.length()];
-
-		for (int i = 0; i < jnews.length(); ++i) {
-			JSONObject jnew = jnews.getJSONObject(i);
-
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-			NewItem item = null;
-			try {
-				item = new NewItem(
-						jnew.getInt("id"), 
-						jnew.getString("title"), 
-						format.parse(jnew.getString("when")),
-						getContent(jnew.getInt("id")),
-						viewedNewsIds.contains(Integer.toString(jnew.getInt("id")))
-						);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			newsList.add(item);
-		}
-	}
-
-	private String readAllFrom(InputStream is) {
-		Scanner s = new Scanner(is);
-		try{
-			s.useDelimiter("\\A");
-			return s.hasNext() ? s.next() : null;
-		}finally{
-			s.close();
-		}
-	}
-
-	private String getContent(int id) {
+	// TODO ver getContent
+	/*private String getContent(int id) {
 		try {
 			URL url = new URL("http://thoth.cc.e.ipl.pt/api/v1/newsitems/"+ id);
 			HttpURLConnection urlCon = (HttpURLConnection)url.openConnection();
@@ -124,7 +85,7 @@ public class NewsAsyncTask extends AsyncTask<Set<String>, Void, NewItem[]>{
 			e.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 
 	private void insertInArray(NewItem item){
 		if(viewedNewsIds.contains(Integer.toString(item.id))){

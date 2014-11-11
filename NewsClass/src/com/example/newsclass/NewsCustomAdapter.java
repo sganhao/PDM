@@ -4,7 +4,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,17 +14,14 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 
 public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGroupClickListener{
 	
-	private final String NEWS = "viewedNewsIds";
 	private LayoutInflater _layoutInflater;
     private NewItem[] news;
-    private Set<String> viewedNewsIds;
-    private SharedPreferences _pref;
+    private Set<Integer> viewedNewsIds;
   
-    public NewsCustomAdapter(Context context, NewItem[] news, SharedPreferences pref) {
+    public NewsCustomAdapter(Context context, NewItem[] news, Set<Integer> viewedIds) {
         _layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.news = news;
-        viewedNewsIds = new LinkedHashSet<String>(pref.getStringSet("viewedNewsIds", new LinkedHashSet<String>()));
-        _pref = pref;
+        viewedNewsIds = new LinkedHashSet<Integer>(viewedIds);
     }
  
     @Override
@@ -123,15 +119,14 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
 			int groupPosition, long id) {
 		
     	NewItem item = (NewItem) getGroup(groupPosition);
-    	if(!viewedNewsIds.contains(Integer.toString(item.id))){
-    		viewedNewsIds.add(Integer.toString(item.id));
-    		_pref.edit().putStringSet(NEWS, new LinkedHashSet<String>(viewedNewsIds)).commit();
+    	if(!viewedNewsIds.contains(item.id)){
+    		viewedNewsIds.add(item.id);
     		item.isViewed = true;
     	}
 		return false;
 	}
 	
-	public Set<String> getSetListViewedNewsIds() {
+	public Set<Integer> getSetListViewedNewsIds() {
 		return viewedNewsIds;
 	}
 }

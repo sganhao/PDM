@@ -13,11 +13,12 @@ public class NewsClassOpenHelper extends SQLiteOpenHelper {
 		super(context, "thoth.db", null, 1);
 	}
 
+	//TODO date mudada para text
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		Log.d(TAG, "NewsClassOpenHelper.onCreate");
 		db.execSQL("create table thothClasses (_classId integer primary key, fullname text, showNews integer)");
-		db.execSQL("create table thothNews (_newsId integer primary key, title text, when Date, content text, isViewed integer)");
+		db.execSQL("create table thothNews (_newsId integer primary key, title text, when text, content text, isViewed integer)");
 	}
 
 	@Override

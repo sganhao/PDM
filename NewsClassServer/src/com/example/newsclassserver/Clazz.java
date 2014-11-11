@@ -1,4 +1,4 @@
-package com.example.newsclass;
+package com.example.newsclassserver;
 
 public class Clazz {
 	private int id;
@@ -9,7 +9,8 @@ public class Clazz {
 		this.id = id;
 		fullname = name;
 		showNews = flag;
-	}	
+	}
+	
 	
 	public boolean getShowNews() {
 		return showNews;
@@ -26,5 +27,4 @@ public class Clazz {
 	public int getId() {
 		return id;
 	}
-	
 }
