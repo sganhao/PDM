@@ -1,4 +1,4 @@
-package com.example.newsclassserver;
+package com.example.newsclass;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +54,7 @@ public class ThothRequestAsyncTask extends AsyncTask<Set<String>,Void,Void>{
 			classes[i] = item;
 		}
 		fillContentProviderWithClasses(classes);
+		return null;
 	}
 
 
