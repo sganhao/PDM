@@ -37,8 +37,8 @@ ContentResolver cr = getContentResolver();
 		
 		String action = intent.getAction();		
 		if(action.equals(Intent.ACTION_EDIT)){
-
-
+			//From User Interaction - Do http request to thoth if a new class is selected
+			
 			int rows = cr.update(
 					intent.getData(), 
 					(ContentValues)intent.getExtras().get("values"), 
@@ -47,8 +47,8 @@ ContentResolver cr = getContentResolver();
 					);
 
 		}
-		if(action.equals(Intent.ACTION_INSERT)){
-			//Do the http request to thoth;
+		if(action.equals(Intent.ACTION_INSERT_OR_EDIT)){
+			//From Broadcast Receiver - Do the http request to thoth;
 			//cr.insert(intent.getData(), values);
 			//Send a notification warning about new news
 		}
