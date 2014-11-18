@@ -24,12 +24,12 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 	private Clazz [] classes;
 	private Set<Integer> classesSelectedIds;
 
-	public ClassesCustomAdapter(Context ctx, int layout, Clazz [] classes, Set<Integer> classesSelected){
+	public ClassesCustomAdapter(Context ctx, int layout, Clazz [] classes){
 		_layout = layout;
 		_layoutInflater = (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.classes = classes;
 		_count = 30 ;
-		classesSelectedIds = new LinkedHashSet<Integer>(classesSelected);
+		classesSelectedIds = new LinkedHashSet<Integer>();
 	}
 	
 	@Override
@@ -68,7 +68,7 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 		              
 		              c.setShowNews(cb.isChecked());
 		              
-		              if(c.getShowNews()){	
+		              if(!classesSelectedIds.contains(c.getId())){	
 		            	  classesSelectedIds.add(c.getId());
 		              }else{
 		            	  classesSelectedIds.remove(c.getId());

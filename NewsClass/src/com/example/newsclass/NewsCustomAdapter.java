@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +18,10 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
 	private LayoutInflater _layoutInflater;
     private NewItem[] news;
     private Set<Integer> viewedNewsIds;
+    private Context _context;
   
     public NewsCustomAdapter(Context context, NewItem[] news, Set<Integer> viewedIds) {
+    	_context = context;
         _layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.news = news;
         viewedNewsIds = new LinkedHashSet<Integer>(viewedIds);
@@ -119,10 +122,17 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
 			int groupPosition, long id) {
 		
     	NewItem item = (NewItem) getGroup(groupPosition);
-    	if(!viewedNewsIds.contains(item.id)){
-    		viewedNewsIds.add(item.id);
-    		item.isViewed = true;
-    	}
+//    	if(!viewedNewsIds.contains(item.id)){
+//    		viewedNewsIds.add(item.id);
+//    		item.isViewed = true;
+//    		
+//    	}
+    	
+    	Intent service = new Intent(_context, NewsService.class);
+    	service.putExtra("newId", item.id);
+    	service.putExtra("from", MainActivity.class);
+		service.setAction(Intent.ACTION_EDIT);
+		_context.startService(service);
 		return false;
 	}
 	

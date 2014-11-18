@@ -1,14 +1,10 @@
 package com.example.newsclass;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
-import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,25 +21,26 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 	private ListView _listView2;
 	private ClassesCustomAdapter adapter;
 	private ContentResolver _cr;
+	private Context _c;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_layout);
-
+		
 		_cr = getContentResolver();
+		
 		
 		Button btn = (Button) findViewById(R.id.button1);
 
 		btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				// TODO lançar service para fzr update no CP
-				/*Set<Integer> classesSelected = adapter.getSetListIds();
-				for(int id : classesSelected) {
-					ContentValues values = new ContentValues();
-					values.put("showNews", 1);
-					_cr.update(Uri.parse("content://com.example.newsclassserver/thothClasses/#"), values , "_classId = ?", new String[] { Integer.toString(id)});
-				}*/
+//				Intent service = new Intent(this, NewsService.class);
+//		    	service.putExtra("classesId", adapter.getSetListIds());
+//		    	service.putExtra("from", MainActivity.class);
+//				service.setAction(Intent.ACTION_EDIT);
+//				_context.startService(service);
 				setResult(Activity.RESULT_OK);
 				finish();
 			}
@@ -74,18 +71,9 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 
 			@Override
 			protected void onPostExecute(Clazz[] result) {
-					adapter = new ClassesCustomAdapter(SettingsActivity.this, R.layout.item_layout, result, getClassesSelected(result)); 
+					adapter = new ClassesCustomAdapter(SettingsActivity.this, R.layout.item_layout, result); 
 					_listView2.setAdapter(adapter);
 					_listView2.setOnScrollListener(adapter);
-			}
-			
-			private Set<Integer> getClassesSelected(Clazz[] result) {
-				Set<Integer> classesSelected = new LinkedHashSet<Integer>();
-				for(int i = 0; i < result.length; i++) {
-					if (result[i].getShowNews())
-						classesSelected.add(result[i].getId());
-				}
-				return classesSelected;
 			}
 		};
 		n.execute();
