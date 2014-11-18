@@ -4,16 +4,21 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import android.app.Activity;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 	private final String CLASSES = "ids";
 	private Set<Integer> viewedNewsIds;
@@ -84,5 +89,33 @@ public class MainActivity extends Activity {
 	@Override
 	public void onSaveInstanceState(Bundle outState){
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+		return new CursorLoader(this, 
+				Uri.parse("content://com.example.newsclassserver/thothNews"), 
+				new String[]{"_newsId","_classId", "title", "when", "content", "isViewed"}, 
+				null,// noticias das classes q estão selecionadas 
+				null, 
+				null);
+	}
+
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loaders, Cursor data) {
+		if(data.getCount() == 0){
+			Intent i = new Intent(this, SettingsActivity.class);
+			startActivityForResult(i, 0);
+		}
+		callAsyncTask();		
+	}
+
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+		// TODO check this thing here
+		_exList.clearChoices();		
 	}
 }

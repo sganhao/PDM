@@ -41,7 +41,7 @@ public class NewsClassContentProvider extends ContentProvider {
 		_matcher = new UriMatcher(ROOT_MATCH);
 		_matcher.addURI(AUTHORITY, "thothClasses", THOTHCLASSES_COLL_MATCH);
 		_matcher.addURI(AUTHORITY, "thothClasses/#", THOTHCLASSES_ITEM_MATCH);
-		_matcher.addURI(AUTHORITY, "thothNews", THOTHNEWS_COLL_MATCH);
+		_matcher.addURI(AUTHORITY, "thothClasses/#/thothNews", THOTHNEWS_COLL_MATCH);
 		_matcher.addURI(AUTHORITY, "thothNews/#", THOTHNEWS_ITEM_MATCH);
 	}
 
@@ -135,20 +135,33 @@ public class NewsClassContentProvider extends ContentProvider {
 			String[] selectionArgs) {
 		
 		SQLiteDatabase db = _ds.getWritableDatabase();
-		int rawsUpdated = 0;
+		int rawsThothClassesUpdated = 0, rawsThothNewsUpdated = 0;
 		
+		
+		// se fazes check, actualiza thothClasses e insere as noticias dessa turma na thothNews
+		// se faz uncheck, actualiza thothclasses, removendo as noticias dessa turma da thothNews
 		switch (_matcher.match(uri)) {
-			case THOTHCLASSES_COLL_MATCH:
-				rawsUpdated = db.update("thothClasses", values, selection, selectionArgs);
+			case THOTHCLASSES_ITEM_MATCH:
+				long id = ContentUris.parseId(uri);
+				
+				rawsThothClassesUpdated = db.update("thothClasses", values, selection, new String[]{""+id});
+				
+				if(values.getAsInteger("showNews") == 1){
+//					rawsThothNewsUpdated = db.insert("thothNews", nullColumnHack, values) -> lançar service para fazer pedido
+					// ao thoth para ir buscar as noticias referentes à turma selecionada 
+				}
+				else
+					rawsThothNewsUpdated = db.delete("thothNews", "_classId = ?", new String[]{""+id});
 				break;
-			case THOTHNEWS_COLL_MATCH:
-				rawsUpdated = db.update("thothNews", values, selection, selectionArgs);
+				
+			case THOTHNEWS_ITEM_MATCH:
+				rawsThothClassesUpdated = db.update("thothNews", values, selection, selectionArgs);
 				break;
 			default:
-				return rawsUpdated;
+				return rawsThothClassesUpdated;
 			
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
-		return rawsUpdated;
+		return rawsThothClassesUpdated + rawsThothNewsUpdated;
 	}
 }

@@ -18,7 +18,7 @@ public class NewsClassOpenHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.d(TAG, "NewsClassOpenHelper.onCreate");
 		db.execSQL("create table thothClasses (_classId integer primary key, fullname text, showNews integer)");
-		db.execSQL("create table thothNews (_newsId integer primary key, title text, when text, content text, isViewed integer)");
+		db.execSQL("create table thothNews (_newsId integer primary key, _classId integer, title text, when text, content text, isViewed integer, FOREIGN KEY(_classId) REFERENCES thothClasses(_classId), )");
 	}
 
 	@Override
