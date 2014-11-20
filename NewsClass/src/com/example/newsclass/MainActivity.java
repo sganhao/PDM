@@ -31,9 +31,18 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+				
 		_cr = getContentResolver();
 
+		Cursor c = _cr.query(Uri.parse("content://com.example.newsclass/thothClasses"), null, null, null, null);
+		if(c.getCount() == 0) {
+			
+			//Preencher pela primeira vez o content provider
+			Intent service = new Intent(this,NewsService.class);
+			service.setAction(Intent.ACTION_SYNC);
+			this.startService(service);
+		}
+		
 		_exList = (ExpandableListView) findViewById(R.id.expandableListView1);
 
 		//viewedNewsIds = new LinkedHashSet<Integer>(newsAdapter.getSetListViewedNewsIds());        

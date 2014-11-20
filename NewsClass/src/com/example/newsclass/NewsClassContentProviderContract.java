@@ -1,4 +1,4 @@
-package com.example.newsclassserver;
+package com.example.newsclass;
 
 public class NewsClassContentProviderContract {
 	public static final String Scheema = "content://";

@@ -1,4 +1,4 @@
-package com.example.newsclassserver;
+package com.example.newsclass;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

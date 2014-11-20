@@ -1,4 +1,4 @@
-package com.example.newsclassserver;
+package com.example.newsclass;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

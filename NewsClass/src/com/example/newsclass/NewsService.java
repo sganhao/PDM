@@ -38,6 +38,7 @@ public class NewsService extends IntentService  {
 	protected void onHandleIntent(Intent intent) {
 		Context context = this.getApplicationContext();
 		String action = intent.getAction();		
+		
 		if(action.equals(Intent.ACTION_EDIT)){
 			//From User Interaction - Do http request to thoth if a new class is selected
 
@@ -154,6 +155,14 @@ public class NewsService extends IntentService  {
 				manager.notify(0, builder.build());
 			}
 		}
+		if(action.equals(Intent.ACTION_SYNC)){
+			// Insert data in the content provider for the first time
+			Clazz[] result = requests.requestClasses();
+			
+			for (int i = 0; i < result.length; i++) {
+				insertClassesItem(result[i]);
+			}
+		}
 	}
 
 	public void insertNewsItem(NewItem item, int classId) {
@@ -165,5 +174,13 @@ public class NewsService extends IntentService  {
 		values.put("content", item.content);
 		values.put("isViewed", 0);
 		cr.insert(Uri.parse("content://com.example.newsclassserver/thothNews"), values);
+	}
+	
+	public void insertClassesItem(Clazz item) {
+		ContentValues values = new ContentValues();
+		values.put("_classId", item.getId());
+		values.put("fullname", item.getFullname());
+		values.put("showNews", 0);
+		cr.insert(Uri.parse("content://com.example.newsclassserver/thothClasses"), values);
 	}
 }
