@@ -3,11 +3,16 @@ package com.example.newsclass;
 import java.util.Set;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.widget.RemoteViews;
 
 public class NewsService extends IntentService  {
 
@@ -31,7 +36,7 @@ public class NewsService extends IntentService  {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-
+		Context context = this.getApplicationContext();
 		String action = intent.getAction();		
 		if(action.equals(Intent.ACTION_EDIT)){
 			//From User Interaction - Do http request to thoth if a new class is selected
@@ -51,7 +56,7 @@ public class NewsService extends IntentService  {
 			else {
 				//service starts from settingsActivity
 				if(intent.getExtras().get("from") == SettingsActivity.class) {
-					Set<Integer> classesId = (Set<Integer>) intent.getExtras().get("classesId");
+					int[] classesId = intent.getIntArrayExtra("classesId");
 
 					for(int id : classesId) {
 						Cursor c = cr.query(
@@ -96,10 +101,7 @@ public class NewsService extends IntentService  {
 							NewItem[] result = requests.requestNews(id);
 
 							for(int i = 0; i < result.length; i++) {
-
 								insertNewsItem(result[i], id);
-
-								// TODO lançar notificações
 							}
 						}
 					}
@@ -120,7 +122,7 @@ public class NewsService extends IntentService  {
 			while(c.moveToNext()){
 				int classId = c.getInt(c.getColumnIndex("_classId"));
 				NewItem[] result = requests.requestNews(classId);
-
+				int countNews = 0;
 				for(int i = 0; i < result.length; i++) {
 
 					Cursor checkId = cr.query(
@@ -132,10 +134,24 @@ public class NewsService extends IntentService  {
 
 					if(checkId.getCount() == 0) {
 						insertNewsItem(result[i], classId);
-
-						// TODO lançar notificações
+						countNews++;
+					
 					}
 				}
+				
+				Notification.Builder builder = new Notification.Builder(context)
+						.setContentTitle("New News")
+						.setContentText("text: Class" + classId + ": " + countNews + "News added")
+						.setAutoCancel(true)
+						.setSmallIcon(R.drawable.ic_launcher)
+						.setOngoing(true)
+						.setContent(new RemoteViews("com.example.newsclass",R.layout.layout_notification_br));
+				
+				Intent i = new Intent(context,MainActivity.class);
+				PendingIntent pintent = PendingIntent.getActivity(context, 1, i, 0);
+				builder.setContentIntent(pintent);
+				NotificationManager manager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+				manager.notify(0, builder.build());
 			}
 		}
 	}

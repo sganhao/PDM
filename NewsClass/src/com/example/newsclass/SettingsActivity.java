@@ -5,6 +5,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -21,13 +22,11 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 	private ListView _listView2;
 	private ClassesCustomAdapter adapter;
 	private ContentResolver _cr;
-	private Context _c;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_layout);
-		
 		_cr = getContentResolver();
 		
 		
@@ -36,11 +35,11 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				// TODO lançar service para fzr update no CP
-//				Intent service = new Intent(this, NewsService.class);
-//		    	service.putExtra("classesId", adapter.getSetListIds());
-//		    	service.putExtra("from", MainActivity.class);
-//				service.setAction(Intent.ACTION_EDIT);
-//				_context.startService(service);
+				Intent service = new Intent(getApplicationContext(), NewsService.class);
+		    	service.putExtra("classesId", adapter.getSetListIds().toArray());
+		    	service.putExtra("from", MainActivity.class);
+				service.setAction(Intent.ACTION_EDIT);
+				getApplicationContext().startService(service);
 				setResult(Activity.RESULT_OK);
 				finish();
 			}

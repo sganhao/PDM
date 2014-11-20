@@ -36,7 +36,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 		_exList = (ExpandableListView) findViewById(R.id.expandableListView1);
 
-		viewedNewsIds = new LinkedHashSet<Integer>(newsAdapter.getSetListViewedNewsIds());        
+		//viewedNewsIds = new LinkedHashSet<Integer>(newsAdapter.getSetListViewedNewsIds());        
 /*
 		if(classesIds.size() == 0) {
 			Intent i = new Intent(this, SettingsActivity.class);
