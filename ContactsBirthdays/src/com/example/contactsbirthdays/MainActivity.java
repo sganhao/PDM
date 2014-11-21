@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.provider.Contacts.People;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,12 +30,14 @@ public class MainActivity extends Activity {
 	private ListView _listView;	
 	private ContactsCustomAdapter adapter;
 	private SharedPreferences _prefs;
-
+	private static final String TAG = "REC";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		Log.d(TAG, "MainActivity");
+
 		_listView = (ListView) findViewById(R.id.listView1);		
 		_prefs = getSharedPreferences("dateSelected",0);
 
