@@ -28,7 +28,7 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 	@Override
 	protected NewItem[] doInBackground(Void... args) {
 		_thothNews = Uri.parse("content://com.example.newsclassserver/thothClasses");
-		Cursor c = _cr.query(_thothNews, new String[] {"_newsId", "title", "when", "isViewed"}, null, null, null);
+		Cursor c = _cr.query(_thothNews, new String[] {"_newsId", "title", "_when", "isViewed"}, null, null, null);
 		newsarray = new NewItem[c.getCount()];
 		int idx = 0;
 		
@@ -39,7 +39,7 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 				newsarray[idx] = new NewItem(
 									c.getInt(c.getColumnIndex("id")), 
 									c.getString(c.getColumnIndex("title")),
-									format.parse(c.getString(c.getColumnIndex("when"))),
+									format.parse(c.getString(c.getColumnIndex("_when"))),
 									c.getString(c.getColumnIndex("content")),
 									c.getInt(c.getColumnIndex("isViewed")) == 1 ? true : false
 								);

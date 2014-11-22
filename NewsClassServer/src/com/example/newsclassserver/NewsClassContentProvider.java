@@ -1,4 +1,4 @@
-package com.example.newsclass;
+package com.example.newsclassserver;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -14,7 +14,7 @@ public class NewsClassContentProvider extends ContentProvider {
 
 	private static final String AUTHORITY = NewsClassContentProviderContract.Authority;
 	
-	public static final String TAG = "NewsClassContentProvider";
+	public static final String TAG = "News";
 	
 	private NewsClassOpenHelper _ds;
 	
@@ -31,6 +31,7 @@ public class NewsClassContentProvider extends ContentProvider {
 	
 	@Override
 	public boolean onCreate() {
+		Log.d(TAG, "onCreate newsClassContentProvider");
 		_ds = new NewsClassOpenHelper(getContext());
 		return true;
 	}

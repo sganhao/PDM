@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 public class NewsService extends IntentService  {
@@ -18,6 +19,7 @@ public class NewsService extends IntentService  {
 	private HttpRequestsToThoth _requests;
 	private Context _context;
 	private int _idx;
+	private String TAG = "NewsService";
 
 	public NewsService(String name) {
 		super(name);
@@ -35,6 +37,8 @@ public class NewsService extends IntentService  {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		String action = intent.getAction();		
+
+		Log.d(TAG , "action = " + action);
 
 		if(action.equals("userUpdateClasses")){
 			//From User Interaction - Do http request to thoth if a new class is selected
@@ -169,7 +173,7 @@ public class NewsService extends IntentService  {
 		values.put("_newsId", item.id);
 		values.put("_classId", classId);
 		values.put("title", item.title);
-		values.put("when", item.when.toString());
+		values.put("_when", item.when.toString());
 		values.put("content", item.content);
 		values.put("isViewed", 0);
 		_cr.insert(Uri.parse("content://com.example.newsclassserver/thothNews"), values);

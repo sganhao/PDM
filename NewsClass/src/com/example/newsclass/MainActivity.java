@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
@@ -25,18 +26,25 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 	private ExpandableListView _exList;
 	private NewsCustomAdapter newsAdapter;
 	private ContentResolver _cr;
+	private Uri _thothClasses;
+	private Uri _thothNews;
 
+
+	private String TAG = "News";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-				
+		
+		Log.d(TAG, "onCreate MainActivity");
 		_cr = getContentResolver();
 
-		Cursor c = _cr.query(Uri.parse("content://com.example.newsclass/thothClasses"), new String[]{"_classId"}, null, null, null);
+		_thothClasses = Uri.parse("content://com.example.newsclassserver/thothClasses");
+		Cursor c = _cr.query(_thothClasses, new String[]{"_classId"}, null, null, null);
 		if(c == null) {
-			
+
+			Log.d(TAG, "onCreate firstFillOfCP");
 			//Preencher pela primeira vez o content provider
 			Intent service = new Intent(this,NewsService.class);
 			service.setAction("firstFillOfCP");
@@ -51,6 +59,8 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivity(i);
 		}else*/
+
+		Log.d(TAG, "onCreate loadManagerInit");
 		getLoaderManager().initLoader(1, null, this);
 	}
 
@@ -103,9 +113,11 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+
+		Log.d(TAG, "onCreateLoader");
 		return new CursorLoader(this, 
-				Uri.parse("content://com.example.newsclass/thothNews"), 
-				new String[]{"_newsId","_classId", "title", "when", "content", "isViewed"}, 
+				Uri.parse("content://com.example.newsclassserver/thothNews"), 
+				new String[]{"_newsId","_classId", "title", "_when", "content", "isViewed"}, 
 				null,// noticias das classes q estão selecionadas 
 				null, 
 				null);
@@ -114,6 +126,8 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loaders, Cursor data) {
+
+		Log.d(TAG, "onLoadFinish");
 		if(data.getCount() == 0){
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivityForResult(i, 0);
@@ -125,6 +139,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		// TODO check this thing here
+		Log.d(TAG, "onLoaderReset");
 		_exList.clearChoices();		
 	}
 }

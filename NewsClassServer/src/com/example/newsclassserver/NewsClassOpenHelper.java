@@ -1,4 +1,4 @@
-package com.example.newsclass;
+package com.example.newsclassserver;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class NewsClassOpenHelper extends SQLiteOpenHelper {	
 
-	private static final String TAG = "NewsClassContentProvider";
+	private static final String TAG = "News";
 
 	public NewsClassOpenHelper(Context context) {
 		super(context, "thoth.db", null, 1);
@@ -18,7 +18,14 @@ public class NewsClassOpenHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.d(TAG, "NewsClassOpenHelper.onCreate");
 		db.execSQL("create table thothClasses (_classId integer primary key, fullname text, showNews integer)");
-		db.execSQL("create table thothNews (_newsId integer primary key, _classId integer, title text, when text, content text, isViewed integer, FOREIGN KEY(_classId) REFERENCES thothClasses(_classId), )");
+		db.execSQL("create table thothNews (" +
+						"_newsId integer primary key, " +
+						"_classId integer, " +
+						"title text, " +
+						"_when text, " +
+						"content text, " +
+						"isViewed integer, " +
+						"FOREIGN KEY(_classId) REFERENCES thothClasses(_classId)) ");
 	}
 
 	@Override

@@ -37,7 +37,6 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 				// TODO lançar service para fzr update no CP
 				Intent service = new Intent(getApplicationContext(), NewsService.class);
 		    	service.putExtra("classesId", adapter.getSetListIds().toArray());
-		    	service.putExtra("from", MainActivity.class);
 				service.setAction("userUpdateClasses");
 				getApplicationContext().startService(service);
 				setResult(Activity.RESULT_OK);
@@ -55,7 +54,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		return new CursorLoader(this, 
-								Uri.parse("content://com.example.newsclass/thothClasses"), 
+								Uri.parse("content://com.example.newsclassserver/thothClasses"), 
 								new String[]{"_classId","fullname","showNews"}, 
 								null, 
 								null, 

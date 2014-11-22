@@ -7,8 +7,14 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="21" />
+     
+    <permission
+        android:name="com.example.newsclassserver.ACCESS"></permission>
+    
+    <uses-permission
+        android:name="com.example.newsclassserver.ACCESS"></uses-permission>
 
-     <uses-permission android:name="android.permission.INTERNET"> </uses-permission>     
+     <uses-permission android:name="android.permission.INTERNET"/>    
 	 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     
     <application
@@ -31,6 +37,7 @@
             </intent-filter>
         </activity>
         
+        <service android:enabled="true" android:name=".NewsService"/>
         <receiver android:name = ".NewsReceiver">            
             <intent-filter >
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>

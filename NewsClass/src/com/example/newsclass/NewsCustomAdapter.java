@@ -130,7 +130,6 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
     	
     	Intent service = new Intent(_context, NewsService.class);
     	service.putExtra("newId", item.id);
-    	service.putExtra("from", MainActivity.class);
 		service.setAction("userUpdateNews");
 		_context.startService(service);
 		return false;
