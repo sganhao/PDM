@@ -52,7 +52,10 @@ public class ContactsCustomAdapter extends BaseAdapter{
 
 	private void bindModel(ContactInfo contact, Object viewModelObject) {
 		ViewModel model = (ViewModel) viewModelObject;
-		model.photo.setImageURI(contact.getImage());
+		if(contact.getImage().toString().equals(""))
+			model.photo.setImageResource(R.drawable.ic_launcher);
+		else
+			model.photo.setImageURI(contact.getImage());
 		model.contactName.setText(contact.getName());
 		model.contactBirthday.setText(contact.getBirthday());
 		model.contactName.setTag(contact.getId());		

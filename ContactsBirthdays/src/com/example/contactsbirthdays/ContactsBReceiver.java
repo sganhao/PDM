@@ -11,16 +11,18 @@ import android.util.Log;
 
 public class ContactsBReceiver extends BroadcastReceiver {
 	private static final String TAG = "REC";
-	AlarmManager weekAlarm;
-	AlarmManager dayAlarm;
+	private AlarmManager weekAlarm;
+	private AlarmManager dayAlarm;
 	private Context _context;
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Log.d(TAG, "received intent with action = "+intent.getAction());
 		_context = context;
+				
 		if(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)){
-			setAlarm(weekAlarm,"weekAlarm");
-			setAlarm(dayAlarm,"dayAlarm");
+			setDayAlarm();
+			setWeekAlarm();
 		}
 		if(intent.getAction().equals("weekAlarm") || intent.getAction().equals("dayAlarm")){
 			Intent i = new Intent(context, ContactsService.class);
@@ -29,16 +31,30 @@ public class ContactsBReceiver extends BroadcastReceiver {
 		}
 	}
 
-	private void setAlarm(AlarmManager alarm, String action){
-		Log.d(TAG, "alarm = " + action);
+	private void setWeekAlarm(){
 		Intent i = new Intent(_context,ContactsBReceiver.class);
-		i.setAction(action);
-		PendingIntent pi = PendingIntent.getBroadcast(_context, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
-		alarm = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
-		alarm.setRepeating(AlarmManager.ELAPSED_REALTIME,
+		i.setAction("weekAlarm");
+		PendingIntent pi = PendingIntent.getBroadcast(_context, 0, i, 0);
+		weekAlarm = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
+		weekAlarm.setRepeating(
+				AlarmManager.ELAPSED_REALTIME,
 				SystemClock.elapsedRealtime() + 1000,
 				AlarmManager.INTERVAL_DAY, 
 				pi);
+		Log.d(TAG,"inside setWeekAlarm");
+	}
+	
+	private void setDayAlarm(){
+		Intent i = new Intent(_context,ContactsBReceiver.class);
+		i.setAction("dayAlarm");
+		PendingIntent pi = PendingIntent.getBroadcast(_context, 0, i, 0);
+		dayAlarm = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
+		dayAlarm.setRepeating(
+				AlarmManager.ELAPSED_REALTIME,
+				SystemClock.elapsedRealtime() + 1000,
+				AlarmManager.INTERVAL_DAY, 
+				pi);
+		Log.d(TAG,"inside setDayAlarm");
 	}
 
 

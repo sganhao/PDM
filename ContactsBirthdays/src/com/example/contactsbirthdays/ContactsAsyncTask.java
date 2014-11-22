@@ -102,12 +102,13 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 		String[] lim = _limit.split("/");
 		while(cursor.moveToNext()){
 			String[] date = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE)).split("/");
-
+			Calendar actualDate = Calendar.getInstance();
+			
 			Calendar contactDate = Calendar.getInstance();
 			contactDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(date[0]));
 			contactDate.set(Calendar.MONTH, Integer.parseInt(date[1]));
 
-			Calendar actualDate = Calendar.getInstance();
+			
 			contactDate.set(Calendar.YEAR, actualDate.get(Calendar.YEAR));
 
 			Calendar limitDate = Calendar.getInstance();
