@@ -11,70 +11,84 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.SystemClock;
 
 public class NewsReceiver extends BroadcastReceiver {
 
-	AlarmManager newsAlarm;
-	PendingIntent newsIntent;
-	AlarmManager classesAlarm;
-	PendingIntent classesIntent;
+	private AlarmManager newsAlarm;
+	private PendingIntent newsIntent;
+	private AlarmManager classesAlarm;
+	private PendingIntent classesIntent;
+	private Context _context;
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-
-		if (intent.getAction().equals(WifiManager.WIFI_STATE_CHANGED_ACTION)){
-			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		String action = intent.getAction();
+		_context = context;
+		
+		if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)){
+			ConnectivityManager cm = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo ni = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 			if(ni.isConnected()){
 				// Set the Alarms
-				setNewsAlarm(context);
-				setClassesAlarm(context);
+				setNewsAlarm();
+				setClassesAlarm();
 				
 				//Update das noticias das turmas seleccionadas
-				Intent service = new Intent(context,NewsService.class);
-				service.setAction(Intent.ACTION_INSERT_OR_EDIT);
-				context.startService(service);
+				Intent service = new Intent(_context,NewsService.class);
+				service.setAction("wifi_connected");
+				_context.startService(service);
 			}
 			else{
 				// Unset the Alarms
 				newsAlarm.cancel(newsIntent);
 				classesAlarm.cancel(classesIntent);
 			}
+		}else if(action.equals("classesAlarm")){
+			Intent i = new Intent(_context,NewsService.class);
+			i.setAction(action);
+			_context.startService(i);
+		}else if(action.equals("newsAlarm")){
+			Intent i = new Intent(_context,NewsService.class);
+			i.setAction(action);
+			_context.startService(i);
 		}
+		
 	}
 
-	private void setClassesAlarm(Context context) {
-		classesAlarm = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
-		Intent intent = new Intent(context,NewsService.class);
-		classesIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+	private void setClassesAlarm() {
+		classesAlarm = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(_context,NewsReceiver.class);
+		intent.setAction("classesAlarm");
+		classesIntent = PendingIntent.getBroadcast(_context, 0, intent, 0);
 		classesAlarm.setRepeating(
 				AlarmManager.ELAPSED_REALTIME, 
-				AlarmManager.INTERVAL_DAY, 
+				SystemClock.elapsedRealtime() + 1000, 
 				AlarmManager.INTERVAL_DAY, 
 				classesIntent
 		);
 		
-		// Automatic restart the alarm when wifi is activated
-//		ComponentName receiver = new ComponentName(context, NewsReceiver.class);
-//		PackageManager pm = context.getPackageManager();
-//		pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);		
+		
 	}
 
-	private void setNewsAlarm(Context context){
-		newsAlarm = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
-		Intent intent = new Intent(context,NewsService.class);
-		newsIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+	private void setNewsAlarm(){
+		newsAlarm = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(_context,NewsReceiver.class);
+		intent.setAction("newsAlarm");
+		newsIntent = PendingIntent.getBroadcast(_context, 0, intent, 0);
 		newsAlarm.setInexactRepeating(
 				AlarmManager.ELAPSED_REALTIME, 
-				AlarmManager.INTERVAL_HALF_HOUR, 
+				SystemClock.elapsedRealtime() + 1000, 
 				AlarmManager.INTERVAL_HALF_HOUR, 
 				newsIntent
 		);
-		
-		// Automatic restart the alarm when wifi is activated
-//		ComponentName receiver = new ComponentName(context, NewsReceiver.class);
-//		PackageManager pm = context.getPackageManager();
-//		pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 	}
 	
 }
+
+
+
+// Automatic restart the alarm when wifi is activated
+//ComponentName receiver = new ComponentName(context, NewsReceiver.class);
+//PackageManager pm = context.getPackageManager();
+//pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);

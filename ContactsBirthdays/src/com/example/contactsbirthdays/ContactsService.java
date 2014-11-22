@@ -105,7 +105,6 @@ public class ContactsService extends IntentService {
 				Notification.Builder builder = new Notification.Builder(_context)
 				.setContentTitle("Birthday")
 				.setAutoCancel(true)
-				.setNumber(++_idx)
 				.setSmallIcon(R.drawable.ic_launcher)
 				.setOngoing(true)
 				.setContent(rl);
