@@ -55,7 +55,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		return new CursorLoader(this, 
-								Uri.parse("content://com.example.newsclassserver/thothClasses"), 
+								Uri.parse("content://com.example.newsclass/thothClasses"), 
 								new String[]{"_classId","fullname","showNews"}, 
 								null, 
 								null, 

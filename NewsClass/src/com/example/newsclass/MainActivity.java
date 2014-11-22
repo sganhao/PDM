@@ -35,7 +35,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 		_cr = getContentResolver();
 
 		Cursor c = _cr.query(Uri.parse("content://com.example.newsclass/thothClasses"), null, null, null, null);
-		if(c.getCount() == 0) {
+		if(c == null) {
 			
 			//Preencher pela primeira vez o content provider
 			Intent service = new Intent(this,NewsService.class);
@@ -51,7 +51,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivity(i);
 		}else*/
-			callAsyncTask();
+		getLoaderManager().initLoader(1, null, this);
 	}
 
 
@@ -104,7 +104,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		return new CursorLoader(this, 
-				Uri.parse("content://com.example.newsclassserver/thothNews"), 
+				Uri.parse("content://com.example.newsclass/thothNews"), 
 				new String[]{"_newsId","_classId", "title", "when", "content", "isViewed"}, 
 				null,// noticias das classes q estão selecionadas 
 				null, 

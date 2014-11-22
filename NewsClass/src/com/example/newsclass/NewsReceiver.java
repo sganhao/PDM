@@ -47,7 +47,7 @@ public class NewsReceiver extends BroadcastReceiver {
 		classesAlarm = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
 		Intent intent = new Intent(context,NewsService.class);
 		classesIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-		classesAlarm.setInexactRepeating(
+		classesAlarm.setRepeating(
 				AlarmManager.ELAPSED_REALTIME, 
 				AlarmManager.INTERVAL_DAY, 
 				AlarmManager.INTERVAL_DAY, 
