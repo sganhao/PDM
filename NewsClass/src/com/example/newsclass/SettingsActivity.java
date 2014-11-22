@@ -38,7 +38,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 				Intent service = new Intent(getApplicationContext(), NewsService.class);
 		    	service.putExtra("classesId", adapter.getSetListIds().toArray());
 		    	service.putExtra("from", MainActivity.class);
-				service.setAction(Intent.ACTION_EDIT);
+				service.setAction("userUpdateClasses");
 				getApplicationContext().startService(service);
 				setResult(Activity.RESULT_OK);
 				finish();

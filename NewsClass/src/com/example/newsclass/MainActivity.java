@@ -34,12 +34,12 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 				
 		_cr = getContentResolver();
 
-		Cursor c = _cr.query(Uri.parse("content://com.example.newsclass/thothClasses"), null, null, null, null);
+		Cursor c = _cr.query(Uri.parse("content://com.example.newsclass/thothClasses"), new String[]{"_classId"}, null, null, null);
 		if(c == null) {
 			
 			//Preencher pela primeira vez o content provider
 			Intent service = new Intent(this,NewsService.class);
-			service.setAction(Intent.ACTION_SYNC);
+			service.setAction("firstFillOfCP");
 			this.startService(service);
 		}
 		
