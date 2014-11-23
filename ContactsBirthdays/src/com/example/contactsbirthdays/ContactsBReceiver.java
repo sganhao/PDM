@@ -1,6 +1,8 @@
 package com.example.contactsbirthdays;
 
 
+import java.util.Calendar;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -36,11 +38,26 @@ public class ContactsBReceiver extends BroadcastReceiver {
 		i.setAction("weekAlarm");
 		PendingIntent pi = PendingIntent.getBroadcast(_context, 0, i, 0);
 		weekAlarm = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
-		weekAlarm.setRepeating(
-				AlarmManager.ELAPSED_REALTIME,
-				SystemClock.elapsedRealtime() + 1000,
-				AlarmManager.INTERVAL_DAY, 
-				pi);
+		
+		Calendar calendar = Calendar.getInstance();
+
+
+        calendar.set(Calendar.DAY_OF_WEEK,1);
+        calendar.set(Calendar.HOUR,22);
+        calendar.set(Calendar.MINUTE, 35);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        System.out.println("Old is set@ :== " + calendar.getTime());
+
+
+        weekAlarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY * 7, pi);
+//    
+//        
+//		weekAlarm.setRepeating(
+//				AlarmManager.ELAPSED_REALTIME,
+//				SystemClock.elapsedRealtime() + 1000,
+//				AlarmManager.INTERVAL_DAY, 
+//				pi);
 		Log.d(TAG,"inside setWeekAlarm");
 	}
 	
