@@ -100,8 +100,6 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
 		return false;
 	}
 
-
-
 	private void bindModelParent(NewItem newItem, Object viewModelObject){
 		ViewModelParent viewModel = (ViewModelParent) viewModelObject;
 		viewModel._title.setText(newItem.title);
@@ -126,13 +124,7 @@ public class NewsCustomAdapter extends BaseExpandableListAdapter implements OnGr
 		if(item.isViewed)
 			return false;
 		if(count[groupPosition] == 1){
-			
-			//    	if(!viewedNewsIds.contains(item.id)){
-				//    		viewedNewsIds.add(item.id);
-				//    		item.isViewed = true;
-				//    		
-				//    	}
-
+		
 			Intent service = new Intent(_context, NewsService.class);
 			service.putExtra("newId", item.id);
 			service.setAction("userUpdateNews");

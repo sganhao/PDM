@@ -50,8 +50,7 @@ public class NewsReceiver extends BroadcastReceiver {
 			Intent i = new Intent(_context,NewsService.class);
 			i.setAction(action);
 			_context.startService(i);
-		}
-		
+		}		
 	}
 
 	private void setClassesAlarm() {
@@ -64,9 +63,7 @@ public class NewsReceiver extends BroadcastReceiver {
 				SystemClock.elapsedRealtime() + 1000, 
 				AlarmManager.INTERVAL_DAY, 
 				classesIntent
-		);
-		
-		
+		);		
 	}
 
 	private void setNewsAlarm(){
@@ -80,13 +77,5 @@ public class NewsReceiver extends BroadcastReceiver {
 				AlarmManager.INTERVAL_HALF_HOUR, 
 				newsIntent
 		);
-	}
-	
+	}	
 }
-
-
-
-// Automatic restart the alarm when wifi is activated
-//ComponentName receiver = new ComponentName(context, NewsReceiver.class);
-//PackageManager pm = context.getPackageManager();
-//pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);

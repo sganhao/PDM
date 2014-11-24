@@ -1,11 +1,8 @@
 package com.example.newsclass;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -14,9 +11,6 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 	private NewItem[] newsarray;
 	private int numElems = 0;
 	private int firstViewedItemIdx = 0;
-	private Set<String> viewedNewsIds;
-	private List<NewItem> newsList;
-	private Uri _thothNews;
 	private Cursor c;
 	private String TAG = "News";
 	
@@ -53,8 +47,7 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 		for(NewItem item : a){
 			insertInArray(item);
 		}
-	}
-	
+	}	
 	
 	private void insertInArray(NewItem item){
 		if(item.isViewed){
@@ -90,5 +83,4 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 			numElems++;
 		}
 	}
-
 }

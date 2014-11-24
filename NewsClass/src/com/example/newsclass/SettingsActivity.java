@@ -39,13 +39,12 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 
 		btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				// TODO lançar service para fzr update no CP
 				Intent service = new Intent(getApplicationContext(), NewsService.class);
 				service.setAction("userUpdateClasses");
 		    	service.putExtra("classesId",listIdsToArray(adapter.getSetListIds()));
 				getApplicationContext().startService(service);
 				c.close();
-				//btn.setClickable(false);
+				
 				SettingsActivity.this.setResult(Activity.RESULT_OK);
 				SettingsActivity.this.finish();
 			}
@@ -112,7 +111,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		Log.d(TAG, "SettingsActivity - onLoaderReset");
 		finish();
 		_listView2.setActivated(false);
-	}//
+	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState){

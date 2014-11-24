@@ -24,7 +24,7 @@ public class NewsService extends IntentService  {
 	public NewsService() {
 		super("NewsService");
 	}
-	
+
 	public NewsService(String name) {
 		super(name);
 	}
@@ -100,76 +100,75 @@ public class NewsService extends IntentService  {
 			}
 		} else
 
-		// service starts from mainActivity to update the showNews from the news user saw
-		if(action.equals("userUpdateNews")) {
+			// service starts from mainActivity to update the showNews from the news user saw
+			if(action.equals("userUpdateNews")) {
 
-			ContentValues newsValues = new ContentValues();
-			newsValues.put("isViewed", 1);
+				ContentValues newsValues = new ContentValues();
+				newsValues.put("isViewed", 1);
 
-			_cr.update(
-					Uri.parse("content://com.example.newsclassserver/thothNews/" + intent.getExtras().get("newId")), 
-					newsValues, 
-					null, 
-					null);				
-		}
-		else 
-			if(action.equals("wifi_connected")){
-				//From Broadcast Receiver - Do the http request to thoth;
-				//Send a notification warning about new news
+				_cr.update(
+						Uri.parse("content://com.example.newsclassserver/thothNews/" + intent.getExtras().get("newId")), 
+						newsValues, 
+						null, 
+						null);				
+			}
+			else 
+				if(action.equals("wifi_connected")){
+					//From Broadcast Receiver - Do the http request to thoth;
+					//Send a notification warning about new news
 
-				Cursor c = _cr.query(
-						Uri.parse("content://com.example.newsclassserver/thothClasses"), 
-						new String[]{"_classId"}, 
-						"showNews = ? ", 
-						new String[]{""+1}, 
-						null);
+					Cursor c = _cr.query(
+							Uri.parse("content://com.example.newsclassserver/thothClasses"), 
+							new String[]{"_classId"}, 
+							"showNews = ? ", 
+							new String[]{""+1}, 
+							null);
 
-				while(c.moveToNext()){
-					int classId = c.getInt(c.getColumnIndex("_classId"));
-					NewItem[] result = _requests.requestNews(classId);
-					int countNews = 0;
-					for(int i = 0; i < result.length; i++) {
+					while(c.moveToNext()){
+						int classId = c.getInt(c.getColumnIndex("_classId"));
+						NewItem[] result = _requests.requestNews(classId);
+						int countNews = 0;
+						for(int i = 0; i < result.length; i++) {
 
-						Cursor checkId = _cr.query(
-								Uri.parse("content://com.example.newsclassserver/thothNews/" + result[i].id), 
-								new String[]{"_newsId"}, 
-								null, 
-								null, 
-								null);
+							Cursor checkId = _cr.query(
+									Uri.parse("content://com.example.newsclassserver/thothNews/" + result[i].id), 
+									new String[]{"_newsId"}, 
+									null, 
+									null, 
+									null);
 
-						if(checkId.getCount() == 0) {
-							insertNewsItem(result[i], classId);
-							countNews++;
+							if(checkId.getCount() == 0) {
+								insertNewsItem(result[i], classId);
+								countNews++;
+							}
+						}
 
+						RemoteViews rv = new RemoteViews("com.example.newsclass",R.layout.layout_notification_br);
+						rv.setTextViewText(R.id.textView1, "Class" + classId + ": " + countNews + "News added");
+
+						Notification.Builder builder = new Notification.Builder(_context)
+						.setContentTitle("New News")
+						.setAutoCancel(true)
+						.setSmallIcon(R.drawable.ic_launcher)
+						.setOngoing(true)
+						.setContent(rv);
+
+						Intent i = new Intent(_context,MainActivity.class);
+						PendingIntent pintent = PendingIntent.getActivity(_context, 1, i, 0);
+						builder.setContentIntent(pintent);
+						NotificationManager manager = (NotificationManager) _context.getSystemService(_context.NOTIFICATION_SERVICE);
+						manager.notify(_idx, builder.build());
+						_idx++;
+					}
+				}else 
+					if(action.equals("firstFillOfCP")){
+						// Insert data in the content provider for the first time
+						Clazz[] result = _requests.requestClasses();
+
+						for (int i = 0; i < result.length; i++) {
+							insertClassesItem(result[i]);
 						}
 					}
-
-					RemoteViews rv = new RemoteViews("com.example.newsclass",R.layout.layout_notification_br);
-					rv.setTextViewText(R.id.textView1, "Class" + classId + ": " + countNews + "News added");
-					
-					Notification.Builder builder = new Notification.Builder(_context)
-					.setContentTitle("New News")
-					.setAutoCancel(true)
-					.setSmallIcon(R.drawable.ic_launcher)
-					.setOngoing(true)
-					.setContent(rv);
-
-					Intent i = new Intent(_context,MainActivity.class);
-					PendingIntent pintent = PendingIntent.getActivity(_context, 1, i, 0);
-					builder.setContentIntent(pintent);
-					NotificationManager manager = (NotificationManager) _context.getSystemService(_context.NOTIFICATION_SERVICE);
-					manager.notify(_idx, builder.build());
-					_idx++;
-				}
-			}else 
-		if(action.equals("firstFillOfCP")){
-			// Insert data in the content provider for the first time
-			Clazz[] result = _requests.requestClasses();
-
-			for (int i = 0; i < result.length; i++) {
-				insertClassesItem(result[i]);
-			}
-		}
 	}
 
 	public void insertNewsItem(NewItem item, int classId) {

@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 public class ClassesAsyncTask extends AsyncTask<Void,Void,Clazz[]>{
 
 	private Cursor _cursor;
-	private String TAG = "News";
 	
 	public ClassesAsyncTask(Cursor c) {
 		_cursor = c;
