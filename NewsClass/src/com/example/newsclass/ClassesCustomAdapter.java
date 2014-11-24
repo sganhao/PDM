@@ -5,6 +5,7 @@ import java.util.Set;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +24,10 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 	private int _scrollCount;
 	private Clazz [] classes;
 	private Set<Integer> classesSelectedIds;
+	private String TAG = "News";
 
 	public ClassesCustomAdapter(Context ctx, int layout, Clazz [] classes){
+		Log.d(TAG , "ClassesCustomAdapter -> constructor...");
 		_layout = layout;
 		_layoutInflater = (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.classes = classes;

@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 
@@ -19,6 +20,7 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 	private List<NewItem> newsList;
 	private Uri _thothNews;
 	private ContentResolver _cr;
+	private String TAG = "News";
 	
 	
 	public NewsAsyncTask (ContentResolver cr) {
@@ -27,17 +29,18 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 	
 	@Override
 	protected NewItem[] doInBackground(Void... args) {
-		_thothNews = Uri.parse("content://com.example.newsclassserver/thothClasses");
-		Cursor c = _cr.query(_thothNews, new String[] {"_newsId", "title", "_when", "isViewed"}, null, null, null);
+		Log.d(TAG , "NewsAsyncTask - doInBackground");
+		_thothNews = Uri.parse("content://com.example.newsclassserver/thothNews");
+		Cursor c = _cr.query(_thothNews, new String[] {"_newsId", "title", "_when", "content", "isViewed"}, null, null, null);
 		newsarray = new NewItem[c.getCount()];
 		int idx = 0;
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		
+		Log.d(TAG, "starting to go through cursor...");
 		while (c.moveToNext()) {
 			try {
 				newsarray[idx] = new NewItem(
-									c.getInt(c.getColumnIndex("id")), 
+									c.getInt(c.getColumnIndex("_newsId")), 
 									c.getString(c.getColumnIndex("title")),
 									format.parse(c.getString(c.getColumnIndex("_when"))),
 									c.getString(c.getColumnIndex("content")),

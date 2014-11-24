@@ -2,20 +2,21 @@ package com.example.newsclass;
 
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class ClassesAsyncTask extends AsyncTask<Void,Void,Clazz[]>{
 
 	private Cursor _cursor;
+	private String TAG = "News";
 	
 	public ClassesAsyncTask(Cursor c) {
-		_cursor = c;;
+		_cursor = c;
 	}
 
 	@Override
 	protected Clazz[] doInBackground(Void... args) {
 		Clazz [] classes = new Clazz[_cursor.getCount()];
 		int idx = 0;
-		
 		while (_cursor.moveToNext()) {
 			classes[idx] = new Clazz(
 					_cursor.getInt(_cursor.getColumnIndex("_classId")), 

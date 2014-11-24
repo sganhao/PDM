@@ -1,5 +1,7 @@
 package com.example.newsclass;
 
+import java.util.Set;
+
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
@@ -10,6 +12,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -22,9 +25,11 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 	private ListView _listView2;
 	private ClassesCustomAdapter adapter;
 	private ContentResolver _cr;
+	private String TAG = "News";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d(TAG, "SettingsActivity - onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_layout);
 		_cr = getContentResolver();
@@ -36,11 +41,21 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 			public void onClick(View v) {
 				// TODO lançar service para fzr update no CP
 				Intent service = new Intent(getApplicationContext(), NewsService.class);
-		    	service.putExtra("classesId", adapter.getSetListIds().toArray());
 				service.setAction("userUpdateClasses");
+		    	service.putExtra("classesId",listIdsToArray(adapter.getSetListIds()));
 				getApplicationContext().startService(service);
 				setResult(Activity.RESULT_OK);
 				finish();
+			}
+
+			private int[] listIdsToArray(Set<Integer> setListIds) {
+				int[] ids = new int[setListIds.size()];
+				int i = 0;
+				for(int id : setListIds) {
+					ids[i] = id;
+					i++;
+				}
+				return ids;				
 			}
 		});    		
 
@@ -53,6 +68,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 	
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		Log.d(TAG, "SettingsActivity - onCreateLoader");
 		return new CursorLoader(this, 
 								Uri.parse("content://com.example.newsclassserver/thothClasses"), 
 								new String[]{"_classId","fullname","showNews"}, 
@@ -63,22 +79,28 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		if(data.getCount() == 0)
+		Log.d(TAG , " SettingsActivity - onLoadFinish");
+		if(data == null)
 			_tv2.setText("Error");
 		ClassesAsyncTask n = new ClassesAsyncTask(data){
 
 			@Override
 			protected void onPostExecute(Clazz[] result) {
+				Log.d(TAG, "SettingsActivity - classesAsyncTask -> onPostExecute...");
 					adapter = new ClassesCustomAdapter(SettingsActivity.this, R.layout.item_layout, result); 
 					_listView2.setAdapter(adapter);
 					_listView2.setOnScrollListener(adapter);
+					Log.d(TAG, "SettingsActivity - classesAsyncTask -> onPostExecute finished...");
 			}
 		};
+		Log.d(TAG, "SettingsActivity - classesAsyncTask -> execute started");
 		n.execute();
+		Log.d(TAG, "SettingsActivity - classesAsyncTask -> execute finished");
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
+		Log.d(TAG, "SettingsActivity - onLoaderReset");
 		_listView2.setAdapter(null);
 	}
 	

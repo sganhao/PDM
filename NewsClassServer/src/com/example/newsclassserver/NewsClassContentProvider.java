@@ -145,14 +145,7 @@ public class NewsClassContentProvider extends ContentProvider {
 			case THOTHCLASSES_ITEM_MATCH:
 				long id = ContentUris.parseId(uri);
 				
-				rawsThothClassesUpdated = db.update("thothClasses", values, selection, new String[]{""+id});
-				
-				if(values.getAsInteger("showNews") == 1){
-//					rawsThothNewsUpdated = db.insert("thothNews", nullColumnHack, values) -> lançar service para fazer pedido
-					// ao thoth para ir buscar as noticias referentes à turma selecionada 
-				}
-				else
-					rawsThothNewsUpdated = db.delete("thothNews", "_classId = ?", new String[]{""+id});
+				rawsThothClassesUpdated = db.update("thothClasses", values, "_classId = ? ", new String[]{""+id});				
 				break;
 				
 			case THOTHNEWS_ITEM_MATCH:

@@ -21,6 +21,10 @@ public class NewsService extends IntentService  {
 	private int _idx;
 	private String TAG = "NewsService";
 
+	public NewsService() {
+		super("NewsService");
+	}
+	
 	public NewsService(String name) {
 		super(name);
 	}

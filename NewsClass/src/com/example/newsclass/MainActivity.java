@@ -31,18 +31,18 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 
 	private String TAG = "News";
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		Log.d(TAG, "onCreate MainActivity");
 		_cr = getContentResolver();
 
 		_thothClasses = Uri.parse("content://com.example.newsclassserver/thothClasses");
 		Cursor c = _cr.query(_thothClasses, new String[]{"_classId"}, null, null, null);
-		if(c == null) {
+		if(c == null || c.getCount() == 0) {
 
 			Log.d(TAG, "onCreate firstFillOfCP");
 			//Preencher pela primeira vez o content provider
@@ -50,11 +50,11 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 			service.setAction("firstFillOfCP");
 			this.startService(service);
 		}
-		
+
 		_exList = (ExpandableListView) findViewById(R.id.expandableListView1);
 
 		//viewedNewsIds = new LinkedHashSet<Integer>(newsAdapter.getSetListViewedNewsIds());        
-/*
+		/*
 		if(classesIds.size() == 0) {
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivity(i);
@@ -89,7 +89,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 			callAsyncTask();
 		}
 	}
-	
+
 	private void callAsyncTask(){
 		NewsAsyncTask newsAsync = new NewsAsyncTask(_cr) {
 
@@ -104,7 +104,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 		};
 		newsAsync.execute();
 	}
-	
+
 	@Override
 	public void onSaveInstanceState(Bundle outState){
 		super.onSaveInstanceState(outState);
@@ -128,11 +128,12 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 	public void onLoadFinished(Loader<Cursor> loaders, Cursor data) {
 
 		Log.d(TAG, "onLoadFinish");
-		if(data.getCount() == 0){
+		if(data == null){
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivityForResult(i, 0);
 		}
-		callAsyncTask();		
+		else
+			callAsyncTask();		
 	}
 
 
