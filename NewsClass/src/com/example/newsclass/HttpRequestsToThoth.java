@@ -17,9 +17,11 @@ import org.json.JSONObject;
 
 import android.os.AsyncTask;
 import android.text.Html;
+import android.util.Log;
 
 public class HttpRequestsToThoth {
 
+	private static final String TAG = "News";
 	private NewItem[] newsarray;
 	
 	public Clazz[] requestClasses(){
@@ -62,11 +64,12 @@ public class HttpRequestsToThoth {
 	
 
 	public NewItem[] requestNews(int id){
+		Log.d(TAG, "requestNews");
 		HttpURLConnection urlCon = null;
-		String uri = "http://thoth.cc.e.ipl.pt/api/v1/classes/{newsId}/newsitems";
+		String uri = "http://thoth.cc.e.ipl.pt/api/v1/classes/{classId}/newsitems";
 
 		try {
-			uri.replace("{newsId}", ""+id);
+			uri = uri.replace("{classId}", ""+id);
 			URL url = new URL(uri);
 			urlCon = (HttpURLConnection)url.openConnection();
 			InputStream is = urlCon.getInputStream();

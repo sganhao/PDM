@@ -98,7 +98,7 @@ public class NewsService extends IntentService  {
 					}
 				}
 			}
-		}
+		} else
 
 		// service starts from mainActivity to update the showNews from the news user saw
 		if(action.equals("userUpdateNews")) {
@@ -161,7 +161,7 @@ public class NewsService extends IntentService  {
 					manager.notify(_idx, builder.build());
 					_idx++;
 				}
-			}
+			}else 
 		if(action.equals("firstFillOfCP")){
 			// Insert data in the content provider for the first time
 			Clazz[] result = _requests.requestClasses();
