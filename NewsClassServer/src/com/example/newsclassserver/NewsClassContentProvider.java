@@ -42,7 +42,7 @@ public class NewsClassContentProvider extends ContentProvider {
 		_matcher = new UriMatcher(ROOT_MATCH);
 		_matcher.addURI(AUTHORITY, "thothClasses", THOTHCLASSES_COLL_MATCH);
 		_matcher.addURI(AUTHORITY, "thothClasses/#", THOTHCLASSES_ITEM_MATCH);
-		_matcher.addURI(AUTHORITY, "thothClasses/#/thothNews", THOTHNEWS_COLL_MATCH);
+		_matcher.addURI(AUTHORITY, "thothNews", THOTHNEWS_COLL_MATCH);
 		_matcher.addURI(AUTHORITY, "thothNews/#", THOTHNEWS_ITEM_MATCH);
 	}
 
@@ -121,7 +121,9 @@ public class NewsClassContentProvider extends ContentProvider {
 				db.insert("thothClasses", null, values);
 				break;
 			case THOTHNEWS_COLL_MATCH:
+				Log.d(TAG,"Insert New");
 				db.insert("thothNews", null, values);
+				Log.d(TAG,"New inserted completed");
 				break;
 			default:
 				return null;
@@ -137,19 +139,20 @@ public class NewsClassContentProvider extends ContentProvider {
 		
 		SQLiteDatabase db = _ds.getWritableDatabase();
 		int rawsThothClassesUpdated = 0, rawsThothNewsUpdated = 0;
-		
+		long id = 0;
 		
 		// se fazes check, actualiza thothClasses e insere as noticias dessa turma na thothNews
 		// se faz uncheck, actualiza thothclasses, removendo as noticias dessa turma da thothNews
 		switch (_matcher.match(uri)) {
 			case THOTHCLASSES_ITEM_MATCH:
-				long id = ContentUris.parseId(uri);
+				id = ContentUris.parseId(uri);
 				
 				rawsThothClassesUpdated = db.update("thothClasses", values, "_classId = ? ", new String[]{""+id});				
 				break;
 				
 			case THOTHNEWS_ITEM_MATCH:
-				rawsThothClassesUpdated = db.update("thothNews", values, selection, selectionArgs);
+				id = ContentUris.parseId(uri);
+				rawsThothClassesUpdated = db.update("thothNews", values, "_newsId = ? ", new String[]{""+id});
 				break;
 			default:
 				return rawsThothClassesUpdated;

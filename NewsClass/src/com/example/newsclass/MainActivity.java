@@ -5,25 +5,21 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ComponentName;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
 
 
-public class MainActivity extends Activity implements LoaderCallbacks<Cursor>, ServiceConnection {
+public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 	private final String CLASSES = "ids";
 	private Set<Integer> viewedNewsIds;
@@ -32,7 +28,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>, S
 	private ContentResolver _cr;
 	private Uri _thothClasses;
 	private Uri _thothNews;
-	private boolean mBound = false;
+
 
 	private String TAG = "News";
 
@@ -50,18 +46,14 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>, S
 
 			Log.d(TAG, "onCreate firstFillOfCP");
 			//Preencher pela primeira vez o content provider
-			Intent service = new Intent(this, NewsBoundedService.class);
+			Intent service = new Intent(this,NewsService.class);
 			service.setAction("firstFillOfCP");
-
-			Log.d(TAG, "MainActivity -> entering bindService...");
-			bindService(service, this, Context.BIND_AUTO_CREATE);
-			mBound = true;
-			Log.d(TAG, "MainActivity -> bindService complete...");
+			this.startService(service);
 		}
 
 		_exList = (ExpandableListView) findViewById(R.id.expandableListView1);
 
-		//viewedNewsIds = new LinkedHashSet<Integer>(newsAdapter.getSetListViewedNewsIds());        
+		viewedNewsIds = new LinkedHashSet<Integer>();        
 		/*
 		if(classesIds.size() == 0) {
 			Intent i = new Intent(this, SettingsActivity.class);
@@ -72,14 +64,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>, S
 		getLoaderManager().initLoader(1, null, this);
 	}
 
-	@Override
-	protected void onStop() {
-		super.onStop();
-		if (mBound) {
-			unbindService(this);
-			mBound = false;
-		}
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,7 +85,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>, S
 	@Override
 	protected void onActivityResult(int reqCode, int resCode, Intent data){
 		if(reqCode == 0 && resCode == RESULT_OK){
-			viewedNewsIds =  new LinkedHashSet<Integer>(newsAdapter.getSetListViewedNewsIds());
+			getLoaderManager().initLoader(1, null, this);
 			callAsyncTask();
 		}
 	}
@@ -144,9 +128,9 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>, S
 	public void onLoadFinished(Loader<Cursor> loaders, Cursor data) {
 
 		Log.d(TAG, "onLoadFinish");
-		if(data == null){
-			Intent i = new Intent(this, SettingsActivity.class);
-			startActivityForResult(i, 0);
+		if(data == null || data.getCount() == 0){
+			Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+			startActivityForResult(i,0);
 		}
 		else
 			callAsyncTask();		
@@ -157,20 +141,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>, S
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		// TODO check this thing here
 		Log.d(TAG, "onLoaderReset");
-		_exList.clearChoices();		
-	}
-
-
-	@Override
-	public void onServiceConnected(ComponentName arg0, IBinder arg1) {
-		Log.d(TAG, "MainActivity -> onServiceConnected...");
-		getLoaderManager().initLoader(1, null, this);		
-	}
-
-
-	@Override
-	public void onServiceDisconnected(ComponentName arg0) {
-		Log.d(TAG, "MainActivity -> onServiceDisconnected...");
-		mBound = false;
+		_exList.clearChoices();	
+		callAsyncTask();
 	}
 }

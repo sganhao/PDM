@@ -4,17 +4,14 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,14 +19,14 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor>, ServiceConnection {
+public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 	private TextView _tv2;
 	private ListView _listView2;
 	private ClassesCustomAdapter adapter;
 	private ContentResolver _cr;
 	private String TAG = "News";
-	private boolean mBound = false;
+	private Cursor c;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +41,14 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				// TODO lançar service para fzr update no CP
-				btn.setClickable(false);
 				Intent service = new Intent(getApplicationContext(), NewsService.class);
 				service.setAction("userUpdateClasses");
 		    	service.putExtra("classesId",listIdsToArray(adapter.getSetListIds()));
-				bindService(service, SettingsActivity.this, Context.BIND_AUTO_CREATE);
-				mBound = true;
-				Log.d(TAG, "SettingsActiviy -> bindService finished...");
+				getApplicationContext().startService(service);
+				c.close();
+				//btn.setClickable(false);
+				SettingsActivity.this.setResult(Activity.RESULT_OK);
+				SettingsActivity.this.finish();
 			}
 
 			private int[] listIdsToArray(Set<Integer> setListIds) {
@@ -70,15 +68,6 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 
 		getLoaderManager().initLoader(1, null, this);
 	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-		if (mBound) {
-			unbindService(this);
-			mBound = false;
-		}
-	}
 	
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -96,6 +85,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		Log.d(TAG , " SettingsActivity - onLoadFinish");
 		if(data == null)
 			_tv2.setText("Error");
+		c = data;
 		ClassesAsyncTask n = new ClassesAsyncTask(data){
 
 			@Override
@@ -115,25 +105,13 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		Log.d(TAG, "SettingsActivity - onLoaderReset");
-		_listView2.setAdapter(null);
-	}
+		finish();
+		_listView2.setActivated(false);
+	}//
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState){
 		super.onSaveInstanceState(outState);
-	}
-
-	@Override
-	public void onServiceConnected(ComponentName arg0, IBinder arg1) {
-		Log.d(TAG, "SettingsActivity -> onServiceConnected...");
-		finishActivity(Activity.RESULT_OK);
-		//getLoaderManager().initLoader(1, null, this);
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName arg0) {
-		Log.d(TAG, "SettingsActivity -> onServiceDisconnected...");
-		mBound = false;		
 	}
 }
 

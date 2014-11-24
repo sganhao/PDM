@@ -104,7 +104,7 @@ public class NewsService extends IntentService  {
 		if(action.equals("userUpdateNews")) {
 
 			ContentValues newsValues = new ContentValues();
-			newsValues.put("showNews", 1);
+			newsValues.put("isViewed", 1);
 
 			_cr.update(
 					Uri.parse("content://com.example.newsclassserver/thothNews/" + intent.getExtras().get("newId")), 
