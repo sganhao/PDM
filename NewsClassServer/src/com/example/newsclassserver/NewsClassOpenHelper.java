@@ -13,7 +13,6 @@ public class NewsClassOpenHelper extends SQLiteOpenHelper {
 		super(context, "thoth.db", null, 1);
 	}
 
-	//TODO date mudada para text
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		Log.d(TAG, "NewsClassOpenHelper.onCreate");
@@ -29,9 +28,5 @@ public class NewsClassOpenHelper extends SQLiteOpenHelper {
 	}
 
 	@Override
-	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
-		
-	}
-	
+	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {}	
 }

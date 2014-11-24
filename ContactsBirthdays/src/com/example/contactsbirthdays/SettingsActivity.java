@@ -6,8 +6,8 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.CalendarView;
-import android.widget.Toast;
 import android.widget.CalendarView.OnDateChangeListener;
+import android.widget.Toast;
 
 public class SettingsActivity extends Activity{
 	

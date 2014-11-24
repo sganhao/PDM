@@ -4,6 +4,7 @@ package com.example.contactsbirthdays;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -29,7 +30,6 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 		_cr = cr[0];
 
 		_limit = _prefs.getString("data", null);
-
 
 		Uri uri = ContactsContract.Data.CONTENT_URI;
 		String [] projection = null;
@@ -107,7 +107,6 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 			Calendar contactDate = Calendar.getInstance();
 			contactDate.set(Calendar.DAY_OF_MONTH, Integer.parseInt(date[0]));
 			contactDate.set(Calendar.MONTH, Integer.parseInt(date[1]));
-
 			
 			contactDate.set(Calendar.YEAR, actualDate.get(Calendar.YEAR));
 
@@ -128,8 +127,7 @@ public class ContactsAsyncTask extends AsyncTask<ContentResolver, Void, ContactI
 				ContactInfo newContactInfo = new ContactInfo(id, name, image==null?"":image, birthday);
 
 				_cInfo.add(newContactInfo);						
-			}				
-
+			}		
 		}
 		return _cInfo;
 	}

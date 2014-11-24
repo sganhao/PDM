@@ -20,19 +20,15 @@ public class ContactInfo {
 		return id;
 	}
 
-
 	public String getName() {
 		return name;
 	}
-
 
 	public String getBirthday() {
 		return birthday;
 	}
 
-
 	public Uri getImage() {
 		return image;
 	}
-
 }

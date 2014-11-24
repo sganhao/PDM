@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 public class ContactsCustomAdapter extends BaseAdapter{
-
 	
 	private int _layout;
 	private LayoutInflater _layoutInflater;

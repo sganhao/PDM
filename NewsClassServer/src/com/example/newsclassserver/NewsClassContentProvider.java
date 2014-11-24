@@ -57,7 +57,6 @@ public class NewsClassContentProvider extends ContentProvider {
 		
 		switch (_matcher.match(uri)) {
 			case ROOT_MATCH:
-				//TODO ver o q fazer aqui
 			case THOTHCLASSES_COLL_MATCH:
 				c = db.query("thothClasses", projection, selection, selectionArgs, null, null, sortOrder);
 				break;
@@ -86,10 +85,8 @@ public class NewsClassContentProvider extends ContentProvider {
 	
 	@Override
 	public String getType(Uri uri) {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
 	
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
@@ -104,13 +101,11 @@ public class NewsClassContentProvider extends ContentProvider {
 				rawsDeleted = db.delete("thothNews", selection, selectionArgs);
 				break;
 			default:
-				return rawsDeleted;
-			
+				return rawsDeleted;			
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
 		return rawsDeleted;
 	}
-
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
@@ -141,7 +136,7 @@ public class NewsClassContentProvider extends ContentProvider {
 		int rawsThothClassesUpdated = 0, rawsThothNewsUpdated = 0;
 		long id = 0;
 		
-		// se fazes check, actualiza thothClasses e insere as noticias dessa turma na thothNews
+		// se faz check, actualiza thothClasses e insere as noticias dessa turma na thothNews
 		// se faz uncheck, actualiza thothclasses, removendo as noticias dessa turma da thothNews
 		switch (_matcher.match(uri)) {
 			case THOTHCLASSES_ITEM_MATCH:

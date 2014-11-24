@@ -26,9 +26,7 @@ public class ContactsService extends IntentService {
 	
 	public ContactsService() {
 	    super("ContactsService");
-
 	}
-
 	
 	@Override
 	public void onCreate() {
@@ -80,7 +78,6 @@ public class ContactsService extends IntentService {
 			
 			if(offset == 7)
 				actualDate.add(Calendar.DAY_OF_MONTH, 1);
-
 			
 			if(contactDate.compareTo(actualDate) >= 0 && contactDate.compareTo(limitDate) <= 0){
 

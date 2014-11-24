@@ -44,7 +44,6 @@ public class MainActivity extends Activity {
 		callAsyncTask();
 	}
 
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
@@ -161,6 +160,5 @@ public class MainActivity extends Activity {
 		};
 
 		cAsync.execute(getContentResolver());
-	}
-	
+	}	
 }
