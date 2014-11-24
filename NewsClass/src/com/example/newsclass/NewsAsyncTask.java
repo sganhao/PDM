@@ -1,12 +1,9 @@
 package com.example.newsclass;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;

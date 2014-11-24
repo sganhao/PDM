@@ -2,7 +2,6 @@ package com.example.newsclass;
 
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class ClassesAsyncTask extends AsyncTask<Void,Void,Clazz[]>{
 
