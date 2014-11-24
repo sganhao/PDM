@@ -83,8 +83,14 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		Log.d(TAG , " SettingsActivity - onLoadFinish");
-		if(data == null)
-			_tv2.setText("Error");
+		if(data == null || data.getCount() == 0){
+			Log.d(TAG, "onCreate firstFillOfCP");
+			//Preencher pela primeira vez o content provider
+			Intent service = new Intent(this,NewsService.class);
+			service.setAction("firstFillOfCP");
+			this.startService(service);
+		}else{
+			
 		c = data;
 		ClassesAsyncTask n = new ClassesAsyncTask(data){
 
@@ -99,7 +105,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		};
 		Log.d(TAG, "SettingsActivity - classesAsyncTask -> execute started");
 		n.execute();
-		Log.d(TAG, "SettingsActivity - classesAsyncTask -> execute finished");
+		Log.d(TAG, "SettingsActivity - classesAsyncTask -> execute finished");}
 	}
 
 	@Override

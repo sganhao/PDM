@@ -39,29 +39,31 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 		Log.d(TAG, "onCreate MainActivity");
 		_cr = getContentResolver();
-
-		_thothClasses = Uri.parse("content://com.example.newsclassserver/thothClasses");
-		Cursor c = _cr.query(_thothClasses, new String[]{"_classId"}, null, null, null);
-		if(c == null || c.getCount() == 0) {
-
-			Log.d(TAG, "onCreate firstFillOfCP");
-			//Preencher pela primeira vez o content provider
-			Intent service = new Intent(this,NewsService.class);
-			service.setAction("firstFillOfCP");
-			this.startService(service);
-		}
-
 		_exList = (ExpandableListView) findViewById(R.id.expandableListView1);
 
-		viewedNewsIds = new LinkedHashSet<Integer>();        
+		viewedNewsIds = new LinkedHashSet<Integer>(); 
+		_thothClasses = Uri.parse("content://com.example.newsclassserver/thothClasses");
+		Cursor c = _cr.query(_thothClasses, new String[]{"_classId"}, null, null, null);
+//		if(c == null || c.getCount() == 0) {
+//
+//			Log.d(TAG, "onCreate firstFillOfCP");
+//			//Preencher pela primeira vez o content provider
+//			Intent service = new Intent(this,NewsService.class);
+//			service.setAction("firstFillOfCP");
+//			this.startService(service);
+//		}
+		Log.d(TAG, "onCreate loadManagerInit");
+		getLoaderManager().initLoader(1, null, this);
+
+
+
 		/*
 		if(classesIds.size() == 0) {
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivity(i);
 		}else*/
 
-		Log.d(TAG, "onCreate loadManagerInit");
-		getLoaderManager().initLoader(1, null, this);
+
 	}
 
 
@@ -86,12 +88,11 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 	protected void onActivityResult(int reqCode, int resCode, Intent data){
 		if(reqCode == 0 && resCode == RESULT_OK){
 			getLoaderManager().initLoader(1, null, this);
-			callAsyncTask();
 		}
 	}
 
-	private void callAsyncTask(){
-		NewsAsyncTask newsAsync = new NewsAsyncTask(_cr) {
+	private void callAsyncTask(Cursor c){
+		NewsAsyncTask newsAsync = new NewsAsyncTask(c) {
 
 			@Override
 			protected void onPostExecute(NewItem[] result) {
@@ -133,7 +134,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 			startActivityForResult(i,0);
 		}
 		else
-			callAsyncTask();		
+			callAsyncTask(data);		
 	}
 
 
@@ -142,6 +143,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 		// TODO check this thing here
 		Log.d(TAG, "onLoaderReset");
 		_exList.clearChoices();	
-		callAsyncTask();
+		//callAsyncTask(arg0.);
 	}
 }

@@ -20,18 +20,16 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 	private Set<String> viewedNewsIds;
 	private List<NewItem> newsList;
 	private Uri _thothNews;
-	private ContentResolver _cr;
+	private Cursor c;
 	private String TAG = "News";
 	
-	public NewsAsyncTask (ContentResolver cr) {
-		_cr = cr;
+	public NewsAsyncTask (Cursor c) {
+		this.c = c;
 	}
 	
 	@Override
 	protected NewItem[] doInBackground(Void... args) {
 		Log.d(TAG , "NewsAsyncTask - doInBackground");
-		_thothNews = Uri.parse("content://com.example.newsclassserver/thothNews");
-		Cursor c = _cr.query(_thothNews, new String[] {"_newsId", "title", "_when", "content", "isViewed"}, null, null, null);
 		newsarray = new NewItem[c.getCount()];
 		int idx = 0;
 		
