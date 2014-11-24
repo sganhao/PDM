@@ -5,21 +5,25 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
 
 
-public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
+public class MainActivity extends Activity implements LoaderCallbacks<Cursor>, ServiceConnection {
 
 	private final String CLASSES = "ids";
 	private Set<Integer> viewedNewsIds;
@@ -28,7 +32,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 	private ContentResolver _cr;
 	private Uri _thothClasses;
 	private Uri _thothNews;
-
+	private boolean mBound = false;
 
 	private String TAG = "News";
 
@@ -46,9 +50,13 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 			Log.d(TAG, "onCreate firstFillOfCP");
 			//Preencher pela primeira vez o content provider
-			Intent service = new Intent(this,NewsService.class);
+			Intent service = new Intent(this, NewsBoundedService.class);
 			service.setAction("firstFillOfCP");
-			this.startService(service);
+
+			Log.d(TAG, "MainActivity -> entering bindService...");
+			bindService(service, this, Context.BIND_AUTO_CREATE);
+			mBound = true;
+			Log.d(TAG, "MainActivity -> bindService complete...");
 		}
 
 		_exList = (ExpandableListView) findViewById(R.id.expandableListView1);
@@ -64,6 +72,14 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 		getLoaderManager().initLoader(1, null, this);
 	}
 
+	@Override
+	protected void onStop() {
+		super.onStop();
+		if (mBound) {
+			unbindService(this);
+			mBound = false;
+		}
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -142,5 +158,19 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 		// TODO check this thing here
 		Log.d(TAG, "onLoaderReset");
 		_exList.clearChoices();		
+	}
+
+
+	@Override
+	public void onServiceConnected(ComponentName arg0, IBinder arg1) {
+		Log.d(TAG, "MainActivity -> onServiceConnected...");
+		getLoaderManager().initLoader(1, null, this);		
+	}
+
+
+	@Override
+	public void onServiceDisconnected(ComponentName arg0) {
+		Log.d(TAG, "MainActivity -> onServiceDisconnected...");
+		mBound = false;
 	}
 }

@@ -37,6 +37,7 @@
             </intent-filter>
         </activity>
         
+        <service android:enabled="true" android:name=".NewsBoundedService"/>
         <service android:enabled="true" android:name=".NewsService"/>
         <receiver android:name = ".NewsReceiver">            
             <intent-filter >
