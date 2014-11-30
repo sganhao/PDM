@@ -60,18 +60,18 @@ public class HttpRequestsToThoth {
 
 	
 
-	public NewItem[] requestNews(int id){
+	public NewItem[] requestNews(int classId, String classFullname){
 		Log.d(TAG, "requestNews");
 		HttpURLConnection urlCon = null;
 		String uri = "http://thoth.cc.e.ipl.pt/api/v1/classes/{classId}/newsitems";
 
 		try {
-			uri = uri.replace("{classId}", ""+id);
+			uri = uri.replace("{classId}", ""+classId);
 			URL url = new URL(uri);
 			urlCon = (HttpURLConnection)url.openConnection();
 			InputStream is = urlCon.getInputStream();
 			String data = readAllFrom(is);
-			newsarray = newsParseFrom(data);
+			newsarray = newsParseFrom(data, classId, classFullname);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
@@ -85,7 +85,7 @@ public class HttpRequestsToThoth {
 		return newsarray;
 	}
 
-	private NewItem[] newsParseFrom(String data) throws JSONException {
+	private NewItem[] newsParseFrom(String data, int classId, String classFullname) throws JSONException {
 		JSONObject root = new JSONObject(data);
 		JSONArray jnews = root.getJSONArray("newsItems");
 		newsarray = new NewItem[jnews.length()];
@@ -97,7 +97,9 @@ public class HttpRequestsToThoth {
 			NewItem item = null;
 			try {
 				item = new NewItem(
+						classFullname,
 						jnew.getInt("id"), 
+						classId,
 						jnew.getString("title"), 
 						format.parse(jnew.getString("when")),
 						getContent(jnew.getInt("id")),

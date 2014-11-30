@@ -54,7 +54,7 @@ public class NewsService extends IntentService  {
 			for(int id : classesId) {
 				Cursor c = _cr.query(
 						Uri.parse("content://com.example.newsclassserver/thothClasses/"+id),
-						new String[]{"showNews"},
+						new String[]{"fullname", "showNews"},
 						null,
 						null,
 						null);
@@ -91,7 +91,7 @@ public class NewsService extends IntentService  {
 							null, 
 							null);
 
-					NewItem[] result = _requests.requestNews(id);
+					NewItem[] result = _requests.requestNews(id, c.getString(c.getColumnIndex("fullname")));
 
 					for(int i = 0; i < result.length; i++) {
 						insertNewsItem(result[i], id);
@@ -119,19 +119,19 @@ public class NewsService extends IntentService  {
 
 					Cursor c = _cr.query(
 							Uri.parse("content://com.example.newsclassserver/thothClasses"), 
-							new String[]{"_classId"}, 
+							new String[]{"_classId","fullname"}, 
 							"showNews = ? ", 
 							new String[]{""+1}, 
 							null);
 
 					while(c.moveToNext()){
 						int classId = c.getInt(c.getColumnIndex("_classId"));
-						NewItem[] result = _requests.requestNews(classId);
+						NewItem[] result = _requests.requestNews(classId,c.getString(c.getColumnIndex("fullname")));
 						int countNews = 0;
 						for(int i = 0; i < result.length; i++) {
 
 							Cursor checkId = _cr.query(
-									Uri.parse("content://com.example.newsclassserver/thothNews/" + result[i].id), 
+									Uri.parse("content://com.example.newsclassserver/thothNews/" + result[i].newsId), 
 									new String[]{"_newsId"}, 
 									null, 
 									null, 
@@ -173,8 +173,9 @@ public class NewsService extends IntentService  {
 
 	public void insertNewsItem(NewItem item, int classId) {
 		ContentValues values = new ContentValues();
-		values.put("_newsId", item.id);
+		values.put("_newsId", item.newsId);
 		values.put("_classId", classId);
+		values.put("classFullname", item.classFullname);
 		values.put("title", item.title);
 		values.put("_when", item.when.toString());
 		values.put("content", item.content);

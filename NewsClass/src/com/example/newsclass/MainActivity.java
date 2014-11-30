@@ -1,9 +1,5 @@
 package com.example.newsclass;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
@@ -12,16 +8,16 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
 
 
-public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
+public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
 
-	private Set<Integer> viewedNewsIds;
-	private ExpandableListView _exList;
 	private NewsCustomAdapter newsAdapter;
 	private ContentResolver _cr;
 	private Uri _thothClasses;
@@ -35,9 +31,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 		Log.d(TAG, "onCreate MainActivity");
 		_cr = getContentResolver();
-		_exList = (ExpandableListView) findViewById(R.id.expandableListView1);
 
-		viewedNewsIds = new LinkedHashSet<Integer>(); 
 		_thothClasses = Uri.parse("content://com.example.newsclassserver/thothClasses");
 		Cursor c = _cr.query(_thothClasses, new String[]{"_classId"}, null, null, null);
 
@@ -75,10 +69,14 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 			@Override
 			protected void onPostExecute(NewItem[] result) {
-				if (result != null) {
-					newsAdapter = new NewsCustomAdapter(MainActivity.this, result, viewedNewsIds);
-					_exList.setAdapter(newsAdapter);
-					_exList.setOnGroupClickListener(newsAdapter);
+				if (result != null) {					
+					FragmentManager fm = getSupportFragmentManager();				
+					if(fm.findFragmentById(R.id.mainFragmentPlaceholder) == null){
+						NewsItemListFragment f = NewsItemListFragment.newInstance(new NewsListModel(result));			
+						fm.beginTransaction()
+							.add(R.id.mainFragmentPlaceholder, f)
+							.commit();
+					}
 				}
 			}
 		};
@@ -97,7 +95,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 		Log.d(TAG, "onCreateLoader");
 		return new CursorLoader(this, 
 				Uri.parse("content://com.example.newsclassserver/thothNews"), 
-				new String[]{"_newsId","_classId", "title", "_when", "content", "isViewed"}, 
+				new String[]{"_newsId", "classFullname", "_classId", "title", "_when", "content", "isViewed"}, 
 				null,// noticias das classes q estão selecionadas 
 				null, 
 				null);
@@ -120,6 +118,5 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor> {
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		Log.d(TAG, "onLoaderReset");
-		_exList.clearChoices();	
 	}
 }

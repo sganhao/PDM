@@ -24,12 +24,14 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 		newsarray = new NewItem[c.getCount()];
 		int idx = 0;
 		
-		Log.d(TAG, "starting to go through cursor...");
+		Log.d(TAG, "News AsyncTask - doInBackground - starting to go through cursor...");
 		
 		while (c.moveToNext()) {
 
 				newsarray[idx] = new NewItem(
+									c.getString(c.getColumnIndex("classFullname")),
 									c.getInt(c.getColumnIndex("_newsId")), 
+									c.getInt(c.getColumnIndex("_classId")), 
 									c.getString(c.getColumnIndex("title")),
 									new Date(c.getString(c.getColumnIndex("_when"))),
 									c.getString(c.getColumnIndex("content")),

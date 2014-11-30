@@ -10,7 +10,7 @@ public class NewsClassOpenHelper extends SQLiteOpenHelper {
 	private static final String TAG = "News";
 
 	public NewsClassOpenHelper(Context context) {
-		super(context, "thoth.db", null, 1);
+		super(context, "thoth3.db", null, 1);
 	}
 
 	@Override
@@ -19,6 +19,7 @@ public class NewsClassOpenHelper extends SQLiteOpenHelper {
 		db.execSQL("create table thothClasses (_classId integer primary key, fullname text, showNews integer)");
 		db.execSQL("create table thothNews (" +
 						"_newsId integer primary key, " +
+						"classFullname text, " +
 						"_classId integer, " +
 						"title text, " +
 						"_when text, " +
