@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 
 public class NewsItemActivity extends FragmentActivity{
@@ -26,12 +27,18 @@ public class NewsItemActivity extends FragmentActivity{
 		Intent i = getIntent();
 		final NewsListModel newslist = (NewsListModel)i.getExtras().getSerializable("newslist");
 		int ix = i.getExtras().getInt("ix",0);
+		
+		Intent service = new Intent(_context, NewsService.class);
+		service.putExtra("newId", newslist.getItem(ix).newsId);
+		service.setAction("userUpdateNews");
+		_context.startService(service);
+		
 		Log.d(TAG ,"NewsItemActivity.oncreate "+ix);
 		
 		pager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()){
 			@Override
 			public Fragment getItem(int pos) {
-				Fragment f = NewsItemFragment.newInstance(_context, newslist.getItem(pos));
+				Fragment f = NewsItemFragment.newInstance(newslist.getItem(pos));
 				return f;
 			}
 
@@ -40,6 +47,25 @@ public class NewsItemActivity extends FragmentActivity{
 				return newslist.getItems().length;
 			}			
 		});
-		pager.setCurrentItem(ix);			
+		pager.setCurrentItem(ix);	
+		pager.setOnPageChangeListener(new OnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int pos) {
+            	Intent service = new Intent(_context, NewsService.class);
+        		service.putExtra("newId", newslist.getItem(pos).newsId);
+        		service.setAction("userUpdateNews");
+        		_context.startService(service);
+            }
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+			}
+
+        });
 	}
 }
