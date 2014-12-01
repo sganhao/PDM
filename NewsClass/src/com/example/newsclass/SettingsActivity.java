@@ -4,7 +4,6 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -16,14 +15,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor> {
 
-	private TextView _tv2;
 	private ListView _listView2;
 	private ClassesCustomAdapter adapter;
-	private ContentResolver _cr;
 	private String TAG = "News";
 	private Cursor c;
 
@@ -32,7 +28,6 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		Log.d(TAG, "SettingsActivity - onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_layout);
-		_cr = getContentResolver();
 		
 		
 		final Button btn = (Button) findViewById(R.id.button1);
@@ -44,7 +39,6 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		    	service.putExtra("classesId",listIdsToArray(adapter.getSetListIds()));
 				getApplicationContext().startService(service);
 				c.close();
-				
 				SettingsActivity.this.setResult(Activity.RESULT_OK);
 				SettingsActivity.this.finish();
 			}
@@ -60,7 +54,6 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 			}
 		});    		
 
-		_tv2 = (TextView) findViewById(R.id.tv2);
 		_listView2 = (ListView) findViewById(R.id.ListView2);
 		_listView2.addFooterView(new ProgressBar(this));		
 
@@ -109,8 +102,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		Log.d(TAG, "SettingsActivity - onLoaderReset");
-		finish();
-		_listView2.setActivated(false);
+		//_listView2.setActivated(false);
 	}
 	
 	@Override

@@ -2,7 +2,6 @@ package com.example.newsclass;
 
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -14,15 +13,12 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ExpandableListView;
 
 
 public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
 
-	private NewsCustomAdapter newsAdapter;
 	private ContentResolver _cr;
 	private Uri _thothClasses;
-	private Context _context;
 
 	private String TAG = "News";
 
@@ -33,7 +29,6 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 
 		Log.d(TAG, "onCreate MainActivity");
 		_cr = getContentResolver();
-		_context = getApplicationContext();
 
 		_thothClasses = Uri.parse("content://com.example.newsclassserver/thothClasses");
 		Cursor c = _cr.query(_thothClasses, new String[]{"_classId"}, null, null, null);
@@ -68,17 +63,23 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 	}
 
 	private void callAsyncTask(Cursor c){
+		Log.d(TAG,"MainActivity - callAsyncTask");
 		NewsAsyncTask newsAsync = new NewsAsyncTask(c) {
 
 			@Override
 			protected void onPostExecute(NewItem[] result) {
 				if (result != null) {					
-					FragmentManager fm = getSupportFragmentManager();				
+					Log.d(TAG,"MainActivity - onPostExecute - result :! null");
+					FragmentManager fm = getSupportFragmentManager();
+					NewsItemListFragment f;
 					if(fm.findFragmentById(R.id.mainFragmentPlaceholder) == null){
-						NewsItemListFragment f = NewsItemListFragment.newInstance(new NewsListModel(result));			
+						f = NewsItemListFragment.newInstance(new NewsListModel(result));			
 						fm.beginTransaction()
 							.add(R.id.mainFragmentPlaceholder, f)
 							.commit();
+					}else{
+						f = NewsItemListFragment.newInstance(new NewsListModel(result));
+						fm.beginTransaction().replace(R.id.mainFragmentPlaceholder, f).commit();
 					}
 				}
 			}
