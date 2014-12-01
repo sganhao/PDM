@@ -2,6 +2,7 @@ package com.example.newsclass;
 
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -21,6 +22,7 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 	private NewsCustomAdapter newsAdapter;
 	private ContentResolver _cr;
 	private Uri _thothClasses;
+	private Context _context;
 
 	private String TAG = "News";
 
@@ -31,6 +33,7 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 
 		Log.d(TAG, "onCreate MainActivity");
 		_cr = getContentResolver();
+		_context = getApplicationContext();
 
 		_thothClasses = Uri.parse("content://com.example.newsclassserver/thothClasses");
 		Cursor c = _cr.query(_thothClasses, new String[]{"_classId"}, null, null, null);

@@ -170,6 +170,18 @@ public class NewsCustomAdapter extends BaseAdapter implements OnItemClickListene
 	
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View view, int groupPosition, long id) {
-		
+		NewItem item = (NewItem) getItem(groupPosition);
+		if(item.isViewed)
+			return;
+		if(count[groupPosition] == 1){
+
+			Intent service = new Intent(_context, NewsService.class);
+			service.putExtra("newId", item.newsId);
+			service.setAction("userUpdateNews");
+			_context.startService(service);
+			count[groupPosition]++;
+		}else if (count[groupPosition] == 0)
+			count[groupPosition]++;
+		return;
 	}
 }

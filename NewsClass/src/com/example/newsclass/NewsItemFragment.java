@@ -1,5 +1,7 @@
 package com.example.newsclass;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,12 +24,18 @@ public class NewsItemFragment extends Fragment{
 		return v;		
 	}
 	
-	public static NewsItemFragment newInstance(NewItem model){
+	public static NewsItemFragment newInstance(Context context, NewItem model){
 		NewsItemFragment f = new NewsItemFragment();
 		Bundle b = new Bundle();
 		b.putSerializable("item", model);
 		f.setArguments(b);
 		Log.d(TAG, "ItemFragment.newInstance "+model);
+		
+		Intent service = new Intent(context, NewsService.class);
+		service.putExtra("newId", model.newsId);
+		service.setAction("userUpdateNews");
+		context.startService(service);
+		
 		return f;
 	}
 
