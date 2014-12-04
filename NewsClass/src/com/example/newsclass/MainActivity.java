@@ -15,17 +15,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
+public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cursor>, NewsItemListFragment.Callback {
 
 	private ContentResolver _cr;
 	private Uri _thothClasses;
+	private NewsListModel _model;
 
 	private String TAG = "News";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_masterdetail);
 
 		Log.d(TAG, "onCreate MainActivity");
 		_cr = getContentResolver();
@@ -68,17 +69,18 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 
 			@Override
 			protected void onPostExecute(NewItem[] result) {
-				if (result != null) {					
+				if (result != null) {		
+					_model = new NewsListModel(result);
 					Log.d(TAG,"MainActivity - onPostExecute - result :! null");
 					FragmentManager fm = getSupportFragmentManager();
 					NewsItemListFragment f;
 					if(fm.findFragmentById(R.id.mainFragmentPlaceholder) == null){
-						f = NewsItemListFragment.newInstance(new NewsListModel(result));			
+						f = NewsItemListFragment.newInstance(_model);			
 						fm.beginTransaction()
 							.add(R.id.mainFragmentPlaceholder, f)
 							.commit();
 					}else{
-						f = NewsItemListFragment.newInstance(new NewsListModel(result));
+						f = NewsItemListFragment.newInstance(_model);
 						fm.beginTransaction().replace(R.id.mainFragmentPlaceholder, f).commit();
 					}
 				}
@@ -122,5 +124,24 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		Log.d(TAG, "onLoaderReset");
+	}
+
+	@Override
+	public void onListItemClick(int position) {
+		if (findViewById(R.id.detailFragmentPlaceholder) != null) {
+			FragmentManager fm = getSupportFragmentManager();
+			NewsItemFragment newFrag = NewsItemFragment.newInstance(_model.getItem(position));
+			fm.beginTransaction().replace(R.id.detailFragmentPlaceholder, newFrag).commit();
+			Intent service = new Intent(this, NewsService.class);
+			service.putExtra("newId", _model.getItem(position).newsId);
+			service.setAction("userUpdateNews");
+			startService(service);
+		} else {
+			Intent i = new Intent(this, NewsItemActivity.class);
+			i.putExtra("newslist", _model);
+			i.putExtra("ix", position);
+			startActivity(i);
+		}
+		
 	}
 }
