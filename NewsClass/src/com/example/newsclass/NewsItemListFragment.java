@@ -23,10 +23,12 @@ public class NewsItemListFragment extends ListFragment {
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id){
-		Intent i = new Intent(getActivity(), NewsItemActivity.class);
-		i.putExtra("newslist", _newsListModel);
-		i.putExtra("ix", position);
-		startActivity(i);
+		Callback cb = (Callback) getActivity();
+		cb.onListItemClick(position);
+//		Intent i = new Intent(getActivity(), NewsItemActivity.class);
+//		i.putExtra("newslist", _newsListModel);
+//		i.putExtra("ix", position);
+//		startActivity(i);
 	}
 	
 	public static NewsItemListFragment newInstance(NewsListModel model){
@@ -35,5 +37,9 @@ public class NewsItemListFragment extends ListFragment {
 		args.putSerializable("key", model);
 		f.setArguments(args);
 		return f;
+	}
+	
+	public interface Callback{
+		void onListItemClick(int position);
 	}
 }
