@@ -3,16 +3,18 @@ package com.example.newsclass;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class NewsItemListFragment extends ListFragment {
 
+	private static final String TAG = "News";
 	private NewsListModel _newsListModel;
 	
 	@Override
 	public void onCreate(Bundle state){
+		Log.d(TAG,"NewsItemListFragment - onCreate");
 		super.onCreate(state);
 		Bundle args = getArguments();
 		_newsListModel = (NewsListModel) args.getSerializable("key");
