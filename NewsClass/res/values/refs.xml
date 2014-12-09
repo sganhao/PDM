@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item  name="activity_masterdetail" type="layout">@layout/activity_main</item>
-    <item  name="participant_masterdetail" type="layout">@layout/participant_layout</item>
+    <item  name="participant_masterdetail" type="layout">@layout/participant_item_fragment_layout</item>
 </resources>

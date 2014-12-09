@@ -1,11 +1,9 @@
 package com.example.newsclass;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 
 public class ParticipantsActivity extends FragmentActivity implements ParticipantItemListFragment.Callback {
 
@@ -27,14 +25,14 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 					_model = new ParticipantListModel(result);
 					FragmentManager fm = getSupportFragmentManager();
 					ParticipantItemListFragment f;
-					if(fm.findFragmentById(R.id.participantFragmentPlaceholder) == null){
+					if(fm.findFragmentById(R.id.ParticipantFragmentPlaceholder) == null){
 						f = ParticipantItemListFragment.newInstance(_model);			
 						fm.beginTransaction()
-							.add(R.id.participantFragmentPlaceholder, f)
+							.add(R.id.ParticipantFragmentPlaceholder, f)
 							.commit();
 					}else{
 						f = ParticipantItemListFragment.newInstance(_model);
-						fm.beginTransaction().replace(R.id.participantFragmentPlaceholder, f).commit();
+						fm.beginTransaction().replace(R.id.ParticipantFragmentPlaceholder, f).commit();
 					}
 				}
 			}
@@ -44,7 +42,7 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 	
 	@Override
 	public void onListItemClick(int position) {
-		if (findViewById() != null) {
+		if (findViewById(R.id.ParticipantDetailFragmentPlaceholder) != null) {
 			FragmentManager fm = getSupportFragmentManager();
 			ParticipantItemFragment newFrag = ParticipantItemFragment.newInstance(_model.getItem(position));
 			fm.beginTransaction().replace(R.id.ParticipantDetailFragmentPlaceholder, newFrag).commit();
