@@ -1,15 +1,11 @@
 package com.example.newsclass;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
-
-import com.example.newsclass.R;
 
 
 public class ParticipantItemActivity extends FragmentActivity{
@@ -28,7 +24,7 @@ public class ParticipantItemActivity extends FragmentActivity{
 		final ParticipantListModel participantlist = (ParticipantListModel)i.getExtras().getSerializable("participantlist");
 		int ix = i.getExtras().getInt("ix",0);
 		
-		Log.d(TAG ,"NewsItemActivity.oncreate "+ix);
+		Log.d(TAG ,"ParticipantItemActivity.oncreate "+ix);
 		
 		pager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()){
 			@Override
