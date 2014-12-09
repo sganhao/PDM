@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.support.v4.app.INotificationSideChannel.Stub;
 import android.text.Html;
 import android.util.Log;
 
@@ -20,6 +21,8 @@ public class HttpRequestsToThoth {
 
 	private static final String TAG = "News";
 	private NewItem[] newsarray;
+	private Participant[] participants;
+	private int _posParticipant = 0;
 	
 	public Clazz[] requestClasses(){
 		HttpURLConnection urlcon = null;
@@ -57,8 +60,6 @@ public class HttpRequestsToThoth {
 		}
 		return classes;
 	}
-
-	
 
 	public NewItem[] requestNews(int classId, String classFullname){
 		Log.d(TAG, "requestNews");
@@ -136,9 +137,62 @@ public class HttpRequestsToThoth {
 			e.printStackTrace();
 		}
 		return null;
+	}	
+
+	public Participant[] requestParticipants(int classId) {
+		Log.d(TAG, "request Participant");
+		HttpURLConnection urlCon = null;
+		String uri = "http://thoth.cc.e.ipl.pt/api/v1/classes/{classId}/participants";
+		try {
+			uri = uri.replace("{classId}", ""+classId);
+			URL url = new URL(uri);
+			urlCon = (HttpURLConnection)url.openConnection();
+			InputStream is = urlCon.getInputStream();
+			String data = readAllFrom(is);
+			participants = participantsParseFrom(data, classId);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			urlCon.disconnect();
+		}
+		return participants;
+	}	
+
+	private Participant[] participantsParseFrom(String data, int classId) throws JSONException {
+		JSONObject root = new JSONObject(data);
+		JSONObject jmainTeacher = root.getJSONObject("mainTeacher");
+		JSONArray jotherTeachers = root.getJSONArray("otherTeachers");
+		JSONArray jstudents = root.getJSONArray("students");
+		participants = new Participant[1 + jotherTeachers.length() + jstudents.length()];
+		
+		insertIntoParticipants(jmainTeacher, true);
+		insertJSONArrayIntoParicipant(jotherTeachers, true);
+		insertJSONArrayIntoParicipant(jstudents, false);
+		return null;
 	}
 	
-	
+	private void insertJSONArrayIntoParicipant(JSONArray jArray,
+			boolean isTeacher) {
+		for(int i = 0; i < jArray.length(); i++) {
+			insertIntoParticipants(jArray.getJSONObject(i), isTeacher);
+		}		
+	}
+
+	private void insertIntoParticipants(JSONObject jmainTeacher, boolean isTeacher) {
+		Participant part = new Participant (
+								jmainTeacher.getInt("number"),
+								jmainTeacher.get("fullname"),
+								jmainTeacher.get("academicEmail"),
+								jmainTeacher.get("avatarUrl.size64"),
+								isTeacher
+							);
+		participants[_posParticipant] = part;	
+		_posParticipant++;
+	}
 
 	private String readAllFrom(InputStream is) {
 		Scanner s = new Scanner(is);
