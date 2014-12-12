@@ -5,9 +5,11 @@ import java.io.Serializable;
 public class ParticipantListModel implements Serializable{
 	
 	private Participant[] _participants;
+	private ImageHandler _ih;
 	
-	public ParticipantListModel(Participant[] participants){
+	public ParticipantListModel(Participant[] participants, ImageHandler ih){
 		_participants = participants;
+		_ih = ih;
 	}
 	
 	public Participant getItem(int pos){
@@ -17,5 +19,8 @@ public class ParticipantListModel implements Serializable{
 	public Participant[] getItems(){
 		return _participants;
 	}
-
+	
+	public ImageHandler getImageHandler() {
+		return _ih;
+	}
 }

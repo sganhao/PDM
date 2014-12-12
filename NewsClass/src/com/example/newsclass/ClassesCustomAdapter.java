@@ -59,12 +59,14 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 	}
 
 	@Override
-	public View getView(int i, View view, ViewGroup parent) {
+	public View getView(int idx, View view, ViewGroup parent) {
 
+		final int pos = idx;
+		
 		if(view == null){
 			view = _layoutInflater.inflate(_layout, null);
 			view.setTag(createViewHolderFor(view));
-			bindModel(getModel(i), view.getTag());
+			bindModel(getModel(pos), view.getTag());
 
 			((ViewModel)view.getTag()).selectionBox.setOnClickListener(new View.OnClickListener() {
 
@@ -86,15 +88,16 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 
 				public void onClick(View v) {
 					Intent i = new Intent(_context, ParticipantsActivity.class);
+					i.putExtra("classId", getModel(pos).getId());
 					_context.startActivity(i);
 				}  
 			});  
 
 		}else{
-			bindModel(getModel(i), view.getTag());
+			bindModel(getModel(pos), view.getTag());
 		}
 
-		((ViewModel)view.getTag()).selectionBox.setTag(this.getModel(i));
+		((ViewModel)view.getTag()).selectionBox.setTag(this.getModel(pos));
 		return view;
 	}
 

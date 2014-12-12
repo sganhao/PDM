@@ -10,6 +10,13 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 
 	private ParticipantListModel _model;
 	private static SetViewHandler _svh = new SetViewHandler(Looper.getMainLooper());
+	private static ImageHandlerThread _th = new ImageHandlerThread();
+	private static ImageHandler _ih;
+	
+	static {
+		_th.start();
+		_ih = new ImageHandler(_svh, _th.getLooper()); 
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +31,7 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 			protected void onPostExecute(Participant[] result) {
 				//TODO - adpater to show information, implement fragments
 				if (result != null) {		
-					_model = new ParticipantListModel(result);
+					_model = new ParticipantListModel(result, _ih);
 					FragmentManager fm = getSupportFragmentManager();
 					ParticipantItemListFragment f;
 					if(fm.findFragmentById(R.id.ParticipantFragmentPlaceholder) == null){

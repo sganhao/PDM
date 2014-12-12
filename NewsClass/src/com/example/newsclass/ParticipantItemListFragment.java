@@ -16,7 +16,10 @@ public class ParticipantItemListFragment extends ListFragment {
 		_participantListModel = (ParticipantListModel) args.getSerializable("key");
 
 		this.setListAdapter(
-				new ParticipantsCustomAdapter(getActivity(), _participantListModel.getItems()));	
+				new ParticipantsCustomAdapter(getActivity(), 
+						R.layout.participant_item_list_layout,
+						_participantListModel.getItems(), 
+						_participantListModel.getImageHandler()));	
 	}
 
 	@Override
