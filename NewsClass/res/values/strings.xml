@@ -7,5 +7,6 @@
     <string name="settings_name">Settings</string>
     <string name="SeeNews">See News</string>
     <string name="participants_name">Participants</string>
+    <string name="SeeParticipants">See Participants</string>
 
 </resources>

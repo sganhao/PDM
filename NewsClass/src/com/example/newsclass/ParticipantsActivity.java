@@ -2,12 +2,14 @@ package com.example.newsclass;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 public class ParticipantsActivity extends FragmentActivity implements ParticipantItemListFragment.Callback {
 
 	private ParticipantListModel _model;
+	private static SetViewHandler _svh = new SetViewHandler(Looper.getMainLooper());
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

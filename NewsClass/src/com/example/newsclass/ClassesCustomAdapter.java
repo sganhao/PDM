@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 
 public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListener {
-	
+
 	private int _layout;
 	private int _count = 0;
 	private LayoutInflater _layoutInflater;
@@ -25,6 +26,7 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 	private Clazz [] classes;
 	private Set<Integer> classesSelectedIds;
 	private String TAG = "News";
+	private Context _context;
 
 	public ClassesCustomAdapter(Context ctx, int layout, Clazz [] classes){
 		Log.d(TAG , "ClassesCustomAdapter -> constructor...");
@@ -33,8 +35,9 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 		this.classes = classes;
 		_count = 30 ;
 		classesSelectedIds = new LinkedHashSet<Integer>();
+		_context = ctx;
 	}
-	
+
 	@Override
 	public int getCount() {
 		return _count;
@@ -44,10 +47,10 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 	public Object getItem(int idx) {
 		return getModel(idx);
 	}
-	
+
 	public Clazz getModel(int idx) {
 		return classes[idx];
-		
+
 	}
 
 	@Override
@@ -57,41 +60,50 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 
 	@Override
 	public View getView(int i, View view, ViewGroup parent) {
-		
+
 		if(view == null){
 			view = _layoutInflater.inflate(_layout, null);
 			view.setTag(createViewHolderFor(view));
 			bindModel(getModel(i), view.getTag());
-			
+
 			((ViewModel)view.getTag()).selectionBox.setOnClickListener(new View.OnClickListener() {
-		        
+
 				public void onClick(View v) {
-		              CheckBox cb = (CheckBox) v ;
-		              Clazz c = (Clazz) cb.getTag();
-		              
-		              c.setShowNews(cb.isChecked());
-		              
-		              if(!classesSelectedIds.contains(c.getId())){	
-		            	  classesSelectedIds.add(c.getId());
-		              }else{
-		            	  classesSelectedIds.remove(c.getId());
-		              }
-		            }  
-		          });          
+					CheckBox cb = (CheckBox) v ;
+					Clazz c = (Clazz) cb.getTag();
+
+					c.setShowNews(cb.isChecked());
+
+					if(!classesSelectedIds.contains(c.getId())){	
+						classesSelectedIds.add(c.getId());
+					}else{
+						classesSelectedIds.remove(c.getId());
+					}
+				}  
+			});   
+
+			((ViewModel)view.getTag()).btnParticipants.setOnClickListener(new View.OnClickListener() {
+
+				public void onClick(View v) {
+					Intent i = new Intent(_context, ParticipantsActivity.class);
+					_context.startActivity(i);
+				}  
+			});  
+
 		}else{
 			bindModel(getModel(i), view.getTag());
 		}
-		
+
 		((ViewModel)view.getTag()).selectionBox.setTag(this.getModel(i));
 		return view;
 	}
-	
+
 	private void bindModel(Clazz clazz, Object viewModelObject){
 		ViewModel viewModel = (ViewModel) viewModelObject;
 		viewModel.fullNameClass.setText(clazz.getFullname());
 		viewModel.selectionBox.setChecked(clazz.getShowNews());
 	}
-	
+
 	private ViewModel createViewHolderFor(View newView) {
 		return new ViewModel(newView);
 	}
@@ -100,7 +112,7 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 	public void onScroll(AbsListView arg0, int first, int count, int total) {
 		_scrollFirst = first;
 		_scrollCount = count;
-		
+
 	}
 
 	@Override
@@ -108,16 +120,16 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 		if(state != 0) return;		
 		if(_scrollFirst+_scrollCount >= _count - 2){			
 			if(_updating) return;
-				_updating = true;
-			
+			_updating = true;
+
 			new AsyncTask<Void,Void,Void>(){
 
 				@Override
 				protected Void doInBackground(Void... arg0) {
-					
+
 					return null;
 				}
-				
+
 				@Override
 				protected void onPostExecute(Void arg){
 					_count += 15;
@@ -127,7 +139,7 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 			}.execute();
 		}		
 	}
-	
+
 	public Set<Integer> getSetListIds() {
 		return classesSelectedIds;
 	}

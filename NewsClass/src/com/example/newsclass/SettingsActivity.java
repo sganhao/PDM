@@ -52,7 +52,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 				}
 				return ids;				
 			}
-		});    		
+		}); 
 
 		_listView2 = (ListView) findViewById(R.id.ListView2);
 		_listView2.addFooterView(new ProgressBar(this));		
