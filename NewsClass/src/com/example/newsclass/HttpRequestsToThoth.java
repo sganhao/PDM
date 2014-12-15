@@ -166,12 +166,12 @@ public class HttpRequestsToThoth {
 		JSONObject jmainTeacher = root.getJSONObject("mainTeacher");
 		JSONArray jotherTeachers = root.getJSONArray("otherTeachers");
 		JSONArray jstudents = root.getJSONArray("students");
-		participants = new Participant[1 + jotherTeachers.length() + jstudents.length()];
+		participants = new Participant[1 +  jstudents.length()];
 		
 		insertIntoParticipants(jmainTeacher, true);
-		insertJSONArrayIntoParicipant(jotherTeachers, true);
+		//insertJSONArrayIntoParicipant(jotherTeachers, true);
 		insertJSONArrayIntoParicipant(jstudents, false);
-		return null;
+		return participants;
 	}
 	
 	private void insertJSONArrayIntoParicipant(JSONArray jArray,
@@ -182,11 +182,12 @@ public class HttpRequestsToThoth {
 	}
 
 	private void insertIntoParticipants(JSONObject jmainTeacher, boolean isTeacher) throws JSONException {
+		JSONObject avatar = jmainTeacher.getJSONObject("avatarUrl");
 		Participant part = new Participant (
 								jmainTeacher.getInt("number"),
-								jmainTeacher.getString("fullname"),
-								jmainTeacher.getString("academicEmail"),
-								jmainTeacher.getString("avatarUrl.size64"),
+								jmainTeacher.getString("fullName"),
+								//jmainTeacher.getString("academicEmail"),
+								avatar.getString("size64"),
 								isTeacher
 							);
 		participants[_posParticipant] = part;	

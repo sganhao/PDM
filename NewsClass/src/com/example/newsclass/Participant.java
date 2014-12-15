@@ -10,10 +10,10 @@ public class Participant implements Serializable{
 	String avatarUri;
 	boolean isTeacher;
 	
-	public Participant(int number, String fullName, String email, String avatarUri, boolean isTeacher){
+	public Participant(int number, String fullName/*, String email*/, String avatarUri, boolean isTeacher){
 		this.number = number;
 		this.fullName = fullName;
-		this.email = email;
+		//this.email = email;
 		this.avatarUri = avatarUri;
 		this.isTeacher = isTeacher;
 	}
