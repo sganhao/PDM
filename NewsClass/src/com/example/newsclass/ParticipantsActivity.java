@@ -53,7 +53,7 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 	public void onListItemClick(int position) {
 		if (findViewById(R.id.ParticipantDetailFragmentPlaceholder) != null) {
 			FragmentManager fm = getSupportFragmentManager();
-			ParticipantItemFragment newFrag = ParticipantItemFragment.newInstance(_model.getItem(position));
+			ParticipantItemFragment newFrag = ParticipantItemFragment.newInstance(_model.getItem(position),_ih);
 			fm.beginTransaction().replace(R.id.ParticipantDetailFragmentPlaceholder, newFrag).commit();
 		} else {
 			Intent i = new Intent(this, ParticipantItemActivity.class);

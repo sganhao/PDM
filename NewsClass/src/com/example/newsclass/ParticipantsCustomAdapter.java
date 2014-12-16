@@ -1,19 +1,25 @@
 package com.example.newsclass;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 
-public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClickListener{
+public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClickListener, OnScrollListener{
 
 	private int _layout;
 	private int _count = 0;
+	private int _scrollFirst;
+	private int _scrollCount;
+	private boolean _updating;
 	private LayoutInflater _layoutInflater;
 	private Context _ctx;
 	private ImageHandler _ih;
@@ -32,7 +38,7 @@ public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClic
 		_layoutInflater = (LayoutInflater)_ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
 		_parts = participants;
-		_count = 100;
+		_count = 30;
 	}
 
 	@Override
@@ -84,4 +90,37 @@ public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClic
 	private Object createViewHolderFor(View view) {
 		return new ParticipantViewModel(view);
 	}
+	
+	@Override
+	public void onScroll(AbsListView arg0, int first, int count, int total) {
+		_scrollFirst = first;
+		_scrollCount = count;
+
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView list, int state) {
+		if(state != 0) return;		
+		if(_scrollFirst+_scrollCount >= _count - 2){			
+			if(_updating) return;
+			_updating = true;
+
+			new AsyncTask<Void,Void,Void>(){
+
+				@Override
+				protected Void doInBackground(Void... arg0) {
+
+					return null;
+				}
+
+				@Override
+				protected void onPostExecute(Void arg){
+					_count += 15;
+					ParticipantsCustomAdapter.this.notifyDataSetChanged();
+					_updating = false;
+				}
+			}.execute();
+		}		
+	}
+	
 }
