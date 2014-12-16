@@ -2,6 +2,7 @@ package com.example.newsclass;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,7 +15,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
 
-public class ImageHandler extends Handler {
+public class ImageHandler extends Handler implements Serializable{
 	
 	private SetViewHandler _h;
 	private String TAG = "News";

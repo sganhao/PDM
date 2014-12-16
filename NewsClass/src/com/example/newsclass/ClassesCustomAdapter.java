@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 
 public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListener {
@@ -87,8 +88,10 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 			((ViewModel)view.getTag()).btnParticipants.setOnClickListener(new View.OnClickListener() {
 
 				public void onClick(View v) {
+					Button btn = (Button) v;
+					Clazz c = (Clazz) btn.getTag();
 					Intent i = new Intent(_context, ParticipantsActivity.class);
-					i.putExtra("classId", getModel(pos).getId());
+					i.putExtra("classId", c.getId());
 					_context.startActivity(i);
 				}  
 			});  
@@ -98,6 +101,7 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 		}
 
 		((ViewModel)view.getTag()).selectionBox.setTag(this.getModel(pos));
+		((ViewModel)view.getTag()).btnParticipants.setTag(this.getModel(pos));
 		return view;
 	}
 

@@ -169,7 +169,7 @@ public class HttpRequestsToThoth {
 		participants = new Participant[1 +  jstudents.length()];
 		
 		insertIntoParticipants(jmainTeacher, true);
-		//insertJSONArrayIntoParicipant(jotherTeachers, true);
+		insertJSONArrayIntoParicipant(jotherTeachers, true);
 		insertJSONArrayIntoParicipant(jstudents, false);
 		return participants;
 	}
@@ -183,11 +183,12 @@ public class HttpRequestsToThoth {
 
 	private void insertIntoParticipants(JSONObject jmainTeacher, boolean isTeacher) throws JSONException {
 		JSONObject avatar = jmainTeacher.getJSONObject("avatarUrl");
+		//String str = jmainTeacher.getString("academicEmail");
 		Participant part = new Participant (
 								jmainTeacher.getInt("number"),
 								jmainTeacher.getString("fullName"),
-								//jmainTeacher.getString("academicEmail"),
-								avatar.getString("size64"),
+								jmainTeacher.getString("academicEmail"),
+								avatar.getString("size32"),
 								isTeacher
 							);
 		participants[_posParticipant] = part;	

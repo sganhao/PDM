@@ -1,5 +1,7 @@
 package com.example.newsclass;
 
+import java.io.Serializable;
+
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
@@ -7,7 +9,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
 
-public class SetViewHandler extends Handler {
+public class SetViewHandler extends Handler implements Serializable{
 
 	private String TAG = "News";
 
