@@ -52,5 +52,4 @@ public class ParticipantItemFragment extends Fragment{
 		ImageView im = (ImageView) _view.findViewById(R.id.item_avatar_Participant);
 		_ih.fetchImage(im, _item.avatarUri,_item.number);
 	}
-
 }

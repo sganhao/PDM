@@ -26,10 +26,6 @@ public class NewsItemListFragment extends ListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id){
 		Callback cb = (Callback) getActivity();
 		cb.onListItemClick(position);
-//		Intent i = new Intent(getActivity(), NewsItemActivity.class);
-//		i.putExtra("newslist", _newsListModel);
-//		i.putExtra("ix", position);
-//		startActivity(i);
 	}
 	
 	public static NewsItemListFragment newInstance(NewsListModel model){
