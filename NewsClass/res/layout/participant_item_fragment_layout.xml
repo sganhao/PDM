@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ParticipantDetailFragmentPlaceholder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/imageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/item_avatar_Participant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/item_number_Participant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:textStyle="bold|italic" />
+        android:layout_below="@+id/imageLayout"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/item_fullname_Participant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textStyle="italic" />
+        android:layout_below="@+id/item_number_Participant"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/item_email_Participant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/item_fullname_Participant"
         android:textSize="20sp" />
-    
+
     <TextView
         android:id="@+id/item_isTeacher_Participant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/item_email_Participant"
         android:textSize="20sp" />
 
-    <ImageView
-        android:id="@+id/item_avatar_Participant"
-        android:layout_width="150dp"
-        android:layout_height="75dp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="5dp" />
-
-</LinearLayout>
+</RelativeLayout>

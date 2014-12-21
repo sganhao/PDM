@@ -38,16 +38,16 @@ public class ParticipantItemFragment extends Fragment{
 	
 	private void bindModel(){
 		TextView number = (TextView) _view.findViewById(R.id.item_number_Participant);
-		number.setText("" + _item.number);
+		number.setText("Number: " + _item.number);
 		
 		TextView fullname = (TextView) _view.findViewById(R.id.item_fullname_Participant);
-		fullname.setText(_item.fullName);
+		fullname.setText("Name: " +_item.fullName);
 		
 		TextView email = (TextView) _view.findViewById(R.id.item_email_Participant);
-		email.setText(_item.email);
+		email.setText("E-mail: "+  _item.email);
 		
 		TextView participant = (TextView) _view.findViewById(R.id.item_isTeacher_Participant);
-		participant.setText(_item.isTeacher ? "This Participant is a Teacher" : "This Participant is a Student");
+		participant.setText("Participation: " + (_item.isTeacher ? "Teacher" : "Student"));
 		
 		ImageView im = (ImageView) _view.findViewById(R.id.item_avatar_Participant);
 		_ih.fetchImage(im, _item.avatarUri);

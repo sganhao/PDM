@@ -188,7 +188,7 @@ public class HttpRequestsToThoth {
 								jmainTeacher.getInt("number"),
 								jmainTeacher.getString("fullName"),
 								jmainTeacher.getString("academicEmail"),
-								avatar.getString("size32"),
+								avatar.getString("size128"),
 								isTeacher
 							);
 		participants[_posParticipant] = part;	

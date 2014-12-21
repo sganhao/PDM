@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <string name="app_name">NewsClass</string>
+    <string name="app_name">News</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="settings_name">Settings</string>
+    <string name="action_settings">Choose Classes</string>
+    <string name="settings_name">Classes</string>
     <string name="SeeNews">See News</string>
     <string name="participants_name">Participants</string>
-    <string name="SeeParticipants">See Participants</string>
-
+    <string name="SeeParticipants">Participant</string>
+    
 </resources>
