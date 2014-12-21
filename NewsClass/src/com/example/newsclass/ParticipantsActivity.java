@@ -1,13 +1,17 @@
 package com.example.newsclass;
 
+import java.io.IOException;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 public class ParticipantsActivity extends FragmentActivity implements ParticipantItemListFragment.Callback {
 
+	private static final String TAG = "News";
 	private ParticipantListModel _model;
 	private static SetViewHandler _svh = new SetViewHandler(Looper.getMainLooper());
 	private static ImageHandlerThread _th = new ImageHandlerThread();
@@ -15,7 +19,11 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 	
 	static {
 		_th.start();
-		_ih = new ImageHandler(_svh, _th.getLooper()); 
+		try {
+			_ih = new ImageHandler(_svh, _th.getLooper());
+		} catch (IOException e) {
+			Log.d(TAG, e.toString());
+		} 
 	}
 	
 	@Override
