@@ -91,8 +91,8 @@ public class ImageHandler extends Handler implements Serializable{
 	}
 
 	boolean hasExternalStoragePublicPicture(int id) {;
-	File file = new File(_storageDirectoryPath, Integer.toString(id) + ".png");
-	return file.exists();
+		File file = new File(_storageDirectoryPath, Integer.toString(id) + ".png");
+		return file.exists();
 	}
 
 	public File createFileInStorageDir(int id) {
@@ -116,5 +116,4 @@ public class ImageHandler extends Handler implements Serializable{
 		}
 		return false;
 	}
-
 }

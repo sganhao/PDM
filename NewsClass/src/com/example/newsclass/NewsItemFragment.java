@@ -45,5 +45,4 @@ public class NewsItemFragment extends Fragment{
 		TextView content = (TextView) _view.findViewById(R.id.item_content_NewItem);
 		content.setText("\n" + _item.content);
 	}
-
 }

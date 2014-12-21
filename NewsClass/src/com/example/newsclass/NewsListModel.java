@@ -12,6 +12,7 @@ public class NewsListModel implements Serializable{
 	public NewItem getItem(int pos){
 		return _newItemArr[pos];
 	}
+	
 	public NewItem[] getItems() {
 		return _newItemArr;
 	}

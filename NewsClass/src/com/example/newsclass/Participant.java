@@ -17,5 +17,4 @@ public class Participant implements Serializable{
 		this.avatarUri = avatarUri;
 		this.isTeacher = isTeacher;
 	}
-
 }

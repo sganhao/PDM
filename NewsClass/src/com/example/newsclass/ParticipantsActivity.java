@@ -68,7 +68,6 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 			i.putExtra("participantlist", _model);
 			i.putExtra("ix", position);
 			startActivity(i);
-		}
-		
+		}		
 	}
 }

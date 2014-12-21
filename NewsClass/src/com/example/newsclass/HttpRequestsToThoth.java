@@ -183,7 +183,6 @@ public class HttpRequestsToThoth {
 
 	private void insertIntoParticipants(JSONObject jmainTeacher, boolean isTeacher) throws JSONException {
 		JSONObject avatar = jmainTeacher.getJSONObject("avatarUrl");
-		//String str = jmainTeacher.getString("academicEmail");
 		Participant part = new Participant (
 								jmainTeacher.getInt("number"),
 								jmainTeacher.getString("fullName"),

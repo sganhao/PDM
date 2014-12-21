@@ -41,10 +41,7 @@ public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClic
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {}
 
 	@Override
 	public int getCount() {
@@ -82,7 +79,6 @@ public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClic
 	private void bindModel(Participant part, Object viewModelObject) {
 		ParticipantViewModel partViewModel = (ParticipantViewModel) viewModelObject;
 		partViewModel.fullname.setText(part.fullName);
-		//partViewModel.email.setText(part.email);
 		_ih.fetchImage(partViewModel.image, part.avatarUri,part.number);		
 	}
 
@@ -94,7 +90,6 @@ public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClic
 	public void onScroll(AbsListView arg0, int first, int count, int total) {
 		_scrollFirst = first;
 		_scrollCount = count;
-
 	}
 
 	@Override
@@ -120,6 +115,5 @@ public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClic
 				}
 			}.execute();
 		}		
-	}
-	
+	}	
 }

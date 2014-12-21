@@ -17,5 +17,4 @@ public class ParticipantsAsyncTask extends AsyncTask<Void,Void,Participant[]> {
 		Participant [] participants = _requests.requestParticipants(_classId);
 		return participants;
 	}
-
 }

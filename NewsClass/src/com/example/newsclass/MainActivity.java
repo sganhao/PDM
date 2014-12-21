@@ -38,7 +38,6 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 		getLoaderManager().initLoader(1, null, this);
 	}
 
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
@@ -94,7 +93,6 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 		super.onSaveInstanceState(outState);
 	}
 
-
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 
@@ -102,11 +100,10 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 		return new CursorLoader(this, 
 				Uri.parse("content://com.example.newsclassserver/thothNews"), 
 				new String[]{"_newsId", "classFullname", "_classId", "title", "_when", "content", "isViewed"}, 
-				null,// noticias das classes q estão selecionadas 
+				null,
 				null, 
 				null);
 	}
-
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loaders, Cursor data) {
@@ -119,7 +116,6 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 		else
 			callAsyncTask(data);		
 	}
-
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
@@ -141,7 +137,6 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 			i.putExtra("newslist", _model);
 			i.putExtra("ix", position);
 			startActivity(i);
-		}
-		
+		}		
 	}
 }

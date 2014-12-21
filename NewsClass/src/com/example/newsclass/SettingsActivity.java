@@ -28,8 +28,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		Log.d(TAG, "SettingsActivity - onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_layout);
-		
-		
+				
 		final Button btn = (Button) findViewById(R.id.button1);
 
 		btn.setOnClickListener(new View.OnClickListener() {
@@ -102,7 +101,6 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		Log.d(TAG, "SettingsActivity - onLoaderReset");
-		//_listView2.setActivated(false);
 	}
 	
 	@Override

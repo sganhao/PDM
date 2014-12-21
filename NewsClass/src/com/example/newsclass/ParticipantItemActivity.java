@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
-
 public class ParticipantItemActivity extends FragmentActivity{
 
 	private static String TAG = "News";
@@ -23,7 +22,6 @@ public class ParticipantItemActivity extends FragmentActivity{
 		try {
 			_ih = new ImageHandler(_svh, _th.getLooper());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			Log.d(TAG,e.toString());
 		} 
 	}
@@ -55,7 +53,5 @@ public class ParticipantItemActivity extends FragmentActivity{
 			}			
 		});
 		pager.setCurrentItem(ix);
-
-
 	}
 }

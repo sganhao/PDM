@@ -21,6 +21,5 @@ public class NewItem implements Serializable{
 		this.when = when;
 		this.content = content;
 		this.isViewed = isViewed;
-	}
-	
+	}	
 }

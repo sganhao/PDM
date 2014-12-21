@@ -59,13 +59,10 @@ public class NewsItemActivity extends FragmentActivity{
             }
 
 			@Override
-			public void onPageScrollStateChanged(int arg0) {
-			}
+			public void onPageScrollStateChanged(int arg0) {}
 
 			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
-			}
-
+			public void onPageScrolled(int arg0, float arg1, int arg2) {}
         });
 	}
 }
