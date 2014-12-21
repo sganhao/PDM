@@ -50,7 +50,7 @@ public class ParticipantItemFragment extends Fragment{
 		participant.setText("Participation: " + (_item.isTeacher ? "Teacher" : "Student"));
 		
 		ImageView im = (ImageView) _view.findViewById(R.id.item_avatar_Participant);
-		_ih.fetchImage(im, _item.avatarUri);
+		_ih.fetchImage(im, _item.avatarUri,_item.number);
 	}
 
 }

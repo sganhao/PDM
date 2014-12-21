@@ -38,7 +38,7 @@ public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClic
 		_layoutInflater = (LayoutInflater)_ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
 		_parts = participants;
-		_count = 30;
+		_count = _parts.length / 2;
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClic
 		ParticipantViewModel partViewModel = (ParticipantViewModel) viewModelObject;
 		partViewModel.fullname.setText(part.fullName);
 		//partViewModel.email.setText(part.email);
-		_ih.fetchImage(partViewModel.image, part.avatarUri);		
+		_ih.fetchImage(partViewModel.image, part.avatarUri,part.number);		
 	}
 
 	private Object createViewHolderFor(View view) {
@@ -115,7 +115,7 @@ public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClic
 
 				@Override
 				protected void onPostExecute(Void arg){
-					_count += 15;
+					_count += 10;
 					ParticipantsCustomAdapter.this.notifyDataSetChanged();
 					_updating = false;
 				}
