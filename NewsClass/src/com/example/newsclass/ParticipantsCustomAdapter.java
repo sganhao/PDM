@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 
 public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClickListener, OnScrollListener{
 
+	private String TAG = "News";
 	private int _layout;
 	private int _count = 0;
 	private int _scrollFirst;
@@ -23,7 +24,7 @@ public class ParticipantsCustomAdapter extends BaseAdapter implements OnItemClic
 	private Context _ctx;
 	private ImageHandler _ih;
 	private Participant[] _parts;
-	private String TAG = "News";
+	
 	
 	
 	public ParticipantsCustomAdapter(Context ctx,

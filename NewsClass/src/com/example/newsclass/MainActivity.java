@@ -17,23 +17,15 @@ import android.view.MenuItem;
 
 public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cursor>, NewsItemListFragment.Callback {
 
-	private ContentResolver _cr;
-	private Uri _thothClasses;
-	private NewsListModel _model;
-
 	private String TAG = "News";
+	private final Uri _thothNews = Uri.parse("content://com.example.newsclassserver/thothNews");
+	private NewsListModel _model;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d(TAG, "onCreate MainActivity");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_masterdetail);
-
-		Log.d(TAG, "onCreate MainActivity");
-		_cr = getContentResolver();
-
-		_thothClasses = Uri.parse("content://com.example.newsclassserver/thothClasses");
-		Cursor c = _cr.query(_thothClasses, new String[]{"_classId"}, null, null, null);
-
 		Log.d(TAG, "onCreate loadManagerInit");
 		getLoaderManager().initLoader(1, null, this);
 	}
@@ -68,11 +60,13 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 
 			@Override
 			protected void onPostExecute(NewItem[] result) {
-				if (result != null) {		
-					_model = new NewsListModel(result);
+				if (result != null) {	
 					Log.d(TAG,"MainActivity - onPostExecute - result :! null");
+					
+					_model = new NewsListModel(result);
 					FragmentManager fm = getSupportFragmentManager();
 					NewsItemListFragment f;
+					
 					if(fm.findFragmentById(R.id.mainFragmentPlaceholder) == null){
 						f = NewsItemListFragment.newInstance(_model);			
 						fm.beginTransaction()
@@ -89,16 +83,10 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle outState){
-		super.onSaveInstanceState(outState);
-	}
-
-	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-
 		Log.d(TAG, "onCreateLoader");
 		return new CursorLoader(this, 
-				Uri.parse("content://com.example.newsclassserver/thothNews"), 
+				_thothNews, 
 				new String[]{"_newsId", "classFullname", "_classId", "title", "_when", "content", "isViewed"}, 
 				null,
 				null, 
@@ -107,14 +95,13 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loaders, Cursor data) {
-
 		Log.d(TAG, "onLoadFinish");
 		if(data == null || data.getCount() == 0){
 			Intent i = new Intent(MainActivity.this, SettingsActivity.class);
 			startActivityForResult(i,0);
 		}
 		else
-			callAsyncTask(data);		
+			callAsyncTask(data);	
 	}
 
 	@Override
@@ -128,14 +115,19 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 			FragmentManager fm = getSupportFragmentManager();
 			NewsItemFragment newFrag = NewsItemFragment.newInstance(_model.getItem(position));
 			fm.beginTransaction().replace(R.id.detailFragmentPlaceholder, newFrag).commit();
-			Intent service = new Intent(this, NewsService.class);
-			service.putExtra("newId", _model.getItem(position).newsId);
-			service.setAction("userUpdateNews");
-			startService(service);
+			
+			if(!_model.getItem(position).isViewed){
+				_model.getItem(position).isViewed = true;
+				Intent service = new Intent(this, NewsService.class);
+				service.putExtra("newId", _model.getItem(position).newsId);
+				service.setAction("userUpdateNews");
+				startService(service);				
+			}
+
 		} else {
 			Intent i = new Intent(this, NewsItemActivity.class);
-			i.putExtra("newslist", _model);
-			i.putExtra("ix", position);
+			i.putExtra("newslistmodel", _model);
+			i.putExtra("position", position);
 			startActivity(i);
 		}		
 	}

@@ -19,10 +19,14 @@ import android.util.Log;
 public class HttpRequestsToThoth {
 
 	private static final String TAG = "News";
-	private NewItem[] newsarray;
-	private Participant[] participants;
-	private int _posParticipant = 0;
-	
+	private int _posParticipant;
+	private NewItem[] _newsarray;
+	private Participant[] _participants;
+
+	public HttpRequestsToThoth(){
+		_posParticipant = 0;
+	}
+
 	public Clazz[] requestClasses(){
 		HttpURLConnection urlcon = null;
 		try{
@@ -32,11 +36,11 @@ public class HttpRequestsToThoth {
 			String data = readAllFrom(is);
 			return classesParseFrom(data);
 		}catch (JSONException e) {
-			return null;
+			Log.d(TAG, e.toString());
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			Log.d(TAG, e.toString());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.d(TAG, e.toString());
 		}finally {
 			urlcon.disconnect();
 		}
@@ -71,24 +75,24 @@ public class HttpRequestsToThoth {
 			urlCon = (HttpURLConnection)url.openConnection();
 			InputStream is = urlCon.getInputStream();
 			String data = readAllFrom(is);
-			newsarray = newsParseFrom(data, classId, classFullname);
+			_newsarray = newsParseFrom(data, classId, classFullname);
 		} catch (JSONException e) {
-			e.printStackTrace();
+			Log.d(TAG, e.toString());
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			Log.d(TAG, e.toString());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.d(TAG, e.toString());
 		}finally{
 			urlCon.disconnect();
 		}
 
-		return newsarray;
+		return _newsarray;
 	}
 
 	private NewItem[] newsParseFrom(String data, int classId, String classFullname) throws JSONException {
 		JSONObject root = new JSONObject(data);
 		JSONArray jnews = root.getJSONArray("newsItems");
-		newsarray = new NewItem[jnews.length()];
+		_newsarray = new NewItem[jnews.length()];
 
 		for (int i = 0; i < jnews.length(); ++i) {
 			JSONObject jnew = jnews.getJSONObject(i);
@@ -108,32 +112,28 @@ public class HttpRequestsToThoth {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			newsarray[i] = item;
+			_newsarray[i] = item;
 		}
-		return newsarray;
+		return _newsarray;
 	}
-		
+
 	private String getContent(int id) {
+		HttpURLConnection urlcon = null;
 		try {
 			URL url = new URL("http://thoth.cc.e.ipl.pt/api/v1/newsitems/"+ id);
-			HttpURLConnection urlCon = (HttpURLConnection)url.openConnection();
-
-			try {
-				InputStream is = urlCon.getInputStream();
-				String data = readAllFrom(is);
-
-				JSONObject root = new JSONObject(data);
-				return Html.fromHtml(root.getString("content")).toString();				
-
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}finally{
-				urlCon.disconnect();
-			}
+			urlcon = (HttpURLConnection)url.openConnection();
+			InputStream is = urlcon.getInputStream();
+			String data = readAllFrom(is);
+			JSONObject root = new JSONObject(data);
+			return Html.fromHtml(root.getString("content")).toString();
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			Log.d(TAG, e.toString());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.d(TAG, e.toString());
+		} catch (JSONException e) {
+			Log.d(TAG, e.toString());
+		}finally{
+			urlcon.disconnect();
 		}
 		return null;
 	}	
@@ -148,17 +148,17 @@ public class HttpRequestsToThoth {
 			urlCon = (HttpURLConnection)url.openConnection();
 			InputStream is = urlCon.getInputStream();
 			String data = readAllFrom(is);
-			participants = participantsParseFrom(data, classId);
+			_participants = participantsParseFrom(data, classId);
 		} catch (JSONException e) {
-			e.printStackTrace();
+			Log.d(TAG, e.toString());
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			Log.d(TAG, e.toString());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.d(TAG, e.toString());
 		}finally{
 			urlCon.disconnect();
 		}
-		return participants;
+		return _participants;
 	}	
 
 	private Participant[] participantsParseFrom(String data, int classId) throws JSONException {
@@ -166,14 +166,14 @@ public class HttpRequestsToThoth {
 		JSONObject jmainTeacher = root.getJSONObject("mainTeacher");
 		JSONArray jotherTeachers = root.getJSONArray("otherTeachers");
 		JSONArray jstudents = root.getJSONArray("students");
-		participants = new Participant[1 +  jstudents.length()];
-		
+		_participants = new Participant[1 + jotherTeachers.length() +  jstudents.length()];
+
 		insertIntoParticipants(jmainTeacher, true);
 		insertJSONArrayIntoParicipant(jotherTeachers, true);
 		insertJSONArrayIntoParicipant(jstudents, false);
-		return participants;
+		return _participants;
 	}
-	
+
 	private void insertJSONArrayIntoParicipant(JSONArray jArray,
 			boolean isTeacher) throws JSONException {
 		for(int i = 0; i < jArray.length(); i++) {
@@ -184,13 +184,13 @@ public class HttpRequestsToThoth {
 	private void insertIntoParticipants(JSONObject jmainTeacher, boolean isTeacher) throws JSONException {
 		JSONObject avatar = jmainTeacher.getJSONObject("avatarUrl");
 		Participant part = new Participant (
-								jmainTeacher.getInt("number"),
-								jmainTeacher.getString("fullName"),
-								jmainTeacher.getString("academicEmail"),
-								avatar.getString("size128"),
-								isTeacher
-							);
-		participants[_posParticipant] = part;	
+				jmainTeacher.getInt("number"),
+				jmainTeacher.getString("fullName"),
+				jmainTeacher.getString("academicEmail"),
+				avatar.getString("size128"),
+				isTeacher
+				);
+		_participants[_posParticipant] = part;	
 		_posParticipant++;
 	}
 

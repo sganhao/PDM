@@ -9,37 +9,39 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.SystemClock;
+import android.util.Log;
 
 public class NewsReceiver extends BroadcastReceiver {
 
-	private AlarmManager newsAlarm;
-	private PendingIntent newsIntent;
-	private AlarmManager classesAlarm;
-	private PendingIntent classesIntent;
+	private String TAG = "News";
+	private AlarmManager _newsAlarm;
+	private PendingIntent _newsIntent;
+	private AlarmManager _classesAlarm;
+	private PendingIntent _classesIntent;
 	private Context _context;
-	
+
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
 		_context = context;
-		
+		Log.d(TAG,action);
 		if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)){
 			ConnectivityManager cm = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo ni = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 			if(ni.isConnected()){
-				// Set the Alarms
 				setNewsAlarm();
 				setClassesAlarm();
-				
+
 				//Update das noticias das turmas seleccionadas
 				Intent service = new Intent(_context,NewsService.class);
 				service.setAction("wifi_connected");
 				_context.startService(service);
 			}
-			else{
+			else if(_newsAlarm != null && _classesAlarm != null){
 				// Unset the Alarms
-				newsAlarm.cancel(newsIntent);
-				classesAlarm.cancel(classesIntent);
+				_newsAlarm.cancel(_newsIntent);
+				_classesAlarm.cancel(_classesIntent);
 			}
 		}else if(action.equals("classesAlarm")){
 			Intent i = new Intent(_context,NewsService.class);
@@ -53,28 +55,28 @@ public class NewsReceiver extends BroadcastReceiver {
 	}
 
 	private void setClassesAlarm() {
-		classesAlarm = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
+		_classesAlarm = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(_context,NewsReceiver.class);
 		intent.setAction("classesAlarm");
-		classesIntent = PendingIntent.getBroadcast(_context, 0, intent, 0);
-		classesAlarm.setRepeating(
+		_classesIntent = PendingIntent.getBroadcast(_context, 0, intent, 0);
+		_classesAlarm.setRepeating(
 				AlarmManager.ELAPSED_REALTIME, 
 				SystemClock.elapsedRealtime() + 1000, 
 				AlarmManager.INTERVAL_DAY, 
-				classesIntent
-		);		
+				_classesIntent
+				);		
 	}
 
 	private void setNewsAlarm(){
-		newsAlarm = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
+		_newsAlarm = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(_context,NewsReceiver.class);
 		intent.setAction("newsAlarm");
-		newsIntent = PendingIntent.getBroadcast(_context, 0, intent, 0);
-		newsAlarm.setInexactRepeating(
+		_newsIntent = PendingIntent.getBroadcast(_context, 0, intent, 0);
+		_newsAlarm.setInexactRepeating(
 				AlarmManager.ELAPSED_REALTIME, 
 				SystemClock.elapsedRealtime() + 1000, 
 				AlarmManager.INTERVAL_HALF_HOUR, 
-				newsIntent
-		);
+				_newsIntent
+				);
 	}	
 }

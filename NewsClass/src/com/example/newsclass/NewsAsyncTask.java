@@ -7,44 +7,47 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
-
-	private NewItem[] newsarray;
-	private int numElems = 0;
-	private int firstViewedItemIdx = 0;
-	private Cursor c;
+	
 	private String TAG = "News";
+	private int _numItems;
+	private int _firstViewedItemIdx;
+	private NewItem[] _newsarray;
+	private Cursor _cursor;
+	
 
 	public NewsAsyncTask (Cursor c) {
-		this.c = c;
+		_cursor = c;
+		_numItems = 0;
+		_firstViewedItemIdx = 0;
 	}
 
 	@Override
 	protected NewItem[] doInBackground(Void... args) {
 		Log.d(TAG , "NewsAsyncTask - doInBackground");
-		newsarray = new NewItem[c.getCount()];
+		_newsarray = new NewItem[_cursor.getCount()];
 		int idx = 0;
 
 		Log.d(TAG, "News AsyncTask - doInBackground - starting to go through cursor...");
-		c.moveToFirst();
+		_cursor.moveToFirst();
 		do{
-			newsarray[idx] = new NewItem(
-					c.getString(c.getColumnIndex("classFullname")),
-					c.getInt(c.getColumnIndex("_newsId")), 
-					c.getInt(c.getColumnIndex("_classId")), 
-					c.getString(c.getColumnIndex("title")),
-					new Date(c.getString(c.getColumnIndex("_when"))),
-					c.getString(c.getColumnIndex("content")),
-					c.getInt(c.getColumnIndex("isViewed")) == 1 ? true : false
+			_newsarray[idx] = new NewItem(
+					_cursor.getString(_cursor.getColumnIndex("classFullname")),
+					_cursor.getInt(_cursor.getColumnIndex("_newsId")), 
+					_cursor.getInt(_cursor.getColumnIndex("_classId")), 
+					_cursor.getString(_cursor.getColumnIndex("title")),
+					new Date(_cursor.getString(_cursor.getColumnIndex("_when"))),
+					_cursor.getString(_cursor.getColumnIndex("content")),
+					_cursor.getInt(_cursor.getColumnIndex("isViewed")) == 1 ? true : false
 					);
 			idx++;
-		}while (c.moveToNext());
+		}while (_cursor.moveToNext());
 
 		OrderedArray();
-		return newsarray;
+		return _newsarray;
 	}
 
 	private void OrderedArray(){
-		NewItem[] a = newsarray;
+		NewItem[] a = _newsarray;
 		for(NewItem item : a){
 			insertInArray(item);
 		}
@@ -52,36 +55,36 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewItem[]>{
 
 	private void insertInArray(NewItem item){
 		if(item.isViewed){
-			for(int i = firstViewedItemIdx ; i < numElems ; i++){
-				if(item.when.compareTo(newsarray[i].when) >= 0){
-					for(int j = numElems ; j > i ; j--){
-						newsarray[j] = newsarray[j-1];
+			for(int i = _firstViewedItemIdx ; i < _numItems ; i++){
+				if(item.when.compareTo(_newsarray[i].when) >= 0){
+					for(int j = _numItems ; j > i ; j--){
+						_newsarray[j] = _newsarray[j-1];
 					}
-					newsarray[i] = item;
-					numElems++;
+					_newsarray[i] = item;
+					_numItems++;
 					return;
 				}				
 			}
-			newsarray[numElems] = item;
-			numElems++;
+			_newsarray[_numItems] = item;
+			_numItems++;
 		}else{
-			for(int i = 0 ; i < firstViewedItemIdx ; i++){
-				if(item.when.compareTo(newsarray[i].when) >= 0){
-					for(int j = numElems ; j > i ; j--){
-						newsarray[j] = newsarray[j-1];
+			for(int i = 0 ; i < _firstViewedItemIdx ; i++){
+				if(item.when.compareTo(_newsarray[i].when) >= 0){
+					for(int j = _numItems ; j > i ; j--){
+						_newsarray[j] = _newsarray[j-1];
 					}
-					newsarray[i] = item;
-					firstViewedItemIdx++;
-					numElems++;
+					_newsarray[i] = item;
+					_firstViewedItemIdx++;
+					_numItems++;
 					return;
 				}
 			}
-			for(int j = numElems ; j > firstViewedItemIdx ; j--){
-				newsarray[j] = newsarray[j-1];
+			for(int j = _numItems ; j > _firstViewedItemIdx ; j--){
+				_newsarray[j] = _newsarray[j-1];
 			}
-			newsarray[firstViewedItemIdx] = item;
-			firstViewedItemIdx++;
-			numElems++;
+			_newsarray[_firstViewedItemIdx] = item;
+			_firstViewedItemIdx++;
+			_numItems++;
 		}
 	}
 }

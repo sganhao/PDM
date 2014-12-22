@@ -28,6 +28,7 @@ public class ParticipantItemActivity extends FragmentActivity{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d(TAG ,"ParticipantItemActivity.oncreate ");
 		super.onCreate(savedInstanceState);
 		
 		ViewPager pager = new ViewPager(this);	
@@ -35,23 +36,21 @@ public class ParticipantItemActivity extends FragmentActivity{
 		setContentView(pager);
 
 		Intent i = getIntent();
-		final ParticipantListModel participantlist = (ParticipantListModel)i.getExtras().getSerializable("participantlist");
-		int ix = i.getExtras().getInt("ix",0);
-
-		Log.d(TAG ,"ParticipantItemActivity.oncreate "+ix);
+		final ParticipantListModel model = (ParticipantListModel)i.getExtras().getSerializable("participantlistmodel");
+		int position = i.getExtras().getInt("position",0);
 
 		pager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()){
 			@Override
 			public Fragment getItem(int pos) {
-				Fragment f = ParticipantItemFragment.newInstance(participantlist.getItem(pos),_ih);
+				Fragment f = ParticipantItemFragment.newInstance(model.getItem(pos),_ih);
 				return f;
 			}
 
 			@Override
 			public int getCount() {
-				return participantlist.getItems().length;
+				return model.getItems().length;
 			}			
 		});
-		pager.setCurrentItem(ix);
+		pager.setCurrentItem(position);
 	}
 }

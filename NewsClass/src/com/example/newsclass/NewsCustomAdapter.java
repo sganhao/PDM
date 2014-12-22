@@ -13,22 +13,24 @@ import android.widget.BaseAdapter;
 public class NewsCustomAdapter extends BaseAdapter implements OnItemClickListener{
 
 	private LayoutInflater _layoutInflater;
-	private NewItem[] news;
+	private NewItem[] _news;
 	private Context _context;
-	private int[] count;
+	private int _layout;
 
-	public NewsCustomAdapter(Context context, NewItem[] news) {
+	public NewsCustomAdapter(Context context,int layout, NewItem[] news) {
 		_context = context;
 		_layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.news = news;
-		count = new int[news.length];
+		_news = news;
+		_layout = layout;
 	}
 	
 	private void bindModelParent(NewItem newItem, Object viewModelObject){
+		
 		ViewModelParent viewModel = (ViewModelParent) viewModelObject;
 		viewModel._classFullname.setText(newItem.classFullname);
 		viewModel._title.setText(newItem.title);
 		viewModel._date.setText(newItem.when.toString());
+		
 		if(!newItem.isViewed) {
 			viewModel._classFullname.setTextColor(Color.BLUE);
 			viewModel._title.setTextColor(Color.BLUE);
@@ -40,12 +42,12 @@ public class NewsCustomAdapter extends BaseAdapter implements OnItemClickListene
 
 	@Override
 	public int getCount() {
-		return news.length;
+		return _news.length;
 	}
 
 	@Override
 	public Object getItem(int id) {
-		return news[id];
+		return _news[id];
 	}
 
 	@Override
@@ -58,7 +60,7 @@ public class NewsCustomAdapter extends BaseAdapter implements OnItemClickListene
 		final NewItem item = (NewItem) getItem(pos);
 
 		if (view == null) {
-			view = _layoutInflater.inflate(R.layout.news_item_list_layout, null);
+			view = _layoutInflater.inflate(_layout, null);
 			view.setTag(new ViewModelParent(view));
 		}
 
@@ -72,15 +74,13 @@ public class NewsCustomAdapter extends BaseAdapter implements OnItemClickListene
 		NewItem item = (NewItem) getItem(groupPosition);
 		if(item.isViewed)
 			return;
-		if(count[groupPosition] == 1){
-
+		else{
+			item.isViewed = true;
 			Intent service = new Intent(_context, NewsService.class);
 			service.putExtra("newId", item.newsId);
 			service.setAction("userUpdateNews");
 			_context.startService(service);
-			count[groupPosition]++;
-		}else if (count[groupPosition] == 0)
-			count[groupPosition]++;
+		}
 		return;
 	}
 }

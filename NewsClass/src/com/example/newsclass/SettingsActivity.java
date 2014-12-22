@@ -18,26 +18,29 @@ import android.widget.ProgressBar;
 
 public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor> {
 
-	private ListView _listView2;
-	private ClassesCustomAdapter adapter;
 	private String TAG = "News";
-	private Cursor c;
+	private ListView _listView;
+	private ClassesCustomAdapter _adapter;
+	private Cursor _cursor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "SettingsActivity - onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_layout);
-				
-		final Button btn = (Button) findViewById(R.id.button1);
 
+		final Button btn = (Button) findViewById(R.id.button1);
 		btn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				Intent service = new Intent(getApplicationContext(), NewsService.class);
 				service.setAction("userUpdateClasses");
-		    	service.putExtra("classesId",listIdsToArray(adapter.getSetListIds()));
+				
+				service.putExtra("classesIdsToAdd",listIdsToArray(_adapter.getClassesIdsToAdd()));
+				service.putExtra("classesIdsToRemove",listIdsToArray(_adapter.getClassesIdsToRemove()));
+				
 				getApplicationContext().startService(service);
-				c.close();
+				
+				_cursor.close();
 				SettingsActivity.this.setResult(Activity.RESULT_OK);
 				SettingsActivity.this.finish();
 			}
@@ -53,21 +56,21 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 			}
 		}); 
 
-		_listView2 = (ListView) findViewById(R.id.ListView2);
-		_listView2.addFooterView(new ProgressBar(this));		
+		_listView = (ListView) findViewById(R.id.ListView2);
+		_listView.addFooterView(new ProgressBar(this));		
 
 		getLoaderManager().initLoader(1, null, this);
 	}
-	
+
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		Log.d(TAG, "SettingsActivity - onCreateLoader");
 		return new CursorLoader(this, 
-								Uri.parse("content://com.example.newsclassserver/thothClasses"), 
-								new String[]{"_classId","fullname","showNews"}, 
-								null, 
-								null, 
-								"_classId DESC");
+				Uri.parse("content://com.example.newsclassserver/thothClasses"), 
+				new String[]{"_classId","fullname","showNews"}, 
+				null, 
+				null, 
+				"_classId DESC");
 	}
 
 	@Override
@@ -80,33 +83,28 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 			service.setAction("firstFillOfCP");
 			this.startService(service);
 		}else{
-			
-		c = data;
-		ClassesAsyncTask n = new ClassesAsyncTask(data){
 
-			@Override
-			protected void onPostExecute(Clazz[] result) {
-				Log.d(TAG, "SettingsActivity - classesAsyncTask -> onPostExecute...");
-					adapter = new ClassesCustomAdapter(SettingsActivity.this, R.layout.item_layout, result); 
-					_listView2.setAdapter(adapter);
-					_listView2.setOnScrollListener(adapter);
-					Log.d(TAG, "SettingsActivity - classesAsyncTask -> onPostExecute finished...");
-			}
-		};
-		Log.d(TAG, "SettingsActivity - classesAsyncTask -> execute started");
-		n.execute();
-		Log.d(TAG, "SettingsActivity - classesAsyncTask -> execute finished");}
+			_cursor = data;
+			ClassesAsyncTask n = new ClassesAsyncTask(data){
+
+				@Override
+				protected void onPostExecute(Clazz[] result) {
+					Log.d(TAG, "SettingsActivity - classesAsyncTask -> onPostExecute...");
+					_adapter = new ClassesCustomAdapter(SettingsActivity.this, R.layout.item_layout, result); 
+					_listView.setAdapter(_adapter);
+					_listView.setOnScrollListener(_adapter);
+					Log.d(TAG, "SettingsActivity - _adapter -> onPostExecute finished...");
+				}
+			};
+			n.execute();
+		}
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		Log.d(TAG, "SettingsActivity - onLoaderReset");
 	}
-	
-	@Override
-	public void onSaveInstanceState(Bundle outState){
-		super.onSaveInstanceState(outState);
-	}
+
 }
 
 

@@ -12,6 +12,7 @@ public class ParticipantItemListFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle state){
 		super.onCreate(state);
+		
 		Bundle args = getArguments();
 		_participantListModel = (ParticipantListModel) args.getSerializable("key");
 

@@ -5,6 +5,8 @@ import java.util.Set;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,27 +17,31 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListener {
 
+	private String TAG = "News";
 	private int _layout;
-	private int _count = 0;
-	private LayoutInflater _layoutInflater;
-	private boolean _updating;	
+	private int _count;
 	private int _scrollFirst;
 	private int _scrollCount;
-	private Clazz [] classes;
-	private Set<Integer> classesSelectedIds;
-	private String TAG = "News";
+	private boolean _updating;
+	private Clazz [] _classes;	
 	private Context _context;
+	private LayoutInflater _layoutInflater;
+	private Set<Integer> _classesIdsToAdd;
+	private Set<Integer> _classesIdsToRemove;
+
 
 	public ClassesCustomAdapter(Context ctx, int layout, Clazz [] classes){
 		Log.d(TAG , "ClassesCustomAdapter -> constructor...");
 		_layout = layout;
 		_layoutInflater = (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.classes = classes;
+		_classes = classes;
 		_count = 30 ;
-		classesSelectedIds = new LinkedHashSet<Integer>();
+		_classesIdsToAdd = new LinkedHashSet<Integer>();
+		_classesIdsToRemove = new LinkedHashSet<Integer>();
 		_context = ctx;
 	}
 
@@ -50,7 +56,7 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 	}
 
 	public Clazz getModel(int idx) {
-		return classes[idx];
+		return _classes[idx];
 
 	}
 
@@ -63,13 +69,14 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 	public View getView(int idx, View view, ViewGroup parent) {
 
 		final int pos = idx;
-		
+		ViewModel model;
 		if(view == null){
 			view = _layoutInflater.inflate(_layout, null);
 			view.setTag(createViewHolderFor(view));
 			bindModel(getModel(pos), view.getTag());
 
-			((ViewModel)view.getTag()).selectionBox.setOnClickListener(new View.OnClickListener() {
+			model = (ViewModel) view.getTag();
+			model.selectionBox.setOnClickListener(new View.OnClickListener() {
 
 				public void onClick(View v) {
 					CheckBox cb = (CheckBox) v ;
@@ -77,31 +84,43 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 
 					c.setShowNews(cb.isChecked());
 
-					if(!classesSelectedIds.contains(c.getId())){	
-						classesSelectedIds.add(c.getId());
+					if(c.getShowNews()){
+						if(_classesIdsToRemove.contains(c.getId()))
+							_classesIdsToRemove.remove(c.getId());
+						else
+							_classesIdsToAdd.add(c.getId());
 					}else{
-						classesSelectedIds.remove(c.getId());
+						if(_classesIdsToAdd.contains(c.getId()))
+							_classesIdsToAdd.remove(c.getId());
+						else
+							_classesIdsToRemove.add(c.getId());
 					}
 				}  
 			});   
 
-			((ViewModel)view.getTag()).btnParticipants.setOnClickListener(new View.OnClickListener() {
+			model.btnParticipants.setOnClickListener(new View.OnClickListener() {
 
 				public void onClick(View v) {
-					Button btn = (Button) v;
-					Clazz c = (Clazz) btn.getTag();
-					Intent i = new Intent(_context, ParticipantsActivity.class);
-					i.putExtra("classId", c.getId());
-					_context.startActivity(i);
+					ConnectivityManager cm = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+					NetworkInfo ni = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+					if(ni.isConnected()){
+						Button btn = (Button) v;
+						Clazz c = (Clazz) btn.getTag();
+						Intent i = new Intent(_context, ParticipantsActivity.class);
+						i.putExtra("classId", c.getId());
+						_context.startActivity(i);
+					}else{
+						Toast.makeText(_context, "WIFI CONNECTION REQUIRED", Toast.LENGTH_SHORT).show();
+					}
 				}  
 			});  
 
 		}else{
 			bindModel(getModel(pos), view.getTag());
 		}
-
-		((ViewModel)view.getTag()).selectionBox.setTag(this.getModel(pos));
-		((ViewModel)view.getTag()).btnParticipants.setTag(this.getModel(pos));
+		model = (ViewModel) view.getTag();
+		model.selectionBox.setTag(this.getModel(pos));
+		model.btnParticipants.setTag(this.getModel(pos));
 		return view;
 	}
 
@@ -147,7 +166,10 @@ public class ClassesCustomAdapter extends BaseAdapter implements OnScrollListene
 		}		
 	}
 
-	public Set<Integer> getSetListIds() {
-		return classesSelectedIds;
+	public Set<Integer> getClassesIdsToAdd() {
+		return _classesIdsToAdd;
+	}
+	public Set<Integer> getClassesIdsToRemove() {
+		return _classesIdsToRemove;
 	}
 }

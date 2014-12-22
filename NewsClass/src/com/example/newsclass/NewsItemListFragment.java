@@ -15,11 +15,12 @@ public class NewsItemListFragment extends ListFragment {
 	public void onCreate(Bundle state){
 		Log.d(TAG,"NewsItemListFragment - onCreate");
 		super.onCreate(state);
+		
 		Bundle args = getArguments();
 		_newsListModel = (NewsListModel) args.getSerializable("key");
 		
 		this.setListAdapter(
-				new NewsCustomAdapter(getActivity(), _newsListModel.getItems()));	
+				new NewsCustomAdapter(getActivity(), R.layout.news_item_list_layout, _newsListModel.getItems()));	
 	}
 	
 	@Override

@@ -40,6 +40,7 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 				//TODO - adpater to show information, implement fragments
 				if (result != null) {		
 					_model = new ParticipantListModel(result, _ih);
+					
 					FragmentManager fm = getSupportFragmentManager();
 					ParticipantItemListFragment f;
 					if(fm.findFragmentById(R.id.ParticipantFragmentPlaceholder) == null){
@@ -65,8 +66,8 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 			fm.beginTransaction().replace(R.id.ParticipantDetailFragmentPlaceholder, newFrag).commit();
 		} else {
 			Intent i = new Intent(this, ParticipantItemActivity.class);
-			i.putExtra("participantlist", _model);
-			i.putExtra("ix", position);
+			i.putExtra("participantlistmodel", _model);
+			i.putExtra("position", position);
 			startActivity(i);
 		}		
 	}
