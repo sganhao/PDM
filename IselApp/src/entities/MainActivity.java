@@ -1,4 +1,9 @@
-package com.example.iselapp;
+package entities;
+
+import com.example.iselapp.R;
+import com.example.iselapp.R.id;
+import com.example.iselapp.R.layout;
+import com.example.iselapp.R.menu;
 
 import android.app.Activity;
 import android.os.Bundle;
