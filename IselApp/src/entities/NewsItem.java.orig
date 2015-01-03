@@ -14,8 +14,8 @@ public class NewsItem implements Serializable{
 	public Date news_when;
 	public String news_content;
 	public boolean news_isViewed;
-	
-	public NewsItem (String news_classFullname, int news_classId, int news_id, String news_title, Date news_when, String news_content, boolean news_isViewed) {
+
+	public NewsItem (String news_classFullname, int news_classId, int news_id, String news_title, String news_when, String news_content, boolean news_isViewed) throws ParseException {
 		this.news_classFullname = news_classFullname;
 		this.news_classId = news_classId;
 		this.news_id = news_id;
