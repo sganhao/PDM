@@ -1,4 +1,4 @@
-package entities;
+package com.example.iselapp;
 
 import com.example.iselapp.R;
 import com.example.iselapp.R.id;
