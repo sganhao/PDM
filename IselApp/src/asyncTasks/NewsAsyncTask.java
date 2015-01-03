@@ -1,5 +1,6 @@
 package asyncTasks;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import entities.NewsItem;
@@ -31,15 +32,19 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewsItem[]>{
 		Log.d(TAG, "News AsyncTask - doInBackground - starting to go through cursor...");
 		_cursor.moveToFirst();
 		do{
-			_newsItem[idx] = new NewsItem(
-					_cursor.getString(_cursor.getColumnIndex("_newsClassFullname")),
-					_cursor.getInt(_cursor.getColumnIndex("_newsId")), 
-					_cursor.getInt(_cursor.getColumnIndex("_newsClassId")), 
-					_cursor.getString(_cursor.getColumnIndex("_newsTitle")),
-					new Date(_cursor.getString(_cursor.getColumnIndex("_newsWhen"))),
-					_cursor.getString(_cursor.getColumnIndex("_newsContent")),
-					_cursor.getInt(_cursor.getColumnIndex("_newsIsViewed")) == 1 ? true : false
-					);
+			try {
+				_newsItem[idx] = new NewsItem(
+						_cursor.getString(_cursor.getColumnIndex("_newsClassFullname")),
+						_cursor.getInt(_cursor.getColumnIndex("_newsId")), 
+						_cursor.getInt(_cursor.getColumnIndex("_newsClassId")), 
+						_cursor.getString(_cursor.getColumnIndex("_newsTitle")),
+						_cursor.getString(_cursor.getColumnIndex("_newsWhen")),
+						_cursor.getString(_cursor.getColumnIndex("_newsContent")),
+						_cursor.getInt(_cursor.getColumnIndex("_newsIsViewed")) == 1 ? true : false
+						);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			idx++;
 		}while (_cursor.moveToNext());
 
