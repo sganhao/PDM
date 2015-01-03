@@ -23,6 +23,8 @@ public class IselAppOpenHelper extends SQLiteOpenHelper {
 		
 		db.execSQL("create table news (" +
 				"_newsId integer primary key, " +
+				"_newsClassId integer" +
+				"_newsClassFullname" + 
 				"_newsTitle text, " +
 				"_newsWhen Date, " +
 				"_newsContent text, " +
@@ -30,6 +32,7 @@ public class IselAppOpenHelper extends SQLiteOpenHelper {
 		
 		db.execSQL("create table workItems (" +
 				"_workItemId integer primary key," +
+				"_workItem_classId" + 
 				"_workItemAcronym text," +
 				"_workItemTitle text," +
 				"_workItemReqGroupSubmission integer," +
