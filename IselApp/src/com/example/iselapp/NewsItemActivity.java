@@ -1,6 +1,6 @@
 package com.example.iselapp;
 
-import services.NewsService;
+import services.IselAppService;
 import fragments.NewsItemFragment;
 import listModels.NewsListModel;
 import android.content.Context;
@@ -34,7 +34,7 @@ public class NewsItemActivity extends FragmentActivity {
 		int position = intent.getExtras().getInt("position",0);
 
 		if(!model.getItem(position).news_isViewed){
-			Intent service = new Intent(_context, NewsService.class);
+			Intent service = new Intent(_context, IselAppService.class);
 			service.putExtra("newId", model.getItem(position).news_id);
 			service.setAction("userUpdateNews");
 			_context.startService(service);
@@ -61,7 +61,7 @@ public class NewsItemActivity extends FragmentActivity {
 				if(!model.getItem(pos).news_isViewed){
 					model.getItem(pos).news_isViewed = true;
 					
-					Intent service = new Intent(_context, NewsService.class);
+					Intent service = new Intent(_context, IselAppService.class);
 					service.putExtra("newId", model.getItem(pos).news_id);
 					service.setAction("userUpdateNews");
 					_context.startService(service);

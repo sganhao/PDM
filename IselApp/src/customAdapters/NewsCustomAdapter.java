@@ -1,6 +1,6 @@
 package customAdapters;
 
-import services.NewsService;
+import services.IselAppService;
 import viewModels.ViewModelGroup;
 import entities.NewsItem;
 import android.content.Context;
@@ -78,7 +78,7 @@ public class NewsCustomAdapter extends BaseAdapter implements OnItemClickListene
 			return;
 		else{
 			item.news_isViewed = true;
-			Intent service = new Intent(_context, NewsService.class);
+			Intent service = new Intent(_context, IselAppService.class);
 			service.putExtra("newId", item.news_id);
 			service.setAction("userUpdateNews");
 			_context.startService(service);

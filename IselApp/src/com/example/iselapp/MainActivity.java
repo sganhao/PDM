@@ -1,6 +1,6 @@
 package com.example.iselapp;
 
-import services.NewsService;
+import services.IselAppService;
 import listModels.NewsListModel;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -129,7 +129,7 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 			
 			if(!_model.getItem(position).news_isViewed){
 				_model.getItem(position).news_isViewed = true;
-				Intent service = new Intent(this, NewsService.class);
+				Intent service = new Intent(this, IselAppService.class);
 				service.putExtra("newId", _model.getItem(position).news_id);
 				service.setAction("userUpdateNews");
 				startService(service);				
