@@ -4,5 +4,6 @@
     <string name="app_name">IselApp</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Choose Classes</string>
+    <string name="SeeNews">See News</string>
 
 </resources>

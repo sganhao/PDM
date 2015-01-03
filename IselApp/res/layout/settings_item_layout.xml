@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+    
+<TextView
+        android:id="@+id/settings_item_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:gravity="left"
+        android:singleLine="true"
+        android:layout_toRightOf="@+id/settings_item_checkBox"
+        android:layout_centerInParent="true" />
+
+    <CheckBox
+        android:id="@+id/settings_item_checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onCheckboxClicked"/>
+
+    <TextView
+        android:id="@+id/settings_item_fullname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:gravity="left"
+        android:singleLine="true"
+        android:layout_toRightOf="@+id/settings_item_checkBox"
+        android:layout_centerInParent="true" />
+
+    <Button
+        android:id="@+id/settings_item_buttonParticipants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/ic_participants"  />
+    
+</RelativeLayout>
