@@ -1,4 +1,4 @@
-package com.example.iselapp;
+package classesActivities;
 
 public class SettingsActivity {
 

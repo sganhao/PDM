@@ -3,7 +3,8 @@ package customAdapters;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import com.example.iselapp.ParticipantsActivity;
+import participantsActivities.ParticipantsActivity;
+
 
 import viewModels.ViewModel;
 

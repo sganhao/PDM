@@ -1,4 +1,7 @@
-package com.example.iselapp;
+package newsActivities;
+
+import com.example.iselapp.R;
+import com.example.iselapp.R.id;
 
 import services.IselAppService;
 import fragments.NewsItemFragment;

@@ -1,4 +1,11 @@
-package com.example.iselapp;
+package newsActivities;
+
+import classesActivities.SettingsActivity;
+
+import com.example.iselapp.R;
+import com.example.iselapp.R.id;
+import com.example.iselapp.R.layout;
+import com.example.iselapp.R.menu;
 
 import services.IselAppService;
 import listModels.NewsListModel;

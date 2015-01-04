@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item  name="mainactivity_masterdetail" type="layout">@layout/activity_main</item>
+	<item  name="participant_masterdetail" type="layout">@layout/participant_list_layout</item>
 </resources>

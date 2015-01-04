@@ -3,11 +3,12 @@ package entities;
 import java.io.Serializable;
 
 public class ParticipantItem implements Serializable{
-	int participant_number;
-	String participant_fullName;
-	String participant_email;
-	String participant_avatarUri;
-	boolean participant_isTeacher;
+	
+	public int participant_number;
+	public String participant_fullName;
+	public String participant_email;
+	public String participant_avatarUri;
+	public boolean participant_isTeacher;
 	
 	public ParticipantItem(int participant_number, String participant_fullName, String participant_email, String participant_avatarUri, boolean participant_isTeacher){
 		this.participant_number = participant_number;
