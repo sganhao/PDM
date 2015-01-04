@@ -23,27 +23,27 @@ public class IselAppOpenHelper extends SQLiteOpenHelper {
 		
 		db.execSQL("create table news (" +
 				"_newsId integer primary key, " +
-				"_newsClassId integer" +
-				"_newsClassFullname" + 
+				"_newsClassId integer," +
+				"_newsClassFullname text," + 
 				"_newsTitle text, " +
-				"_newsWhen Date, " +
+				"_newsWhen text, " +
 				"_newsContent text, " +
 				"_newsIsViewed integer)");
 		
 		db.execSQL("create table workItems (" +
 				"_workItemId integer primary key," +
-				"_workItem_classId" + 
+				"_workItem_classId," + 
 				"_workItemAcronym text," +
 				"_workItemTitle text," +
 				"_workItemReqGroupSubmission integer," +
-				"_workItemStarDate Date," +
-				"_workItemDueDate Date," +
+				"_workItemStarDate text," +
+				"_workItemDueDate text," +
 				"_workItemAcceptsLateSubmission integer," +
 				"_workItemAcceptsResubmission integer," +
-				"_workItemInfoDocDocId integer" +
+				"_workItemInfoDocDocId integer," +
 				"_workItemInfoDocFilename text," +
 				"_workItemAttachmentDocDocId integer," +
-				"_workItemAttachmentDocFilename text" +
+				"_workItemAttachmentDocFilename text," +
 				"_workItemReportUploadInfoIsRequired integer," +
 				"_workItemReportUploadInfoMaxFileSizeInMB integer," +
 				"_workItemReportUploadInfoAcceptedExtensions text," +

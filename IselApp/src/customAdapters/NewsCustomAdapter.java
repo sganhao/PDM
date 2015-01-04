@@ -60,7 +60,7 @@ public class NewsCustomAdapter extends BaseAdapter implements OnItemClickListene
 		ViewModelGroup viewModel = (ViewModelGroup) viewModelObject;
 		viewModel._news_classFullname.setText(newsItem.news_classFullname);
 		viewModel._news_title.setText(newsItem.news_title);
-		viewModel._news_date.setText(newsItem.news_when.toString());
+		viewModel._news_date.setText(newsItem.printDate());
 		
 		if(!newsItem.news_isViewed) {
 			viewModel._news_classFullname.setTextColor(Color.BLUE);

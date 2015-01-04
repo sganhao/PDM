@@ -6,7 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Scanner;
 
 import org.json.JSONArray;
@@ -104,7 +104,7 @@ public class RequestsToThoth {
 		JSONObject root = new JSONObject(data);
 		JSONArray jnews = root.getJSONArray("newsItems");
 		NewsItem[] newsarray = new NewsItem[jnews.length()];
-
+		
 		for (int i = 0; i < jnews.length(); ++i) {
 			JSONObject jnew = jnews.getJSONObject(i);
 			newsarray[i] = new NewsItem(
@@ -112,12 +112,25 @@ public class RequestsToThoth {
 						jnew.getInt("id"), 
 						classId,
 						jnew.getString("title"), 
-						jnew.getString("when"),
+						getDate(jnew.getString("when")),
 						getNewsItemContent(jnew.getInt("id")),
 						false
 						);
 		}
 		return newsarray;
+	}
+
+	private long getDate(String str) {
+		String [] aux = str.split("-T:.");
+		Calendar c = Calendar.getInstance();
+		c.set(
+				Integer.parseInt(aux[0]), 
+				Integer.parseInt(aux[1]) - 1, 
+				Integer.parseInt(aux[2]), 
+				Integer.parseInt(aux[3]), 
+				Integer.parseInt(aux[4]), 
+				Integer.parseInt(aux[5]));
+		return c.getTimeInMillis();
 	}
 
 	private String getNewsItemContent(int id) throws IOException, JSONException {

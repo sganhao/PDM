@@ -12,8 +12,8 @@ public class WorkItem implements Serializable{
 	String workItem_Acronym;
 	String workItem_title;
 	boolean workItem_reqGroupSubmission;
-	Date workItem_startDate;
-	Date workItem_dueDate;
+	String workItem_startDate;
+	String workItem_dueDate;
 	boolean workItem_acceptsLateSubmission;
 	boolean workItem_acceptsResubmission;
 	InfoDocument workItem_infoDocument;
@@ -40,8 +40,10 @@ public class WorkItem implements Serializable{
 		workItem_reportUploadInfo = repUpInfo;
 		workItem_attachmentUploadInfo = attachUpInfo;
 		
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		workItem_startDate = format.parse(startDate);
-		workItem_dueDate = format.parse(dueDate);
+		String[] aux = startDate.split(" ");
+		workItem_startDate = aux[0] + ", " + aux[3] + " " + aux[2] + " " + aux[5] + ", " + aux[3];
+		
+		aux = dueDate.split(" ");
+		workItem_dueDate = aux[0] + ", " + aux[3] + " " + aux[2] + " " + aux[5] + ", " + aux[3];
 	}
 }

@@ -105,7 +105,7 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 				new String[]{"_newsId", "_newsClassId", "_newsClassFullname", "_newsTitle", "_newsWhen", "_newsContent", "_newsIsViewed"}, 
 				null,
 				null, 
-				null);
+				"_newsIsViewed asc, _newsWhen desc");
 	}
 
 
