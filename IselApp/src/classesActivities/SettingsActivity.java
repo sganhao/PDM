@@ -2,11 +2,7 @@ package classesActivities;
 
 import java.util.Set;
 
-import com.example.iselapp.R;
-
 import services.IselAppService;
-import customAdapters.ClassesCustomAdapter;
-import entities.ClassItem;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -20,13 +16,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import asyncTasks.ClassesAsyncTask;
+
+import com.example.iselapp.R;
+
+import customAdapters.ClassesCursorAdapter;
 
 public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor>{
 	private final String TAG = "IselApp";
 	private ListView _listView;
-	private ClassesCustomAdapter _adapter;
-	private Cursor _cursor;
+	private ClassesCursorAdapter _adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +42,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 				service.putExtra("classesIdsToRemove",listIdsToArray(_adapter.getClassesIdsToRemove()));
 				
 				getApplicationContext().startService(service);
-				
-				_cursor.close();
+
 				SettingsActivity.this.setResult(Activity.RESULT_OK);
 				SettingsActivity.this.finish();
 			}
@@ -73,7 +70,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		Log.d(TAG, "SettingsActivity - onCreateLoader");
 		return new CursorLoader(this, 
 				Uri.parse("content://com.example.iselappserver/classes"), 
-				new String[]{"_classId","_classFullname","_classShowNews"}, 
+				new String[]{"_classId as _id","_classFullname","_classShowNews"}, 
 				null, 
 				null, 
 				"_classId DESC");
@@ -89,22 +86,11 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 			service.setAction("firstFillOfCP");
 			this.startService(service);
 		}else{
-
-			_cursor = data;
-			ClassesAsyncTask n = new ClassesAsyncTask(data){
-
-				@Override
-				protected void onPostExecute(ClassItem[] result) {
-					Log.d(TAG, "SettingsActivity - classesAsyncTask -> onPostExecute...");
-					_adapter = new ClassesCustomAdapter(SettingsActivity.this, R.layout.settings_item_layout, result); 
-					_listView.setAdapter(_adapter);
-					_listView.setOnScrollListener(_adapter);
-					Log.d(TAG, "SettingsActivity - _adapter -> onPostExecute finished...");
-				}
-			};
-			n.execute();
+			_adapter = new ClassesCursorAdapter(SettingsActivity.this, data, 0); 
+			_listView.setAdapter(_adapter);
+			_listView.setOnScrollListener(_adapter);
+			
 		}
-		
 	}
 
 	@Override

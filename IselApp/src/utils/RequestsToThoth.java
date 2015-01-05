@@ -109,8 +109,8 @@ public class RequestsToThoth {
 			JSONObject jnew = jnews.getJSONObject(i);
 			newsarray[i] = new NewsItem(
 						classFullname,
-						jnew.getInt("id"), 
 						classId,
+						jnew.getInt("id"),
 						jnew.getString("title"), 
 						getDate(jnew.getString("when")),
 						getNewsItemContent(jnew.getInt("id")),

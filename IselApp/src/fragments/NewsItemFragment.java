@@ -43,7 +43,7 @@ public class NewsItemFragment extends Fragment{
 		title.setText(_item.news_title);
 		
 		TextView date = (TextView) _view.findViewById(R.id.newsitem_item_date);
-		date.setText(_item.news_when.toString());
+		date.setText(_item.printDate());
 		
 		TextView content = (TextView) _view.findViewById(R.id.newsitem_item_content);
 		content.setText("\n" + _item.news_content);
