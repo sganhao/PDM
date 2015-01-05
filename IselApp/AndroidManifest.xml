@@ -5,39 +5,64 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="15"
+        android:minSdkVersion="16"
         android:targetSdkVersion="21" />
 
     <permission android:name="com.example.iselappserver.ACCESS" />
 
-    <uses-permission android:name="com.example.iselappserver.ACCESS"/>
+    <uses-permission android:name="com.example.iselappserver.ACCESS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    
+
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/isel"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="classesActivities.SettingsActivity"/>
-        <activity android:name="participantsActivities.ParticipantsActivity"/>
-        <activity android:name="participantsActivities.ParticipantItemActivity"/>
+        <activity
+            android:name="classesActivities.SettingsActivity"
+            android:icon="@drawable/classes"
+            android:label="@string/settings_name" />
+        <activity
+            android:name="participantsActivities.ParticipantsActivity"
+            android:icon="@drawable/ic_participants"
+            android:label="@string/participants_name"
+            android:parentActivityName="classesActivities.SettingsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="classesActivities.SettingsActivity" />
+        </activity>
+        <activity
+            android:name="participantsActivities.ParticipantItemActivity"
+            android:icon="@drawable/ic_participant"
+            android:label="@string/participant_name"
+            android:parentActivityName="participantsActivities.ParticipantActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="participantsActivities.ParticipantActivity" />
+        </activity>
         <activity
             android:name="newsActivities.MainActivity"
-            android:label="@string/app_name"
-            android:icon="@drawable/news" >
+            android:icon="@drawable/news"
+            android:label="@string/news_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <activity android:name="newsActivities.NewsItemActivity"
-            	  android:icon="@drawable/news" 
-            	  />
+        <activity
+            android:name="newsActivities.NewsItemActivity"
+            android:icon="@drawable/news"
+            android:label="@string/news_name" 
+            android:parentActivityName="newsActivities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="newsActivities.MainActivity" />
+        </activity>
+
         <service
             android:name="services.IselAppService"
             android:enabled="true" />

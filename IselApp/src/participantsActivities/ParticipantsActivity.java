@@ -6,17 +6,21 @@ import handlers.SetViewHandler;
 
 import java.io.IOException;
 
+import classesActivities.SettingsActivity;
+
 import com.example.iselapp.R;
 import com.example.iselapp.R.id;
 import com.example.iselapp.R.layout;
 
 import listModels.ParticipantListModel;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.MenuItem;
 import asyncTasks.ParticipantsAsyncTask;
 import entities.ParticipantItem;
 import fragments.ParticipantItemFragment;
@@ -43,6 +47,9 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.participant_masterdetail);
+		
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		int classId = getIntent().getIntExtra("classId", 0);
 
@@ -68,6 +75,16 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 			}
 		};
 		n.execute();
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item){
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			Intent i = new Intent(this, SettingsActivity.class);
+			startActivityForResult(i, 0);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

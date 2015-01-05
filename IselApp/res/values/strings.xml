@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">IselApp</string>
+    <string name="app_name">Isel</string>
+    <string name="news_name">News</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Choose Classes</string>
     <string name="settings_name">Classes</string>
     <string name="SeeNews">See News</string>
     <string name="participants_name">Participants</string>
+    <string name="participant_name">Participant</string>
     <string name="SeeParticipants">Participant</string>
 
 </resources>
