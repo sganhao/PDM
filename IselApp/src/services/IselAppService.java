@@ -93,7 +93,7 @@ public class IselAppService extends IntentService {
 
 				_cr.delete(
 						Uri.parse("content://com.example.iselappserver/news"), 
-						"_classId = ?", 
+						"_newsClassId = ?", 
 						new String[]{""+id});
 			}
 

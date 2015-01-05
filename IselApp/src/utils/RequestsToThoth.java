@@ -121,7 +121,7 @@ public class RequestsToThoth {
 	}
 
 	private long getDate(String str) {
-		String [] aux = str.split("-T:.");
+		String [] aux = str.split("[-T:.]+");
 		Calendar c = Calendar.getInstance();
 		c.set(
 				Integer.parseInt(aux[0]), 

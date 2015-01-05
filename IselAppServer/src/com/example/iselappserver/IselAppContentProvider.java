@@ -144,13 +144,22 @@ public class IselAppContentProvider extends ContentProvider{
 		
 		SQLiteDatabase db = _ds.getWritableDatabase();
 		int rawsUpdated = 0;
+		long id = 0;
 		
 		switch (_matcher.match(uri)) {
 			case CLASSES_COLL_MATCH:
 				rawsUpdated = db.update("classes", values, selection, selectionArgs);
 				break;
+			case CLASSES_ITEM_MATCH:
+				id = ContentUris.parseId(uri);
+				rawsUpdated = db.update("classes", values, "_classId = ? ", new String[]{""+id});				
+				break;
 			case NEWS_COLL_MATCH:
 				rawsUpdated = db.update("news", values, selection, selectionArgs);
+				break;
+			case NEWS_ITEM_MATCH:
+				id = ContentUris.parseId(uri);
+				rawsUpdated = db.update("news", values, "_newsId = ? ", new String[]{""+id});
 				break;
 			case WORKITEMS_COLL_MATCH:
 				rawsUpdated = db.update("workItems", values, selection, selectionArgs);

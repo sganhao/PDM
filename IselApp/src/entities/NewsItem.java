@@ -25,11 +25,10 @@ public class NewsItem implements Serializable{
 	}
 	
 	public String printDate(){
-		return  "Date: " +
-				news_when.get(Calendar.DAY_OF_MONTH) + "/" + 
+		return  news_when.get(Calendar.DAY_OF_MONTH) + "/" + 
 				news_when.get(Calendar.MONTH) + "/" + 
 				news_when.get(Calendar.YEAR) + " - " + 
-				news_when.get(Calendar.HOUR) + ":" +
+				news_when.get(Calendar.HOUR_OF_DAY) + ":" +
 				news_when.get(Calendar.MINUTE) + ":" +
 				news_when.get(Calendar.SECOND);
 	}
