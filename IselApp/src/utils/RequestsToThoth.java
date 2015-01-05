@@ -141,7 +141,7 @@ public class RequestsToThoth {
 			InputStream is = urlcon.getInputStream();
 			String data = readAllFrom(is);
 			JSONObject root = new JSONObject(data);
-			return Html.fromHtml(root.getString("content")).toString();
+			return root.getString("content").toString();
 		}finally{
 			urlcon.disconnect();
 		}

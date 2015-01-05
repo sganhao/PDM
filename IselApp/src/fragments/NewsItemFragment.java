@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 public class NewsItemFragment extends Fragment{
@@ -45,7 +46,7 @@ public class NewsItemFragment extends Fragment{
 		TextView date = (TextView) _view.findViewById(R.id.newsitem_item_date);
 		date.setText(_item.printDate());
 		
-		TextView content = (TextView) _view.findViewById(R.id.newsitem_item_content);
-		content.setText("\n" + _item.news_content);
+		WebView content = (WebView) _view.findViewById(R.id.newsitem_item_content);
+		content.loadDataWithBaseURL("", _item.news_content, "text/html", "UTF-8", "");
 	}
 }
