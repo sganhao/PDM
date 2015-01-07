@@ -2,6 +2,7 @@ package services;
 
 import entities.ClassItem;
 import entities.NewsItem;
+import entities.WorkItem;
 import utils.RequestsToThoth;
 import android.app.IntentService;
 import android.content.ContentResolver;
@@ -95,6 +96,10 @@ public class IselAppService extends IntentService {
 						Uri.parse("content://com.example.iselappserver/news"), 
 						"_newsClassId = ?", 
 						new String[]{""+id});
+				_cr.delete(
+						Uri.parse("content://com.example.iselappserver/workItems"), 
+						"_workItem_classId = ?", 
+						new String[]{""+id});
 			}
 
 			// se 0 vai passar para 1 para mostrar as noticias 
@@ -115,9 +120,36 @@ public class IselAppService extends IntentService {
 				for(int i = 0; i < result.length; i++) {
 					insertNewsItem(result[i], id);
 				}
+				
+				WorkItem[] workItems = _requests.getWorkItems(id, c.getString(c.getColumnIndex("_classFullname")));
+				for(int i = 0; i < workItems.length; i++) {
+					insertWorkItem(workItems[i], id);
+				}
 			}
 		}
 
+	}
+
+	private void insertWorkItem(WorkItem item, int id) {
+		ContentValues values = new ContentValues();
+		values.put("_workItem_classId",item.workItem_classId);
+		values.put("_workItem_classFullname",item.workItem_classFullname);
+		values.put("_workItemId",item.workItem_id);
+		values.put("_workItemAcronym",item.workItem_Acronym);
+		values.put("_workItemTitle",item.workItem_title);
+		values.put("_workItemReqGroupSubmission",item.workItem_reqGroupSubmission == true ? 1 : 0);
+		values.put("_workItemStarDate",Long.toString(item.workItem_startDate.getTimeInMillis()));
+		values.put("_workItemDueDate",Long.toString(item.workItem_dueDate.getTimeInMillis()));
+		values.put("_workItemAcceptsLateSubmission",item.workItem_acceptsLateSubmission == true ? 1 : 0);
+		values.put("_workItemAcceptsResubmission",item.workItem_acceptsResubmission == true ? 1 : 0);
+		values.put("_workItemReportUploadInfoIsRequired",item.workItem_reportUploadInfo.reportUploadInfo_isRequired == true ? 1 : 0);
+		values.put("_workItemReportUploadInfoMaxFileSizeInMB",item.workItem_reportUploadInfo.reportUploadInfo_maxFileSizeInMB);
+		values.put("_workItemReportUploadInfoAcceptedExtensions",item.workItem_reportUploadInfo.reportUploadInfo_acceptedExtensions);
+		values.put("_workItemAttachmentUploadInfoIsRequired",item.workItem_attachmentUploadInfo.attachmentUploadInfo_isRequired == true ? 1 : 0);
+		values.put("_workItemAttachmentUploadInfoMaxFileSizeInMB",item.workItem_attachmentUploadInfo.attachmentUploadInfo_maxFileSizeInMB);
+		values.put("_workItemAttachmentUploadInfoAcceptedExtensions",item.workItem_reportUploadInfo.reportUploadInfo_acceptedExtensions);
+		_cr.insert(Uri.parse("content://com.example.iselappserver/workItems"), values);
+		
 	}
 
 	private void insertClassesItem(ClassItem classItem) {
