@@ -1,9 +1,11 @@
 package entities;
 
-public class AttachmentDocument {
+import java.io.Serializable;
+
+public class AttachmentDocument implements Serializable {
 	
-	int attachmentDocument_id;
-	String attachmentDocument_filename;
+	public int attachmentDocument_id;
+	public String attachmentDocument_filename;
 	
 	public AttachmentDocument (int attachmentDocument_id, String attachmentDocument_filename) {
 		this.attachmentDocument_id = attachmentDocument_id;
