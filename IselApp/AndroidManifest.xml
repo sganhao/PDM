@@ -47,10 +47,10 @@
             android:name="participantsActivities.ParticipantItemActivity"
             android:icon="@drawable/ic_participant"
             android:label="@string/participant_name"
-            android:parentActivityName="participantsActivities.ParticipantActivity" >
+            android:parentActivityName="participantsActivities.ParticipantsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="participantsActivities.ParticipantActivity" />
+                android:value="participantsActivities.ParticipantsActivity" />
         </activity>
         <activity
             android:name="newsActivities.MainActivity"
