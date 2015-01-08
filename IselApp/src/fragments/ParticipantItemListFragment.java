@@ -1,13 +1,17 @@
 package fragments;
 
-import com.example.iselapp.R;
-
-import customAdapters.ParticipantsCustomAdapter;
 import listModels.ParticipantListModel;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import com.example.iselapp.R;
+
+import customAdapters.ParticipantsCustomAdapter;
 
 public class ParticipantItemListFragment extends ListFragment {
 	
@@ -43,5 +47,11 @@ public class ParticipantItemListFragment extends ListFragment {
 
 	public interface Callback{
 		void onListItemClick(int position);
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+		View v = inflater.inflate(R.layout.participant_list_layout, null);
+		return v;
 	}
 }
