@@ -6,33 +6,40 @@ import handlers.SetViewHandler;
 
 import java.io.IOException;
 
-import classesActivities.SettingsActivity;
-
-import com.example.iselapp.R;
-import com.example.iselapp.R.id;
-import com.example.iselapp.R.layout;
-
 import listModels.ParticipantListModel;
 import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.ActionBar.TabListener;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MenuItem;
 import asyncTasks.ParticipantsAsyncTask;
+import classesActivities.SettingsActivity;
+
+import com.example.iselapp.R;
+
 import entities.ParticipantItem;
 import fragments.ParticipantItemFragment;
 import fragments.ParticipantItemListFragment;
 
-public class ParticipantsActivity extends FragmentActivity implements ParticipantItemListFragment.Callback {
+public class ParticipantsActivity extends FragmentActivity implements ParticipantItemListFragment.Callback, TabListener {
 
 	private static final String TAG = "IselApp";
 	private ParticipantListModel _model;
 	private static SetViewHandler _svh = new SetViewHandler(Looper.getMainLooper());
 	private static ImageHandlerThread _th = new ImageHandlerThread();
 	private static ImageHandler _ih;
+	private ViewPager _viewPager;
+	private ParticipantsPagerAdapter _participantsPageAdapter;
 
 	static {
 		_th.start();
@@ -47,9 +54,16 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.participant_masterdetail);
-		
-		ActionBar actionBar = getActionBar();
+
+		final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+		_viewPager = new ViewPager(this);
+		_viewPager.setId(R.id.viewPager);
+		
+
+		_participantsPageAdapter = new ParticipantsPagerAdapter(getSupportFragmentManager());
 
 		int classId = getIntent().getIntExtra("classId", 0);
 
@@ -71,12 +85,31 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 						f = ParticipantItemListFragment.newInstance(_model);
 						fm.beginTransaction().replace(R.id.participant_list_fragmentPlaceholder, f).commit();
 					}
+				}	
+				
+				_viewPager.setAdapter(_participantsPageAdapter);
+				setContentView(_viewPager);
+				
+				for (int j = 0; j < 2; j++) {
+					actionBar.addTab(
+							actionBar.newTab()
+							.setText(_model.getItem(j).participant_isTeacher ? "Teachers" : "Students")
+							.setTabListener(ParticipantsActivity.this));
 				}
-			}
+			}			
 		};
-		n.execute();
+		n.execute();		
+
+		_viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+			@Override
+			public void onPageSelected (int position) {
+				actionBar.setSelectedNavigationItem(position);
+			}
+		});
+
+
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item){
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
@@ -100,4 +133,37 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 			startActivity(i);
 		}
 	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		_viewPager.setCurrentItem(tab.getPosition());
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+	}
+
+	class ParticipantsPagerAdapter extends FragmentPagerAdapter {
+
+		public ParticipantsPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public Fragment getItem(int i) {
+			Fragment f = ParticipantItemListFragment.newInstance(_model);
+			return f;
+		}
+
+		@Override
+		public int getCount() {
+			return 2;
+		}
+	}
 }
+
+

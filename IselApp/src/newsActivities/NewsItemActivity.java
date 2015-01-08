@@ -1,23 +1,21 @@
 package newsActivities;
 
-import com.example.iselapp.R;
-import com.example.iselapp.R.id;
-
-import services.IselAppService;
-import fragments.NewsItemFragment;
 import listModels.NewsListModel;
+import services.IselAppService;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
-import android.view.MenuItem;
+
+import com.example.iselapp.R;
+
+import fragments.NewsItemFragment;
 
 public class NewsItemActivity extends FragmentActivity {
 	
@@ -85,28 +83,4 @@ public class NewsItemActivity extends FragmentActivity {
 			public void onPageScrolled(int arg0, float arg1, int arg2) {}
 		});
 	}
-	/*
-	public boolean onOptionsItemSelected(MenuItem item){
-		int position = item.getActionView().getId();
-		if (findViewById(R.id.mainactivity_detailFragmentPlaceholder) != null) {
-			FragmentManager fm = getSupportFragmentManager();
-			NewsItemFragment newFrag = NewsItemFragment.newInstance(_model.getItem(position));
-			fm.beginTransaction().replace(R.id.mainactivity_detailFragmentPlaceholder, newFrag).commit();
-			
-			if(!_model.getItem(position).news_isViewed){
-				_model.getItem(position).news_isViewed = true;
-				Intent service = new Intent(this, IselAppService.class);
-				service.putExtra("newId", _model.getItem(position).news_id);
-				service.setAction("userUpdateNews");
-				startService(service);				
-			}
-
-		} else {
-			Intent i = new Intent(this, NewsItemActivity.class);
-			i.putExtra("newslistmodel", _model);
-			i.putExtra("position", position);
-			startActivity(i);
-		}		
-		return true;
-	}*/
 }
