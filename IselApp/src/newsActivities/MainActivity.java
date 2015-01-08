@@ -8,6 +8,7 @@ import com.example.iselapp.R.layout;
 import com.example.iselapp.R.menu;
 
 import services.IselAppService;
+import workItemsActivities.WorkItemsActivity;
 import listModels.NewsListModel;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -55,6 +56,10 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			Intent i = new Intent(this, SettingsActivity.class);
+			startActivityForResult(i, 0);
+			return true;
+		}else if(id == R.id.action_workitems){
+			Intent i = new Intent(this, WorkItemsActivity.class);
 			startActivityForResult(i, 0);
 			return true;
 		}

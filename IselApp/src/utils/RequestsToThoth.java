@@ -104,18 +104,18 @@ public class RequestsToThoth {
 		JSONObject root = new JSONObject(data);
 		JSONArray jnews = root.getJSONArray("newsItems");
 		NewsItem[] newsarray = new NewsItem[jnews.length()];
-		
+
 		for (int i = 0; i < jnews.length(); ++i) {
 			JSONObject jnew = jnews.getJSONObject(i);
 			newsarray[i] = new NewsItem(
-						classFullname,
-						jnew.getInt("id"), 
-						classId,
-						jnew.getString("title"), 
-						getDate(jnew.getString("when")),
-						getNewsItemContent(jnew.getInt("id")),
-						false
-						);
+					classFullname,
+					classId,
+					jnew.getInt("id"),
+					jnew.getString("title"), 
+					getDate(jnew.getString("when")),
+					getNewsItemContent(jnew.getInt("id")),
+					false
+					);
 		}
 		return newsarray;
 	}
@@ -141,7 +141,7 @@ public class RequestsToThoth {
 			InputStream is = urlcon.getInputStream();
 			String data = readAllFrom(is);
 			JSONObject root = new JSONObject(data);
-			return Html.fromHtml(root.getString("content")).toString();
+			return root.getString("content").toString();
 		}finally{
 			urlcon.disconnect();
 		}
@@ -206,7 +206,7 @@ public class RequestsToThoth {
 
 
 
-	public WorkItem[] getWorkItems(int classId){
+	public WorkItem[] getWorkItems(int classId, String classFullname){
 		Log.d(TAG, "requestWorkItems");
 		HttpURLConnection urlCon = null;
 		String uri = WORKITEMS;
@@ -216,7 +216,7 @@ public class RequestsToThoth {
 			urlCon = (HttpURLConnection)url.openConnection();
 			InputStream is = urlCon.getInputStream();
 			String data = readAllFrom(is);
-			return workItemsParseFrom(data, classId);
+			return workItemsParseFrom(data, classId, classFullname);
 		} catch (JSONException e) {
 			Log.d(TAG, e.toString());
 		} catch (MalformedURLException e) {
@@ -231,7 +231,7 @@ public class RequestsToThoth {
 		return null;
 	}
 
-	private WorkItem[] workItemsParseFrom(String data, int classId) throws JSONException, IOException, ParseException {
+	private WorkItem[] workItemsParseFrom(String data, int classId, String classFullname) throws JSONException, IOException, ParseException {
 		JSONObject root = new JSONObject(data);
 		JSONArray jworkItems = root.getJSONArray("workItems");
 		WorkItem[] workItems = new WorkItem[jworkItems.length()];
@@ -239,12 +239,12 @@ public class RequestsToThoth {
 		for (int i = 0; i < jworkItems.length(); ++i) {
 			JSONObject jworkItem = jworkItems.getJSONObject(i);
 			int workItemId = jworkItem.getInt("id");
-			workItems[i] = getDetailedContentWorkItem(workItemId, classId);
+			workItems[i] = getDetailedContentWorkItem(workItemId, classId, classFullname);
 		}
 		return workItems;
 	}
 
-	private WorkItem getDetailedContentWorkItem(int workItemId, int classId) throws IOException, JSONException, ParseException {
+	private WorkItem getDetailedContentWorkItem(int workItemId, int classId, String classFullname) throws IOException, JSONException, ParseException {
 		Log.d(TAG, "requestWorkItems");
 		HttpURLConnection urlCon = null;
 		try{
@@ -252,50 +252,45 @@ public class RequestsToThoth {
 			urlCon = (HttpURLConnection)url.openConnection();
 			InputStream is = urlCon.getInputStream();
 			String data = readAllFrom(is);
-			return detailedContentWorkItemParseFrom(data, classId);
+			return detailedContentWorkItemParseFrom(data, classId, classFullname);
 		}finally{
 			urlCon.disconnect();
 		}
 	}
 
-	private WorkItem detailedContentWorkItemParseFrom(String data, int classId) throws JSONException, ParseException {
+	private WorkItem detailedContentWorkItemParseFrom(String data, int classId, String classFullname) throws JSONException, ParseException {
 		JSONObject root = new JSONObject(data);
-		JSONObject jinfoDocument = root.getJSONObject("infoDocument");
-		InfoDocument infoDoc = new InfoDocument(jinfoDocument.getInt("documentId"), jinfoDocument.getString("fileName"));
-
-		JSONObject jattachmentsDocument = root.getJSONObject("attachmentsDocument");
-		AttachmentDocument attachDoc = new AttachmentDocument(jattachmentsDocument.getInt("documentId"), jattachmentsDocument.getString("fileName"));
 
 		JSONObject jreportUploadInfo = root.getJSONObject("reportUploadInfo");
+		JSONObject jattachmentUploadInfo = root.getJSONObject("attachmentUploadInfo");
+
 		ReportUploadInfo repUpInfo = new ReportUploadInfo(
 				jreportUploadInfo.getBoolean("isRequired"), 
 				jreportUploadInfo.getInt("maxFileSizeInMB"), 
 				getAcceptedExtensions(jreportUploadInfo.getJSONArray("acceptedExtensions"))
 				);
-
-		JSONObject jattachmentUploadInfo = root.getJSONObject("attachmentUploadInfo");
 		AttachmentUploadInfo attachUpInfo = new AttachmentUploadInfo(
 				jattachmentUploadInfo.getBoolean("isRequired"), 
 				jattachmentUploadInfo.getInt("maxFileSizeInMB"), 
 				getAcceptedExtensions(jattachmentUploadInfo.getJSONArray("acceptedExtensions"))
 				);
 
-
 		return new WorkItem(
 				classId,
+				classFullname,
 				root.getInt("id"),
 				root.getString("acronym"),
 				root.getString("title"),
 				root.getBoolean("requiresGroupSubmission"),
-				root.getString("startDate"),
-				root.getString("dueDate"),
+				getDate(root.getString("startDate")),
+				getDate(root.getString("dueDate")),
 				root.getBoolean("acceptLateSubmission"),
 				root.getBoolean("acceptResubmission"),
-				infoDoc,
-				attachDoc,
 				repUpInfo,
 				attachUpInfo
 				);
+
+
 	}
 
 	private String getAcceptedExtensions(JSONArray jsonArray) throws JSONException {

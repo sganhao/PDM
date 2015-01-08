@@ -26,6 +26,15 @@
             android:icon="@drawable/classes"
             android:label="@string/settings_name" />
         <activity
+            android:name="workItemsActivities.WorkItemsActivity"
+            android:icon="@drawable/classes"
+            android:label="@string/workitems_name" />
+        <activity
+            android:name="workItemsActivities.WorkItemActivity"
+            android:icon="@drawable/classes"
+            android:label="@string/workitems_name" 
+            android:parentActivityName="workItemsActivities.WorkItemsActivity"/>
+        <activity
             android:name="participantsActivities.ParticipantsActivity"
             android:icon="@drawable/ic_participants"
             android:label="@string/participants_name"
