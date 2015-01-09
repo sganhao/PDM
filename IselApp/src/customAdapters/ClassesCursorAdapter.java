@@ -35,8 +35,9 @@ public class ClassesCursorAdapter extends CursorAdapter implements OnScrollListe
 	private Set<Integer> _classesIdsToAdd;
 	private Set<Integer> _classesIdsToRemove;
 	private Context _context;
-	
-	
+	private ClassItem[] classes;
+
+
 	public ClassesCursorAdapter(Context context, Cursor c, int flags) {
 		super(context, c, flags);
 		_layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -44,6 +45,7 @@ public class ClassesCursorAdapter extends CursorAdapter implements OnScrollListe
 		_classesIdsToAdd = new LinkedHashSet<Integer>();
 		_classesIdsToRemove = new LinkedHashSet<Integer>();
 		_context = context;
+		classes = new ClassItem[c.getCount()];
 	}
 
 	@Override
@@ -52,7 +54,7 @@ public class ClassesCursorAdapter extends CursorAdapter implements OnScrollListe
 		ClassItem classItem = getClassItem(cursor);
 		viewModel.class_fullName.setText(classItem.getFullname());
 		viewModel.class_selectionBox.setChecked(classItem.getShowNews());
-		
+
 		viewModel.class_selectionBox.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View v) {
@@ -96,11 +98,13 @@ public class ClassesCursorAdapter extends CursorAdapter implements OnScrollListe
 	}
 
 	private ClassItem getClassItem(Cursor cursor) {
-		return new ClassItem(
-				cursor.getInt(cursor.getColumnIndex("_id")), 
-				cursor.getString(cursor.getColumnIndex("_classFullname")), 
-				cursor.getInt(cursor.getColumnIndex("_classShowNews")) == 1 ? true : false
-						);
+		if(classes[cursor.getPosition()] == null)
+			classes[cursor.getPosition()] = new ClassItem(
+					cursor.getInt(cursor.getColumnIndex("_id")), 
+					cursor.getString(cursor.getColumnIndex("_classFullname")), 
+					cursor.getInt(cursor.getColumnIndex("_classShowNews")) == 1 ? true : false
+					);
+		return classes[cursor.getPosition()];
 	}
 
 	@Override
@@ -109,7 +113,7 @@ public class ClassesCursorAdapter extends CursorAdapter implements OnScrollListe
 		view.setTag(new ViewModel(view));
 		return view;
 	}
-	
+
 	@Override
 	public void onScroll(AbsListView list, int first, int count, int total) {
 		_scrollFirst = first;
@@ -141,7 +145,7 @@ public class ClassesCursorAdapter extends CursorAdapter implements OnScrollListe
 		}			
 	}
 
-	
+
 	public Set<Integer> getClassesIdsToAdd() {
 		return _classesIdsToAdd;
 	}
