@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.CalendarContract.Events;
+import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.util.Log;
 
 public class IselAppService extends IntentService {
@@ -20,11 +22,11 @@ public class IselAppService extends IntentService {
 	private RequestsToThoth _requests;
 	private Context _context;
 	private int _idx;
-	
+
 	public IselAppService() {
 		super("IselAppService");
 	}
-	
+
 	public IselAppService(String name) {
 		super(name);
 	}
@@ -37,18 +39,18 @@ public class IselAppService extends IntentService {
 		_requests = new RequestsToThoth();
 		_idx = 0;
 	}	
-	
+
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		String action = intent.getAction();		
 
 		Log.d(TAG , "IselAppService: action = " + action);
-		
+
 		if(action.equals("firstFillOfCP")){
 			ClassItem[] classes = _requests.requestClasses();
 			for(int i = 0 ; i < classes.length ; i++)
 				insertClassesItem(classes[i]);
-			
+
 		}else if(action.equals("userUpdateClasses")){
 			//From User Interaction - Do http request to thoth if a new class is selected
 			//service starts from settingsActivity
@@ -69,7 +71,7 @@ public class IselAppService extends IntentService {
 					null);				
 		}
 	}
-	
+
 	private void doAction(int[] classesId) {
 		for(int id : classesId) {
 			Cursor c = _cr.query(
@@ -120,15 +122,73 @@ public class IselAppService extends IntentService {
 				for(int i = 0; i < result.length; i++) {
 					insertNewsItem(result[i], id);
 				}
-				
+
 				WorkItem[] workItems = _requests.getWorkItems(id, c.getString(c.getColumnIndex("_classFullname")));
 				for(int i = 0; i < workItems.length; i++) {
 					insertWorkItem(workItems[i], id);
+					insertCalendarEvent(workItems[i], i);
 				}
 			}
 		}
 
 	}
+
+	private void insertCalendarEvent(WorkItem workItem, int id) {
+		String str = addEvent(""+id, 
+				workItem.workItem_title, 
+				workItem.workItem_startDate.getTimeInMillis(), 
+				workItem.workItem_dueDate.getTimeInMillis(), 
+				1);		
+	}
+
+	public String addEvent(String calendarId, String title, long startTime,
+			long endTime, int allDay) {
+		ContentValues event = new ContentValues();
+		event.put("calendar_id", ListSelectedCalendars()); // "" for insert
+		event.put("title", title);
+		event.put("description", "");
+		event.put("eventLocation", "");
+		event.put("allDay", allDay);
+		event.put("eventStatus", 1);
+		event.put("dtstart", startTime);
+		event.put("dtend", endTime);
+		event.put("hasAlarm", 1);
+		event.put(Events.EVENT_TIMEZONE, "Portugal/Lisboa");
+
+		Uri eventsUri = Uri.parse("content://com.android.calendar/events");
+		Uri url = _cr.insert(eventsUri, event);
+		String ret = url.toString();
+		return ret;
+	}
+
+	private int ListSelectedCalendars() {
+		int result = 0;
+		String[] projection = new String[] { "_id", "name" };
+
+		Cursor managedCursor = _cr.query(
+				Uri.parse("content://com.android.calendar/calendars"),
+				projection,
+				null,
+				null,
+				null);
+
+		if (managedCursor != null && managedCursor.moveToFirst()) {
+
+			Log.d(TAG, "Listing Selected Calendars Only");
+
+			int idColumn = managedCursor.getColumnIndex("_id");
+
+			do {
+				String calId = managedCursor.getString(idColumn);
+				result = Integer.parseInt(calId);
+			} while (managedCursor.moveToNext());
+		} else {
+			Log.d(TAG, "No Calendars");
+		}
+		return result;
+	}
+
+
 
 	private void insertWorkItem(WorkItem item, int id) {
 		ContentValues values = new ContentValues();
@@ -149,7 +209,7 @@ public class IselAppService extends IntentService {
 		values.put("_workItemAttachmentUploadInfoMaxFileSizeInMB",item.workItem_attachmentUploadInfo.attachmentUploadInfo_maxFileSizeInMB);
 		values.put("_workItemAttachmentUploadInfoAcceptedExtensions",item.workItem_reportUploadInfo.reportUploadInfo_acceptedExtensions);
 		_cr.insert(Uri.parse("content://com.example.iselappserver/workItems"), values);
-		
+
 	}
 
 	private void insertClassesItem(ClassItem classItem) {
@@ -158,7 +218,7 @@ public class IselAppService extends IntentService {
 		values.put("_classFullname", classItem.getFullname());
 		values.put("_classShowNews", 0);
 		_cr.insert(Uri.parse("content://com.example.iselappserver/classes"), values);
-		
+
 	}
 
 	public void insertNewsItem(NewsItem item, int classId) {
@@ -172,5 +232,5 @@ public class IselAppService extends IntentService {
 		values.put("_newsIsViewed", 0);
 		_cr.insert(Uri.parse("content://com.example.iselappserver/news"), values);
 	}
-	
+
 }
