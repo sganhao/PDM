@@ -31,15 +31,15 @@ import entities.ParticipantItem;
 import fragments.ParticipantItemFragment;
 import fragments.ParticipantItemListFragment;
 
-public class ParticipantsActivity extends FragmentActivity implements ParticipantItemListFragment.Callback, TabListener {
+public class ParticipantsActivity extends FragmentActivity implements ParticipantItemListFragment.Callback {
 
 	private static final String TAG = "IselApp";
 	private ParticipantListModel _model;
 	private static SetViewHandler _svh = new SetViewHandler(Looper.getMainLooper());
 	private static ImageHandlerThread _th = new ImageHandlerThread();
 	private static ImageHandler _ih;
-	private ViewPager _viewPager;
-	private ParticipantsPagerAdapter _participantsPageAdapter;
+//	private ViewPager _viewPager;
+//	private ParticipantsPagerAdapter _participantsPageAdapter;
 
 	static {
 		_th.start();
@@ -57,13 +57,13 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 
 		final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-		_viewPager = new ViewPager(this);
-		_viewPager.setId(R.id.viewPager);
-		
-
-		_participantsPageAdapter = new ParticipantsPagerAdapter(getSupportFragmentManager());
+//		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+//
+//		_viewPager = new ViewPager(this);
+//		_viewPager.setId(R.id.viewPager);
+//		
+//
+//		_participantsPageAdapter = new ParticipantsPagerAdapter(getSupportFragmentManager());
 
 		int classId = getIntent().getIntExtra("classId", 0);
 
@@ -87,25 +87,25 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 					}
 				}	
 				
-				_viewPager.setAdapter(_participantsPageAdapter);
-				setContentView(_viewPager);
-				
-				for (int j = 0; j < 2; j++) {
-					actionBar.addTab(
-							actionBar.newTab()
-							.setText(_model.getItem(j).participant_isTeacher ? "Teachers" : "Students")
-							.setTabListener(ParticipantsActivity.this));
-				}
+//				_viewPager.setAdapter(_participantsPageAdapter);
+//				setContentView(_viewPager);
+//				
+//				for (int j = 0; j < 2; j++) {
+//					actionBar.addTab(
+//							actionBar.newTab()
+//							.setText(_model.getItem(j).participant_isTeacher ? "Teachers" : "Students")
+//							.setTabListener(ParticipantsActivity.this));
+//				}
 			}			
 		};
 		n.execute();		
 
-		_viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
-			@Override
-			public void onPageSelected (int position) {
-				actionBar.setSelectedNavigationItem(position);
-			}
-		});
+//		_viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+//			@Override
+//			public void onPageSelected (int position) {
+//				actionBar.setSelectedNavigationItem(position);
+//			}
+//		});
 
 
 	}
@@ -134,36 +134,36 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 		}
 	}
 
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-	}
-
-	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		_viewPager.setCurrentItem(tab.getPosition());
-	}
-
-	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-	}
-
-	class ParticipantsPagerAdapter extends FragmentPagerAdapter {
-
-		public ParticipantsPagerAdapter(FragmentManager fm) {
-			super(fm);
-		}
-
-		@Override
-		public Fragment getItem(int i) {
-			Fragment f = ParticipantItemListFragment.newInstance(_model);
-			return f;
-		}
-
-		@Override
-		public int getCount() {
-			return 2;
-		}
-	}
+//	@Override
+//	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+//	}
+//
+//	@Override
+//	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+//		_viewPager.setCurrentItem(tab.getPosition());
+//	}
+//
+//	@Override
+//	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+//	}
+//
+//	class ParticipantsPagerAdapter extends FragmentPagerAdapter {
+//
+//		public ParticipantsPagerAdapter(FragmentManager fm) {
+//			super(fm);
+//		}
+//
+//		@Override
+//		public Fragment getItem(int i) {
+//			Fragment f = ParticipantItemListFragment.newInstance(_model);
+//			return f;
+//		}
+//
+//		@Override
+//		public int getCount() {
+//			return 2;
+//		}
+//	}
 }
 
 
