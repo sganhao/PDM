@@ -1,27 +1,19 @@
 package asyncTasks;
 
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-
-import entities.NewsItem;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
+import entities.NewsItem;
 
 public class NewsAsyncTask extends AsyncTask<Void, Void, NewsItem[]>{
 
 	private String TAG = "IselApp";
-	private int _numItems;
-	private int _firstViewedItemIdx;
 	private NewsItem[] _newsItem;
 	private Cursor _cursor;
 
 
 	public NewsAsyncTask (Cursor c) {
 		_cursor = c;
-		_numItems = 0;
-		_firstViewedItemIdx = 0;
 	}
 
 	@Override

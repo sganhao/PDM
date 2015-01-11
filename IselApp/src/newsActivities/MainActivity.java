@@ -1,15 +1,8 @@
 package newsActivities;
 
-import classesActivities.SettingsActivity;
-
-import com.example.iselapp.R;
-import com.example.iselapp.R.id;
-import com.example.iselapp.R.layout;
-import com.example.iselapp.R.menu;
-
+import listModels.NewsListModel;
 import services.IselAppService;
 import workItemsActivities.WorkItemsActivity;
-import listModels.NewsListModel;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -23,6 +16,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import asyncTasks.NewsAsyncTask;
+import classesActivities.SettingsActivity;
+
+import com.example.iselapp.R;
+
 import entities.NewsItem;
 import fragments.NewsItemFragment;
 import fragments.NewsItemListFragment;

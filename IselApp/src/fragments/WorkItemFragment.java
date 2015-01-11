@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.example.iselapp.R;
+
 import entities.WorkItem;
 
 public class WorkItemFragment extends Fragment{
@@ -41,16 +43,6 @@ public class WorkItemFragment extends Fragment{
 		viewModel.title.setText(_item.workItem_title);
 		viewModel.startDate.setText("StartDate: " + _item.printStartDate());
 		viewModel.dueDate.setText("DueDate: " + _item.printDueDate());
-		viewModel.individualWorkItem.setChecked(_item.workItem_reqGroupSubmission);
-		viewModel.lateSubmission.setChecked(_item.workItem_acceptsLateSubmission);
-		viewModel.reSubmission.setChecked(_item.workItem_acceptsResubmission);
-		
-		viewModel.repUpInfo.setChecked(_item.workItem_reportUploadInfo.reportUploadInfo_isRequired);
-		viewModel.repUpInfo.setText("Requires report (MaxFileSize: " + _item.workItem_reportUploadInfo.reportUploadInfo_maxFileSizeInMB + 
-				" Valid Extensions: " + _item.workItem_reportUploadInfo.reportUploadInfo_acceptedExtensions + ")");
-		
-		viewModel.attUpInfo.setChecked(_item.workItem_attachmentUploadInfo.attachmentUploadInfo_isRequired);
-		viewModel.attUpInfo.setText("AttachFiles (MaxFileSize: " + _item.workItem_attachmentUploadInfo.attachmentUploadInfo_maxFileSizeInMB + 
-				" Valid Extensions: " + _item.workItem_attachmentUploadInfo.attachmentUploadInfo_acceptedExtensions + ")");
+		viewModel.linkToSelf.loadDataWithBaseURL("", _item.workItem_linkToSelf, "text/html", "UTF-8", "");
 	}
 }

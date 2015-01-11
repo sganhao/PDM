@@ -3,8 +3,6 @@ package asyncTasks;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
-import entities.AttachmentUploadInfo;
-import entities.ReportUploadInfo;
 import entities.WorkItem;
 
 public class WorkItemsAsyncTask extends AsyncTask<Void, Void, WorkItem[]>{
@@ -35,17 +33,6 @@ public class WorkItemsAsyncTask extends AsyncTask<Void, Void, WorkItem[]>{
 	}
 
 	private void InsertInArray() {
-		ReportUploadInfo repUpInfo = new ReportUploadInfo(
-				_cursor.getInt(_cursor.getColumnIndex("_workItemReportUploadInfoIsRequired")) == 1 ? true : false, 
-						_cursor.getInt(_cursor.getColumnIndex("_workItemReportUploadInfoMaxFileSizeInMB")), 
-						_cursor.getString(_cursor.getColumnIndex("_workItemReportUploadInfoAcceptedExtensions")));
-
-		AttachmentUploadInfo attachUpInfo = new AttachmentUploadInfo(
-				_cursor.getInt(_cursor.getColumnIndex("_workItemAttachmentUploadInfoIsRequired")) == 1 ? true : false, 
-						_cursor.getInt(_cursor.getColumnIndex("_workItemAttachmentUploadInfoMaxFileSizeInMB")), 
-						_cursor.getString(_cursor.getColumnIndex("_workItemAttachmentUploadInfoAcceptedExtensions")));
-
-
 		long timeInMillisStartDate = Long.parseLong(_cursor.getString(_cursor.getColumnIndex("_workItemStarDate")));
 		long timeInMillisDueDate = Long.parseLong(_cursor.getString(_cursor.getColumnIndex("_workItemDueDate")));
 		_workItems[idx] = new WorkItem(
@@ -54,14 +41,9 @@ public class WorkItemsAsyncTask extends AsyncTask<Void, Void, WorkItem[]>{
 				_cursor.getInt(_cursor.getColumnIndex("_workItemId")),
 				_cursor.getString(_cursor.getColumnIndex("_workItemAcronym")), 
 				_cursor.getString(_cursor.getColumnIndex("_workItemTitle")),
-				_cursor.getInt(_cursor.getColumnIndex("_workItemReqGroupSubmission")) == 1 ? true : false,
 				timeInMillisStartDate,
 				timeInMillisDueDate,
-				_cursor.getInt(_cursor.getColumnIndex("_workItemAcceptsLateSubmission")) == 1 ? true : false,
-				_cursor.getInt(_cursor.getColumnIndex("_workItemAcceptsResubmission")) == 1 ? true : false,
-
-				repUpInfo,
-				attachUpInfo
+				_cursor.getInt(_cursor.getColumnIndex("_workItemEventId"))
 				);
 	}
 

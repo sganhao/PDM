@@ -13,10 +13,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.text.Html;
 import android.util.Log;
-
-import entities.*;
+import entities.ClassItem;
+import entities.NewsItem;
+import entities.ParticipantItem;
+import entities.WorkItem;
 
 public class RequestsToThoth {
 
@@ -27,7 +28,7 @@ public class RequestsToThoth {
 	private final String PARTICIPANTS = "http://thoth.cc.e.ipl.pt/api/v1/classes/{classId}/participants";
 	private final String CONTENT = "http://thoth.cc.e.ipl.pt/api/v1/newsitems/";
 	private final String WORKITEMS = "http://thoth.cc.e.ipl.pt/api/v1/classes/{classId}/workitems";
-	private final String WORKITEM = "http://thoth.cc.e.ipl.pt/api/v1/workitems/";
+	//private final String WORKITEM = "http://thoth.cc.e.ipl.pt/api/v1/workitems/";
 
 	private ParticipantItem[] _participants;
 	private int _posParticipant;
@@ -238,69 +239,18 @@ public class RequestsToThoth {
 
 		for (int i = 0; i < jworkItems.length(); ++i) {
 			JSONObject jworkItem = jworkItems.getJSONObject(i);
-			int workItemId = jworkItem.getInt("id");
-			workItems[i] = getDetailedContentWorkItem(workItemId, classId, classFullname);
+			workItems[i] = new WorkItem(
+					classId,
+					classFullname,
+					jworkItem.getInt("id"),
+					jworkItem.getString("acronym"),
+					jworkItem.getString("title"),
+					getDate(jworkItem.getString("startDate")),
+					getDate(jworkItem.getString("dueDate")),
+					0
+					);
 		}
 		return workItems;
-	}
-
-	private WorkItem getDetailedContentWorkItem(int workItemId, int classId, String classFullname) throws IOException, JSONException, ParseException {
-		Log.d(TAG, "requestWorkItems");
-		HttpURLConnection urlCon = null;
-		try{
-			URL url = new URL(WORKITEM + workItemId);
-			urlCon = (HttpURLConnection)url.openConnection();
-			InputStream is = urlCon.getInputStream();
-			String data = readAllFrom(is);
-			return detailedContentWorkItemParseFrom(data, classId, classFullname);
-		}finally{
-			urlCon.disconnect();
-		}
-	}
-
-	private WorkItem detailedContentWorkItemParseFrom(String data, int classId, String classFullname) throws JSONException, ParseException {
-		JSONObject root = new JSONObject(data);
-
-		JSONObject jreportUploadInfo = root.getJSONObject("reportUploadInfo");
-		JSONObject jattachmentUploadInfo = root.getJSONObject("attachmentUploadInfo");
-
-		ReportUploadInfo repUpInfo = new ReportUploadInfo(
-				jreportUploadInfo.getBoolean("isRequired"), 
-				jreportUploadInfo.getInt("maxFileSizeInMB"), 
-				getAcceptedExtensions(jreportUploadInfo.getJSONArray("acceptedExtensions"))
-				);
-		AttachmentUploadInfo attachUpInfo = new AttachmentUploadInfo(
-				jattachmentUploadInfo.getBoolean("isRequired"), 
-				jattachmentUploadInfo.getInt("maxFileSizeInMB"), 
-				getAcceptedExtensions(jattachmentUploadInfo.getJSONArray("acceptedExtensions"))
-				);
-
-		return new WorkItem(
-				classId,
-				classFullname,
-				root.getInt("id"),
-				root.getString("acronym"),
-				root.getString("title"),
-				root.getBoolean("requiresGroupSubmission"),
-				getDate(root.getString("startDate")),
-				getDate(root.getString("dueDate")),
-				root.getBoolean("acceptLateSubmission"),
-				root.getBoolean("acceptResubmission"),
-				repUpInfo,
-				attachUpInfo
-				);
-
-
-	}
-
-	private String getAcceptedExtensions(JSONArray jsonArray) throws JSONException {
-		String extensions = "";
-		for(int i = 0 ; i < jsonArray.length() ; i++){
-			extensions += jsonArray.get(i);
-			if(i != jsonArray.length() - 1)
-				extensions += " | ";
-		}
-		return extensions;
 	}
 
 	private String readAllFrom(InputStream is) {

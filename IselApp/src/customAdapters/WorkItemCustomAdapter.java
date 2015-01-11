@@ -5,20 +5,16 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import entities.WorkItem;
 
-public class WorkItemCustomAdapter extends BaseAdapter implements OnItemClickListener{
+public class WorkItemCustomAdapter extends BaseAdapter{
 
 	private LayoutInflater _layoutInflater;
 	private WorkItem[] _workItems;
-	private Context _context;
 	private int _layout;
 	
 	public WorkItemCustomAdapter (Context context, int layout, WorkItem[] workItems) {
-		_context = context;
 		_layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		_workItems = workItems;
 		_layout = layout;
@@ -58,12 +54,6 @@ public class WorkItemCustomAdapter extends BaseAdapter implements OnItemClickLis
 		viewModel.classFullname.setText(""+workItem.workItem_classFullname);
 		viewModel.title.setText("Title: " + workItem.workItem_title);
 		viewModel.dueDate.setText("Due Date: " + workItem.printDueDate());	
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

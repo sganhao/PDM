@@ -1,19 +1,19 @@
 package services;
 
-import entities.ClassItem;
-import entities.NewsItem;
-import entities.WorkItem;
 import utils.RequestsToThoth;
 import android.app.IntentService;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract.Events;
-import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.util.Log;
+import entities.ClassItem;
+import entities.NewsItem;
+import entities.WorkItem;
 
 public class IselAppService extends IntentService {
 
@@ -98,12 +98,13 @@ public class IselAppService extends IntentService {
 						Uri.parse("content://com.example.iselappserver/news"), 
 						"_newsClassId = ?", 
 						new String[]{""+id});
+				deleteCalendarEvents(id);
 				_cr.delete(
 						Uri.parse("content://com.example.iselappserver/workItems"), 
 						"_workItem_classId = ?", 
 						new String[]{""+id});
 			}
-
+			
 			// se 0 vai passar para 1 para mostrar as noticias 
 			// e vai fazer um request ao thoth para inserir no thothNews as noticias dessa turma
 			if (c.moveToFirst() && c.getInt(c.getColumnIndex("_classShowNews")) == 0) {
@@ -125,40 +126,57 @@ public class IselAppService extends IntentService {
 
 				WorkItem[] workItems = _requests.getWorkItems(id, c.getString(c.getColumnIndex("_classFullname")));
 				for(int i = 0; i < workItems.length; i++) {
-					insertWorkItem(workItems[i], id);
-					insertCalendarEvent(workItems[i], i);
+					workItems[i].workItem_eventId = insertCalendarEvent(workItems[i], c.getString(c.getColumnIndex("_classFullname")));
+					insertWorkItem(workItems[i]);
 				}
 			}
+			c.close();
 		}
 
 	}
 
-	private void insertCalendarEvent(WorkItem workItem, int id) {
-		String str = addEvent(""+id, 
+	private void deleteCalendarEvents(int id) {
+		Cursor cursor = _cr.query(
+				Uri.parse("content://com.example.iselappserver/workItems"),
+				new String[]{"_workItemEventId"},
+				"_workItem_classId = ?", 
+				new String[]{""+id},
+				null);
+		while(cursor.moveToNext()){
+			long eventId = cursor.getInt(cursor.getColumnIndex("_workItemEventId"));
+			Uri deleteUri = ContentUris.withAppendedId(Events.CONTENT_URI, eventId);
+			_cr.delete(deleteUri, null, null);
+		}
+		cursor.close();
+	}
+
+	private long insertCalendarEvent(WorkItem workItem, String classFullname) {
+		return addEvent(
 				workItem.workItem_title, 
 				workItem.workItem_startDate.getTimeInMillis(), 
-				workItem.workItem_dueDate.getTimeInMillis(), 
+				workItem.workItem_dueDate.getTimeInMillis(),
+				classFullname,
 				1);		
 	}
 
-	public String addEvent(String calendarId, String title, long startTime,
-			long endTime, int allDay) {
+	public long addEvent(String title, long startTime,
+			long endTime, String classFullname, int allDay) {
 		ContentValues event = new ContentValues();
 		event.put("calendar_id", ListSelectedCalendars()); // "" for insert
 		event.put("title", title);
-		event.put("description", "");
+		event.put("description", "class: " + classFullname);
 		event.put("eventLocation", "");
 		event.put("allDay", allDay);
 		event.put("eventStatus", 1);
-		event.put("dtstart", startTime);
+		event.put("dtstart", endTime);
 		event.put("dtend", endTime);
 		event.put("hasAlarm", 1);
 		event.put(Events.EVENT_TIMEZONE, "Portugal/Lisboa");
 
 		Uri eventsUri = Uri.parse("content://com.android.calendar/events");
 		Uri url = _cr.insert(eventsUri, event);
-		String ret = url.toString();
-		return ret;
+		
+		return Long.parseLong(url.getLastPathSegment());
 	}
 
 	private int ListSelectedCalendars() {
@@ -190,24 +208,16 @@ public class IselAppService extends IntentService {
 
 
 
-	private void insertWorkItem(WorkItem item, int id) {
+	private void insertWorkItem(WorkItem item) {
 		ContentValues values = new ContentValues();
 		values.put("_workItem_classId",item.workItem_classId);
 		values.put("_workItem_classFullname",item.workItem_classFullname);
 		values.put("_workItemId",item.workItem_id);
 		values.put("_workItemAcronym",item.workItem_Acronym);
 		values.put("_workItemTitle",item.workItem_title);
-		values.put("_workItemReqGroupSubmission",item.workItem_reqGroupSubmission == true ? 1 : 0);
 		values.put("_workItemStarDate",Long.toString(item.workItem_startDate.getTimeInMillis()));
 		values.put("_workItemDueDate",Long.toString(item.workItem_dueDate.getTimeInMillis()));
-		values.put("_workItemAcceptsLateSubmission",item.workItem_acceptsLateSubmission == true ? 1 : 0);
-		values.put("_workItemAcceptsResubmission",item.workItem_acceptsResubmission == true ? 1 : 0);
-		values.put("_workItemReportUploadInfoIsRequired",item.workItem_reportUploadInfo.reportUploadInfo_isRequired == true ? 1 : 0);
-		values.put("_workItemReportUploadInfoMaxFileSizeInMB",item.workItem_reportUploadInfo.reportUploadInfo_maxFileSizeInMB);
-		values.put("_workItemReportUploadInfoAcceptedExtensions",item.workItem_reportUploadInfo.reportUploadInfo_acceptedExtensions);
-		values.put("_workItemAttachmentUploadInfoIsRequired",item.workItem_attachmentUploadInfo.attachmentUploadInfo_isRequired == true ? 1 : 0);
-		values.put("_workItemAttachmentUploadInfoMaxFileSizeInMB",item.workItem_attachmentUploadInfo.attachmentUploadInfo_maxFileSizeInMB);
-		values.put("_workItemAttachmentUploadInfoAcceptedExtensions",item.workItem_reportUploadInfo.reportUploadInfo_acceptedExtensions);
+		values.put("_workItemEventId",item.workItem_eventId);
 		_cr.insert(Uri.parse("content://com.example.iselappserver/workItems"), values);
 
 	}
@@ -220,6 +230,7 @@ public class IselAppService extends IntentService {
 		_cr.insert(Uri.parse("content://com.example.iselappserver/classes"), values);
 
 	}
+	
 
 	public void insertNewsItem(NewsItem item, int classId) {
 		ContentValues values = new ContentValues();

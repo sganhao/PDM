@@ -46,20 +46,12 @@ public class WorkItemsActivity extends FragmentActivity implements LoaderCallbac
 						"_workItem_classFullname",
 						"_workItemAcronym",
 						"_workItemTitle",
-						"_workItemReqGroupSubmission",
 						"_workItemStarDate",
 						"_workItemDueDate",
-						"_workItemAcceptsLateSubmission",
-						"_workItemAcceptsResubmission",
-						"_workItemReportUploadInfoIsRequired",
-						"_workItemReportUploadInfoMaxFileSizeInMB",
-						"_workItemReportUploadInfoAcceptedExtensions",
-						"_workItemAttachmentUploadInfoIsRequired",
-						"_workItemAttachmentUploadInfoMaxFileSizeInMB",
-						"_workItemAttachmentUploadInfoAcceptedExtensions"}, 
+						"_workItemEventId"}, 
 				null,
 				null, 
-				null);
+				"_workItemDueDate asc");
 	}
 
 	@Override

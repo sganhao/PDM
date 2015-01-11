@@ -10,31 +10,30 @@ public class WorkItem implements Serializable{
 	public int workItem_id;
 	public String workItem_Acronym;
 	public String workItem_title;
-	public boolean workItem_reqGroupSubmission;
 	public Calendar workItem_startDate;
 	public Calendar workItem_dueDate;
-	public boolean workItem_acceptsLateSubmission;
-	public boolean workItem_acceptsResubmission;
-	public ReportUploadInfo workItem_reportUploadInfo;
-	public AttachmentUploadInfo workItem_attachmentUploadInfo;
+	public String workItem_linkToSelf;
+	public long workItem_eventId;
 	
-	public WorkItem(int classId, String classFullname, int workItemId, String acronym, String title, boolean reqGroupSubmission,
-			long startDate, long dueDate, boolean acceptsLateSubmission, boolean acceptsResubmission,
-			ReportUploadInfo repUpInfo, AttachmentUploadInfo attachUpInfo) {
+	public WorkItem(int classId, String classFullname, int workItemId, String acronym, String title,
+			long startDate, long dueDate, long eventId) {
 		workItem_classId = classId;
-		workItem_classFullname = classFullname;
+		workItem_classFullname = classFullname.replace(" ", "");
 		workItem_id = workItemId;
 		workItem_Acronym = acronym;
 		workItem_title = title;
-		workItem_reqGroupSubmission = reqGroupSubmission;
-		workItem_acceptsLateSubmission = acceptsLateSubmission;
-		workItem_acceptsResubmission = acceptsResubmission;
-		workItem_reportUploadInfo = repUpInfo;
-		workItem_attachmentUploadInfo = attachUpInfo;
 		workItem_startDate = Calendar.getInstance();
 		workItem_startDate.setTimeInMillis(startDate);
 		workItem_dueDate = Calendar.getInstance();
 		workItem_dueDate.setTimeInMillis(dueDate);
+		workItem_linkToSelf = BuildUri();
+		workItem_eventId = eventId;
+	}
+	private String BuildUri() {
+		String [] s = workItem_classFullname.split("[ /]+");
+		String path = "<a href=\"http://thoth.cc.e.ipl.pt/classes/" + workItem_classFullname + "/workitems/" + workItem_id + "\">" +
+				"http://thoth.cc.e.ipl.pt/classes/" + workItem_classFullname + "/workitems/" + workItem_id + "</a>";
+		return path;
 	}
 
 	public String printStartDate(){

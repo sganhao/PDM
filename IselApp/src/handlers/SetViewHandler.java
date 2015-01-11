@@ -1,7 +1,5 @@
 package handlers;
 
-import handlers.ImageHandler.Data;
-
 import java.io.Serializable;
 
 import android.graphics.Bitmap;

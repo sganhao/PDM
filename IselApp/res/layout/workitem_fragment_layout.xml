@@ -30,34 +30,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <CheckBox
-        android:id="@+id/workitem_item_indidual"
+    <WebView
+        android:id="@+id/workitem_item_linkToSelf"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onCheckboxClicked" />
-
-    <CheckBox
-        android:id="@+id/workitem_item_lateSubmission"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onCheckboxClicked" />
-
-    <CheckBox
-        android:id="@+id/workitem_item_reSubmission"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onCheckboxClicked" />
-
-    <CheckBox
-        android:id="@+id/workitem_item_repUpInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onCheckboxClicked" />
-    
-    <CheckBox
-        android:id="@+id/workitem_item_attUpInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onCheckboxClicked" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

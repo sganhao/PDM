@@ -36,17 +36,9 @@ public class IselAppOpenHelper extends SQLiteOpenHelper {
 				"_workItem_classFullname text," +
 				"_workItemAcronym text," +
 				"_workItemTitle text," +
-				"_workItemReqGroupSubmission integer," +
 				"_workItemStarDate text," +
 				"_workItemDueDate text," +
-				"_workItemAcceptsLateSubmission integer," +
-				"_workItemAcceptsResubmission integer," +
-				"_workItemReportUploadInfoIsRequired integer," +
-				"_workItemReportUploadInfoMaxFileSizeInMB integer," +
-				"_workItemReportUploadInfoAcceptedExtensions text," +
-				"_workItemAttachmentUploadInfoIsRequired integer," +
-				"_workItemAttachmentUploadInfoMaxFileSizeInMB integer," +
-				"_workItemAttachmentUploadInfoAcceptedExtensions text)");
+				"_workItemEventId integer)");
 	}
 
 	@Override
