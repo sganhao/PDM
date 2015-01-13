@@ -68,8 +68,8 @@ public class WorkItemCustomAdapter extends BaseAdapter implements OnItemClickLis
 	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
 		Log.d(TAG , "WorkItemCustomAdapter -> onItemClick....");
 		WorkItem wi = (WorkItem) getItem(position);
-		Intent service = new Intent(_context, WorkItemLinkActivity.class);
-		service.putExtra("workItem_link", wi.workItem_linkToSelf);
-		_context.startService(service);
+		Intent intent = new Intent(_context, WorkItemLinkActivity.class);
+		intent.putExtra("workItem_link", wi.workItem_linkToSelf);
+		_context.startActivity(intent);
 	}
 }

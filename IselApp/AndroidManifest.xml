@@ -32,7 +32,7 @@
             android:icon="@drawable/classes"
             android:label="@string/workitems_name" />
         <activity
-            android:name="workItemsActivities.WorkItemActivity"
+            android:name="workItemsActivities.WorkItemLinkActivity"
             android:icon="@drawable/classes"
             android:label="@string/workitems_name" 
             android:parentActivityName="workItemsActivities.WorkItemsActivity"/>

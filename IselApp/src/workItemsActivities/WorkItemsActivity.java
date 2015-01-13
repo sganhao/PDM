@@ -77,6 +77,7 @@ public class WorkItemsActivity extends Activity implements LoaderCallbacks<Curso
 							R.layout.workitem_list_layout, 
 							result);
 					_listView.setAdapter(adapter);
+					_listView.setOnItemClickListener(adapter);
 				}
 			}
 		};
