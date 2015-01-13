@@ -9,9 +9,6 @@
         android:targetSdkVersion="21" />
 
     <permission android:name="com.example.iselappserver.ACCESS" />
- 	
- 	<uses-permission android:name="android.permission.READ_CALENDAR" />
-    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     
     <uses-permission android:name="com.example.iselappserver.ACCESS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -80,6 +77,11 @@
         <service
             android:name="services.IselAppService"
             android:enabled="true" />
+        <receiver android:name="receivers.IselAppReceiver" >
+            <intent-filter>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

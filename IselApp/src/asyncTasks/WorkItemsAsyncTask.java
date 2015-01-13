@@ -33,7 +33,7 @@ public class WorkItemsAsyncTask extends AsyncTask<Void, Void, WorkItem[]>{
 	}
 
 	private void InsertInArray() {
-		long timeInMillisStartDate = Long.parseLong(_cursor.getString(_cursor.getColumnIndex("_workItemStarDate")));
+		long timeInMillisStartDate = Long.parseLong(_cursor.getString(_cursor.getColumnIndex("_workItemStartDate")));
 		long timeInMillisDueDate = Long.parseLong(_cursor.getString(_cursor.getColumnIndex("_workItemDueDate")));
 		_workItems[idx] = new WorkItem(
 				_cursor.getInt(_cursor.getColumnIndex("_workItem_classId")),

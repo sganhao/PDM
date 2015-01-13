@@ -10,7 +10,7 @@ public class IselAppOpenHelper extends SQLiteOpenHelper {
 	private static final String TAG = "IselApp";
 
 	public IselAppOpenHelper(Context context) {
-		super(context, "iselApp.db", null, 1);
+		super(context, "IselApp.db", null, 1);
 	}
 
 	@Override
@@ -28,7 +28,9 @@ public class IselAppOpenHelper extends SQLiteOpenHelper {
 				"_newsTitle text, " +
 				"_newsWhen text, " +
 				"_newsContent text, " +
-				"_newsIsViewed integer)");
+				"_newsIsViewed integer)" 
+				//"FOREIGN KEY(_newsClassId) REFERENCES classes(_classId)) "
+				);
 		
 		db.execSQL("create table workItems (" +
 				"_workItemId integer primary key," +
@@ -36,9 +38,11 @@ public class IselAppOpenHelper extends SQLiteOpenHelper {
 				"_workItem_classFullname text," +
 				"_workItemAcronym text," +
 				"_workItemTitle text," +
-				"_workItemStarDate text," +
+				"_workItemStartDate text," +
 				"_workItemDueDate text," +
-				"_workItemEventId integer)");
+				"_workItemEventId integer)" 
+				//"FOREIGN KEY(_workItem_classId) REFERENCES classes(_classId)) "
+				);
 	}
 
 	@Override

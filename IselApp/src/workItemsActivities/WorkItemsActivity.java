@@ -46,7 +46,7 @@ public class WorkItemsActivity extends FragmentActivity implements LoaderCallbac
 						"_workItem_classFullname",
 						"_workItemAcronym",
 						"_workItemTitle",
-						"_workItemStarDate",
+						"_workItemStartDate",
 						"_workItemDueDate",
 						"_workItemEventId"}, 
 				null,

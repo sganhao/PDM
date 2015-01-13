@@ -207,7 +207,7 @@ public class RequestsToThoth {
 
 
 
-	public WorkItem[] getWorkItems(int classId, String classFullname){
+	public WorkItem[] requestWorkItems(int classId, String classFullname){
 		Log.d(TAG, "requestWorkItems");
 		HttpURLConnection urlCon = null;
 		String uri = WORKITEMS;
