@@ -28,8 +28,8 @@ public class IselAppOpenHelper extends SQLiteOpenHelper {
 				"_newsTitle text, " +
 				"_newsWhen text, " +
 				"_newsContent text, " +
-				"_newsIsViewed integer)" 
-				//"FOREIGN KEY(_newsClassId) REFERENCES classes(_classId)) "
+				"_newsIsViewed integer," +
+				"FOREIGN KEY(_newsClassId) REFERENCES classes(_classId)) "
 				);
 		
 		db.execSQL("create table workItems (" +
@@ -40,8 +40,8 @@ public class IselAppOpenHelper extends SQLiteOpenHelper {
 				"_workItemTitle text," +
 				"_workItemStartDate text," +
 				"_workItemDueDate text," +
-				"_workItemEventId integer)" 
-				//"FOREIGN KEY(_workItem_classId) REFERENCES classes(_classId)) "
+				"_workItemEventId integer," +
+				"FOREIGN KEY(_workItem_classId) REFERENCES classes(_classId))"
 				);
 	}
 

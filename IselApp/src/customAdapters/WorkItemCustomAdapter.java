@@ -1,23 +1,31 @@
 package customAdapters;
 
 import viewModels.WorkItemViewModel;
+import workItemsActivities.WorkItemLinkActivity;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import entities.WorkItem;
 
-public class WorkItemCustomAdapter extends BaseAdapter{
+public class WorkItemCustomAdapter extends BaseAdapter implements OnItemClickListener{
 
 	private LayoutInflater _layoutInflater;
 	private WorkItem[] _workItems;
 	private int _layout;
-	
+	private Context _context;
+	private String TAG = "IselApp";
+
 	public WorkItemCustomAdapter (Context context, int layout, WorkItem[] workItems) {
 		_layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		_workItems = workItems;
 		_layout = layout;
+		_context = context;
 	}
 	
 	@Override
@@ -45,7 +53,7 @@ public class WorkItemCustomAdapter extends BaseAdapter{
 		}
 
 		bindModel(item, view.getTag());
-
+		
 		return view;
 	}
 	
@@ -56,4 +64,12 @@ public class WorkItemCustomAdapter extends BaseAdapter{
 		viewModel.dueDate.setText("Due Date: " + workItem.printDueDate());	
 	}
 
+	@Override
+	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+		Log.d(TAG , "WorkItemCustomAdapter -> onItemClick....");
+		WorkItem wi = (WorkItem) getItem(position);
+		Intent service = new Intent(_context, WorkItemLinkActivity.class);
+		service.putExtra("workItem_link", wi.workItem_linkToSelf);
+		_context.startService(service);
+	}
 }

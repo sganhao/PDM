@@ -2,5 +2,5 @@
 <resources>
     <item  name="activity_masterdetail" type="layout">@layout/mainactivity_twopane</item>
     <item  name="participant_masterdetail" type="layout">@layout/participant_twopane</item>
-    <item  name="workitem_masterdetail" type="layout">@layout/workitem_twopane</item>
+    <item  name="workitem_masterdetail" type="layout">@layout/workitems_activity_layout</item>
 </resources>

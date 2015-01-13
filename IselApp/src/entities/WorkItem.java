@@ -30,8 +30,7 @@ public class WorkItem implements Serializable{
 		workItem_eventId = eventId;
 	}
 	private String BuildUri() {
-		String path = "<a href=\"http://thoth.cc.e.ipl.pt/classes/" + workItem_classFullname + "/workitems/" + workItem_id + "\">" +
-				"http://thoth.cc.e.ipl.pt/classes/" + workItem_classFullname + "/workitems/" + workItem_id + "</a>";
+		String path = "http://thoth.cc.e.ipl.pt/classes/" + workItem_classFullname + "/workitems/" + workItem_id;
 		return path;
 	}
 
