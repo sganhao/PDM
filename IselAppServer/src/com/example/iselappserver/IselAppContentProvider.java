@@ -50,8 +50,6 @@ public class IselAppContentProvider extends ContentProvider{
 
 		SQLiteDatabase db = _ds.getReadableDatabase();
 		Cursor c = null;
-		Context ctx = getContext();
-		Log.d(TAG, ctx.getPackageName());
 
 		switch (_matcher.match(uri)) {
 		case ROOT_MATCH:

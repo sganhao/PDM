@@ -1,6 +1,7 @@
 package com.example.iselapp;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.example.iselapp.R;
@@ -54,14 +55,19 @@ public class IselAppSyncAdapter extends AbstractThreadedSyncAdapter {
 	public void onPerformSync(Account account, Bundle extras, String authority,
 			ContentProviderClient provider, SyncResult syncResult) {
 		Log.d(TAG,"onPerformSync");
-		checkForNewClasses();
-		checkForNewNewsItems();
-		checkForNewWorkItems();
+		if(extras.getBoolean("classes")){
+			Log.d(TAG,"onPerformSync - classes" + Calendar.getInstance().toString());
+			checkForNewClasses();
+		}else if(extras.isEmpty()){
+			Log.d(TAG,"onPerformSync - other" + Calendar.getInstance().toString());
+			checkForNewNewsItems();
+			checkForNewWorkItems();
 
+		}
 	}
 
-	
-	
+
+
 
 	public void checkForNewClasses(){
 		Cursor classesSelectedCursor = _cr.query(
@@ -72,13 +78,15 @@ public class IselAppSyncAdapter extends AbstractThreadedSyncAdapter {
 				null);
 		ClassItem[] result = _requests.requestClasses();
 		int countClassesAdded = 0;
+
 		for(int i = 0; i < result.length; i++) {
 			if(!findId(classesSelectedCursor,result[i].getId())){
 				insertClassesItem(result[i]);
 				countClassesAdded++;
 			}
 		}
-		_notificationLaunch.launchNotification("Added " + countClassesAdded + " new classes");
+		if(countClassesAdded > 0)
+			_notificationLaunch.launchNotification("Added " + countClassesAdded + " new classes");
 		classesSelectedCursor.close();
 	}
 
@@ -114,11 +122,13 @@ public class IselAppSyncAdapter extends AbstractThreadedSyncAdapter {
 				checkId.close();
 			}
 
-			ContentValues [] values = new ContentValues[newsItemValues.size()];
-			newsItemValues.toArray(values);
-			_cr.bulkInsert(Uri.parse("content://com.example.iselappserver/news"), values);
+			if(countNewsAdded > 0){
+				ContentValues [] values = new ContentValues[newsItemValues.size()];
+				newsItemValues.toArray(values);
+				_cr.bulkInsert(Uri.parse("content://com.example.iselappserver/news"), values);
 
-			_notificationLaunch.launchNotification("Class " + className + ": Added " + countNewsAdded + " News");
+				_notificationLaunch.launchNotification("Class " + className + ": Added " + countNewsAdded + " News");	
+			}
 		}
 		classesSelectedCursor.close();
 	}
@@ -157,24 +167,27 @@ public class IselAppSyncAdapter extends AbstractThreadedSyncAdapter {
 				checkId.close();
 			}
 
-			ContentValues[] values = new ContentValues[workItemsValues.size()];
-			workItemsValues.toArray(values);
-			_cr.bulkInsert(Uri.parse("content://com.example.iselappserver/workItems"), values);
+			if(countWorkItemsAdded > 0){
+				ContentValues[] values = new ContentValues[workItemsValues.size()];
+				workItemsValues.toArray(values);
+				_cr.bulkInsert(Uri.parse("content://com.example.iselappserver/workItems"), values);
 
-			_notificationLaunch.launchNotification("Class " + className + ": Added " + countWorkItemsAdded + " WorkItems");;
+				_notificationLaunch.launchNotification("Class " + className + ": Added " + countWorkItemsAdded + " WorkItems");;
+
+			}
 		}
 		classesSelectedCursor.close();
 	}
 
 	private boolean findId(Cursor cursor, int id){
+		if(cursor.getCount() == 0)
+			return false;
 		cursor.moveToFirst();
 		do{
 			if(cursor.getInt(cursor.getColumnIndex("_classId")) == id){
-				cursor.close();
 				return true;
 			}
 		}while(cursor.moveToNext());
-		cursor.close();
 		return false;
 	}
 

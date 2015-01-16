@@ -32,8 +32,6 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 	private static final String AUTHORITY = "com.example.iselappserver";
 	private static final String ACCOUNT_TYPE = "iselapp.com";
 	private static final String ACCOUNT = "dummy_account";
-	private static final String PREF_SETUP_COMPLETE = "setup_complete";
-	private Account account;
 	private ListView _listView;
 	private ClassesCursorAdapter _adapter;
 
@@ -93,16 +91,6 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		if(data == null || data.getCount() == 0){
 			Log.d(TAG, "onCreate firstFillOfCP");
 			//Preencher pela primeira vez o content provider
-			//			Bundle settingsBundle = new Bundle();
-			//	        settingsBundle.putBoolean(
-			//	                ContentResolver.SYNC_EXTRAS_MANUAL, true);
-			//	        settingsBundle.putBoolean(
-			//	                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-			//
-			//	        AccountManager am = (AccountManager) this.getSystemService(Activity.ACCOUNT_SERVICE);
-			//			Account account = new Account("Isel", ACCOUNT_TYPE);
-			//			am.addAccountExplicitly(account, null, null);
-			//			ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
 			CreateSyncAccount(this);
 		}else{
 			_adapter = new ClassesCursorAdapter(SettingsActivity.this, data, 0); 
@@ -120,7 +108,10 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 
 	public static void CreateSyncAccount(Context ctx){
 
-		Account account = new Account(ACCOUNT, ACCOUNT_TYPE);
+		final Account account = new Account(ACCOUNT, ACCOUNT_TYPE);
+		//É necessário? Nao sei :p
+		//ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
+		//ContentResolver.setIsSyncable(account, AUTHORITY, 1);
 		AccountManager am = (AccountManager) ctx.getSystemService(Activity.ACCOUNT_SERVICE);
 		am.addAccountExplicitly(account, null, null);
 		TriggerRefresh(account);
