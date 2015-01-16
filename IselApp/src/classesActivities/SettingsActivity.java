@@ -3,14 +3,19 @@ package classesActivities;
 import java.util.Set;
 
 import services.IselAppService;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +27,13 @@ import com.example.iselapp.R;
 import customAdapters.ClassesCursorAdapter;
 
 public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor>{
+
 	private final String TAG = "IselApp";
+	private static final String AUTHORITY = "com.example.iselappserver";
+	private static final String ACCOUNT_TYPE = "iselapp.com";
+	private static final String ACCOUNT = "dummy_account";
+	private static final String PREF_SETUP_COMPLETE = "setup_complete";
+	private Account account;
 	private ListView _listView;
 	private ClassesCursorAdapter _adapter;
 
@@ -37,10 +48,10 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 			public void onClick(View v) {
 				Intent service = new Intent(getApplicationContext(), IselAppService.class);
 				service.setAction("userUpdateClasses");
-				
+
 				service.putExtra("classesIdsToAdd",listIdsToArray(_adapter.getClassesIdsToAdd()));
 				service.putExtra("classesIdsToRemove",listIdsToArray(_adapter.getClassesIdsToRemove()));
-				
+
 				getApplicationContext().startService(service);
 
 				SettingsActivity.this.setResult(Activity.RESULT_OK);
@@ -63,8 +74,8 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 
 		getLoaderManager().initLoader(1, null, this);
 	}
-	
-	
+
+
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		Log.d(TAG, "SettingsActivity - onCreateLoader");
@@ -82,20 +93,49 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		if(data == null || data.getCount() == 0){
 			Log.d(TAG, "onCreate firstFillOfCP");
 			//Preencher pela primeira vez o content provider
-			Intent service = new Intent(this, IselAppService.class);
-			service.setAction("firstFillOfCP");
-			this.startService(service);
+			//			Bundle settingsBundle = new Bundle();
+			//	        settingsBundle.putBoolean(
+			//	                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+			//	        settingsBundle.putBoolean(
+			//	                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+			//
+			//	        AccountManager am = (AccountManager) this.getSystemService(Activity.ACCOUNT_SERVICE);
+			//			Account account = new Account("Isel", ACCOUNT_TYPE);
+			//			am.addAccountExplicitly(account, null, null);
+			//			ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
+			CreateSyncAccount(this);
 		}else{
 			_adapter = new ClassesCursorAdapter(SettingsActivity.this, data, 0); 
 			_listView.setAdapter(_adapter);
 			_listView.setOnScrollListener(_adapter);
-			
+
 		}
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
+	public static void CreateSyncAccount(Context ctx){
+
+		Account account = new Account(ACCOUNT, ACCOUNT_TYPE);
+		AccountManager am = (AccountManager) ctx.getSystemService(Activity.ACCOUNT_SERVICE);
+		am.addAccountExplicitly(account, null, null);
+		TriggerRefresh(account);
+
+	}
+
+
+	private static void TriggerRefresh(Account account) {
+		Bundle b = new Bundle();
+
+		b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+		b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+		ContentResolver.requestSync(account,AUTHORITY,b);
+
+	}
+
+
 }

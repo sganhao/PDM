@@ -3,6 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 
+import utils.CalendarEvents;
 import utils.RequestsToThoth;
 import android.app.IntentService;
 import android.content.ContentResolver;
@@ -23,8 +24,7 @@ public class IselAppService extends IntentService {
 	private String TAG = "IselApp";
 	private ContentResolver _cr;
 	private RequestsToThoth _requests;
-	private Context _context;
-	private int _idx;
+	private CalendarEvents _calendarEvents;
 
 	public IselAppService() {
 		super("IselAppService");
@@ -38,9 +38,8 @@ public class IselAppService extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 		_cr = getContentResolver();
-		_context = this.getApplicationContext();
 		_requests = new RequestsToThoth();
-		_idx = 0;
+		_calendarEvents = new CalendarEvents(_cr);
 	}	
 
 	@Override
@@ -49,12 +48,7 @@ public class IselAppService extends IntentService {
 
 		Log.d(TAG , "IselAppService: action = " + action);
 
-		if(action.equals("firstFillOfCP")){
-			ClassItem[] classes = _requests.requestClasses();
-			for(int i = 0 ; i < classes.length ; i++)
-				insertClassesItem(classes[i]);
-
-		}else if(action.equals("userUpdateClasses")){
+		if(action.equals("userUpdateClasses")){
 			//From User Interaction - Do http request to thoth if a new class is selected
 			//service starts from settingsActivity
 			int[] classesIdsToRemove = intent.getIntArrayExtra("classesIdsToRemove");
@@ -99,7 +93,7 @@ public class IselAppService extends IntentService {
 					"_newsClassId = ?", 
 					new String[]{""+id});
 
-			deleteCalendarEvents(id);
+			_calendarEvents.deleteEvents(id);
 
 			_cr.delete(
 					Uri.parse("content://com.example.iselappserver/workItems"), 
@@ -137,12 +131,12 @@ public class IselAppService extends IntentService {
 			NewsItem[] result = _requests.requestNews(id, c.getString(c.getColumnIndex("_classFullname")));
 
 			for(int i = 0; i < result.length; i++) {
-				newsItemValues.add(getNewsItemContentValues(result[i], id));
+				newsItemValues.add(getNewsItemContentValues(result[i]));
 			}
 
 			WorkItem[] workItems = _requests.requestWorkItems(id, c.getString(c.getColumnIndex("_classFullname")));
 			for(int i = 0; i < workItems.length; i++) {
-				workItems[i].workItem_eventId = insertCalendarEvent(workItems[i], c.getString(c.getColumnIndex("_classFullname")));
+				workItems[i].workItem_eventId = _calendarEvents.addNewEvent(workItems[i], c.getString(c.getColumnIndex("_classFullname")));
 				workItemsValues.add(getWorkItemContentValues(workItems[i]));
 			}
 			c.close();
@@ -154,79 +148,6 @@ public class IselAppService extends IntentService {
 		workItemsValues.toArray(values);
 		_cr.bulkInsert(Uri.parse("content://com.example.iselappserver/workItems"), values);
 	}
-
-	private void deleteCalendarEvents(int id) {
-		Cursor cursor = _cr.query(
-				Uri.parse("content://com.example.iselappserver/workItems"),
-				new String[]{"_workItemEventId"},
-				"_workItem_classId = ?", 
-				new String[]{""+id},
-				null);
-		while(cursor.moveToNext()){
-			long eventId = cursor.getInt(cursor.getColumnIndex("_workItemEventId"));
-			Uri deleteUri = ContentUris.withAppendedId(Events.CONTENT_URI, eventId);
-			_cr.delete(deleteUri, null, null);
-		}
-		cursor.close();
-	}
-
-	private long insertCalendarEvent(WorkItem workItem, String classFullname) {
-		return addEvent(
-				workItem.workItem_title, 
-				workItem.workItem_startDate.getTimeInMillis(), 
-				workItem.workItem_dueDate.getTimeInMillis(),
-				classFullname,
-				1);		
-	}
-
-	public long addEvent(String title, long startTime,
-			long endTime, String classFullname, int allDay) {
-		ContentValues event = new ContentValues();
-		event.put("calendar_id", ListSelectedCalendars()); // "" for insert
-		event.put("title", title);
-		event.put("description", "class: " + classFullname);
-		event.put("eventLocation", "");
-		event.put("allDay", allDay);
-		event.put("eventStatus", 1);
-		event.put("dtstart", endTime);
-		event.put("dtend", endTime);
-		event.put("hasAlarm", 1);
-		event.put(Events.EVENT_TIMEZONE, "Portugal/Lisboa");
-
-		Uri eventsUri = Uri.parse("content://com.android.calendar/events");
-		Uri url = _cr.insert(eventsUri, event);
-
-		return Long.parseLong(url.getLastPathSegment());
-	}
-
-	private int ListSelectedCalendars() {
-		int result = 0;
-		String[] projection = new String[] { "_id", "name" };
-
-		Cursor managedCursor = _cr.query(
-				Uri.parse("content://com.android.calendar/calendars"),
-				projection,
-				null,
-				null,
-				null);
-
-		if (managedCursor != null && managedCursor.moveToFirst()) {
-
-			Log.d(TAG, "Listing Selected Calendars Only");
-
-			int idColumn = managedCursor.getColumnIndex("_id");
-
-			do {
-				String calId = managedCursor.getString(idColumn);
-				result = Integer.parseInt(calId);
-			} while (managedCursor.moveToNext());
-		} else {
-			Log.d(TAG, "No Calendars");
-		}
-		return result;
-	}
-
-
 
 	private ContentValues getWorkItemContentValues(WorkItem item) {
 		ContentValues values = new ContentValues();
@@ -242,20 +163,10 @@ public class IselAppService extends IntentService {
 
 	}
 
-	private void insertClassesItem(ClassItem classItem) {
-		ContentValues values = new ContentValues();
-		values.put("_classId", classItem.getId());
-		values.put("_classFullname", classItem.getFullname());
-		values.put("_classShowNews", 0);
-		_cr.insert(Uri.parse("content://com.example.iselappserver/classes"), values);
-
-	}
-
-
-	public ContentValues getNewsItemContentValues(NewsItem item, int classId) {
+	public ContentValues getNewsItemContentValues(NewsItem item) {
 		ContentValues values = new ContentValues();
 		values.put("_newsId", item.news_id);
-		values.put("_newsClassId", classId);
+		values.put("_newsClassId", item.news_classId);
 		values.put("_newsClassFullname", item.news_classFullname);
 		values.put("_newsTitle", item.news_title);
 		values.put("_newsWhen", Long.toString(item.news_when.getTimeInMillis()));

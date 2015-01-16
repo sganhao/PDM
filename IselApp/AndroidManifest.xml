@@ -9,14 +9,22 @@
         android:targetSdkVersion="21" />
 
     <permission android:name="com.example.iselappserver.ACCESS" />
-    
+
     <uses-permission android:name="com.example.iselappserver.ACCESS" />
+    
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
+    
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_SYNC_STATS"/>
 
     <application
         android:allowBackup="true"
@@ -34,8 +42,8 @@
         <activity
             android:name="workItemsActivities.WorkItemLinkActivity"
             android:icon="@drawable/classes"
-            android:label="@string/workitems_name" 
-            android:parentActivityName="workItemsActivities.WorkItemsActivity"/>
+            android:label="@string/workitems_name"
+            android:parentActivityName="workItemsActivities.WorkItemsActivity" />
         <activity
             android:name="participantsActivities.ParticipantsActivity"
             android:icon="@drawable/ic_participants"
@@ -67,7 +75,7 @@
         <activity
             android:name="newsActivities.NewsItemActivity"
             android:icon="@drawable/news"
-            android:label="@string/news_name" 
+            android:label="@string/news_name"
             android:parentActivityName="newsActivities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -77,6 +85,32 @@
         <service
             android:name="services.IselAppService"
             android:enabled="true" />
+        
+        <service
+            android:name="syncadapters.IselAppAuthenticatorService">
+            <intent-filter >
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data 
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/iselappauthenticator"/>
+        </service>
+        
+        
+        
+        <service
+            android:name="syncAdapters.iselappsyncservice"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/iselappsyncadapter" />
+        </service>
+
         <receiver android:name="receivers.IselAppReceiver" >
             <intent-filter>
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />

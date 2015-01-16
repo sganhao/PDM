@@ -37,6 +37,7 @@
             android:authorities="com.example.iselappserver"
             android:exported="true"
             android:permission="com.example.iselappserver.ACCESS"
+            android:syncable="true"
             >
         </provider>
     </application>
