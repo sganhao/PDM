@@ -1,4 +1,4 @@
-package syncAdapters;
+package com.example.iselapp;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;

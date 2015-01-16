@@ -87,7 +87,7 @@
             android:enabled="true" />
         
         <service
-            android:name="syncadapters.IselAppAuthenticatorService">
+            android:name="com.example.iselapp.IselAppAuthenticatorService">
             <intent-filter >
                 <action android:name="android.accounts.AccountAuthenticator"/>
             </intent-filter>
@@ -99,7 +99,7 @@
         
         
         <service
-            android:name="syncAdapters.iselappsyncservice"
+            android:name="com.example.iselapp.iselappsyncservice"
             android:exported="true"
             >
             <intent-filter>

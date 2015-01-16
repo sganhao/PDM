@@ -1,4 +1,4 @@
-package syncAdapters;
+package com.example.iselapp;
 
 import java.util.ArrayList;
 import java.util.List;
