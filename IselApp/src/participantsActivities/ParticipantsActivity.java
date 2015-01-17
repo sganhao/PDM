@@ -13,12 +13,14 @@ import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import asyncTasks.ParticipantsAsyncTask;
 import classesActivities.SettingsActivity;
@@ -37,6 +39,8 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 	private static ImageHandlerThread _th = new ImageHandlerThread();
 	private static ImageHandler _ih;
 	private int tabIdx;
+	private int classId;
+	private SharedPreferences _pref;
 	//	private ViewPager _viewPager;
 	//	private ParticipantsPagerAdapter _participantsPageAdapter;
 
@@ -53,7 +57,11 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.participant_masterdetail);
-
+		_pref = getSharedPreferences("classId",0);
+		classId = _pref.getInt("id",0);
+		_pref.edit().putInt("id", 0).commit();
+		if(classId == 0)
+			classId = getIntent().getIntExtra("classId", 0);
 		final ViewPager pager = new ViewPager(this);	
 		pager.setId(R.id.viewPager);
 		final ActionBar actionBar = getActionBar();
@@ -64,7 +72,7 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 			public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
 				tabIdx = tab.getPosition();
 				if(_model == null){
-					int classId = getIntent().getIntExtra("classId", 0);
+					
 					ParticipantsAsyncTask n = new ParticipantsAsyncTask(classId){
 
 						@Override
@@ -143,6 +151,7 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 		return super.onOptionsItemSelected(item);
 	}
 
+	
 	@Override
 	public void onListItemClick(int position) {
 		if (findViewById(R.id.participant_Detail_fragmentPlaceholder) != null) {
@@ -150,6 +159,7 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 			ParticipantItemFragment newFrag = ParticipantItemFragment.newInstance(_model.getItem(tabIdx,position),_ih);
 			fm.beginTransaction().replace(R.id.participant_Detail_fragmentPlaceholder, newFrag).commit();
 		} else {
+			_pref.edit().putInt("id", classId).commit();
 			Intent i = new Intent(this, ParticipantItemActivity.class);
 			i.putExtra("participantlistmodel", _model);
 			i.putExtra("position", position);
