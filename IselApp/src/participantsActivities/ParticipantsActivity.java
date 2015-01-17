@@ -5,14 +5,19 @@ import handlers.ImageHandlerThread;
 import handlers.SetViewHandler;
 
 import java.io.IOException;
+import java.util.List;
 
 import listModels.ParticipantListModel;
 import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.ActionBar.TabListener;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MenuItem;
 import asyncTasks.ParticipantsAsyncTask;
@@ -31,8 +36,9 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 	private static SetViewHandler _svh = new SetViewHandler(Looper.getMainLooper());
 	private static ImageHandlerThread _th = new ImageHandlerThread();
 	private static ImageHandler _ih;
-//	private ViewPager _viewPager;
-//	private ParticipantsPagerAdapter _participantsPageAdapter;
+	private int tabIdx;
+	//	private ViewPager _viewPager;
+	//	private ParticipantsPagerAdapter _participantsPageAdapter;
 
 	static {
 		_th.start();
@@ -48,59 +54,83 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.participant_masterdetail);
 
+		final ViewPager pager = new ViewPager(this);	
+		pager.setId(R.id.viewPager);
 		final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-//		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-//
-//		_viewPager = new ViewPager(this);
-//		_viewPager.setId(R.id.viewPager);
-//		
-//
-//		_participantsPageAdapter = new ParticipantsPagerAdapter(getSupportFragmentManager());
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-		int classId = getIntent().getIntExtra("classId", 0);
+		ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+			public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+				tabIdx = tab.getPosition();
+				if(_model == null){
+					int classId = getIntent().getIntExtra("classId", 0);
+					ParticipantsAsyncTask n = new ParticipantsAsyncTask(classId){
 
-		ParticipantsAsyncTask n = new ParticipantsAsyncTask(classId){
+						@Override
+						protected void onPostExecute(List<ParticipantItem[]> result) {
+							if (result != null) {
+								_model = new ParticipantListModel(result, _ih);
+								pager.setCurrentItem(tabIdx);
 
-			@Override
-			protected void onPostExecute(ParticipantItem[] result) {
-				if (result != null) {		
-					_model = new ParticipantListModel(result, _ih);
+								FragmentManager fm = getSupportFragmentManager();
+								ParticipantItemListFragment f;
+								if(fm.findFragmentById(R.id.participant_list_fragmentPlaceholder) == null){
+									f = ParticipantItemListFragment.newInstance(_model,tabIdx);			
+									fm.beginTransaction()
+									.add(R.id.participant_list_fragmentPlaceholder, f)
+									.commit();
+								}else{
+									f = ParticipantItemListFragment.newInstance(_model,tabIdx);
+									fm.beginTransaction().replace(R.id.participant_list_fragmentPlaceholder, f).commit();
+								}
+							}	
+
+						}			
+					};
+					n.execute();
+				}else{
+					pager.setCurrentItem(tabIdx);
 
 					FragmentManager fm = getSupportFragmentManager();
 					ParticipantItemListFragment f;
 					if(fm.findFragmentById(R.id.participant_list_fragmentPlaceholder) == null){
-						f = ParticipantItemListFragment.newInstance(_model);			
+						f = ParticipantItemListFragment.newInstance(_model,tabIdx);			
 						fm.beginTransaction()
 						.add(R.id.participant_list_fragmentPlaceholder, f)
 						.commit();
 					}else{
-						f = ParticipantItemListFragment.newInstance(_model);
+						f = ParticipantItemListFragment.newInstance(_model,tabIdx);
 						fm.beginTransaction().replace(R.id.participant_list_fragmentPlaceholder, f).commit();
 					}
-				}	
-				
-//				_viewPager.setAdapter(_participantsPageAdapter);
-//				setContentView(_viewPager);
-//				
-//				for (int j = 0; j < 2; j++) {
-//					actionBar.addTab(
-//							actionBar.newTab()
-//							.setText(_model.getItem(j).participant_isTeacher ? "Teachers" : "Students")
-//							.setTabListener(ParticipantsActivity.this));
-//				}
-			}			
+				}
+			}
+
+			@Override
+			public void onTabReselected(Tab tab, FragmentTransaction ft) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+				// TODO Auto-generated method stub
+
+			}
 		};
-		n.execute();		
 
-//		_viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
-//			@Override
-//			public void onPageSelected (int position) {
-//				actionBar.setSelectedNavigationItem(position);
-//			}
-//		});
+		pager.setOnPageChangeListener(
+				new ViewPager.SimpleOnPageChangeListener() {
+					@Override
+					public void onPageSelected(int position) {
+						getActionBar().setSelectedNavigationItem(position);
+					}
+				});
 
-
+		actionBar.addTab(actionBar.newTab().setText("Teachers")
+				.setTabListener(tabListener));
+		actionBar.addTab(actionBar.newTab().setText("Students")
+				.setTabListener(tabListener));
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item){
@@ -117,46 +147,16 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 	public void onListItemClick(int position) {
 		if (findViewById(R.id.participant_Detail_fragmentPlaceholder) != null) {
 			FragmentManager fm = getSupportFragmentManager();
-			ParticipantItemFragment newFrag = ParticipantItemFragment.newInstance(_model.getItem(position),_ih);
+			ParticipantItemFragment newFrag = ParticipantItemFragment.newInstance(_model.getItem(tabIdx,position),_ih);
 			fm.beginTransaction().replace(R.id.participant_Detail_fragmentPlaceholder, newFrag).commit();
 		} else {
 			Intent i = new Intent(this, ParticipantItemActivity.class);
 			i.putExtra("participantlistmodel", _model);
 			i.putExtra("position", position);
+			i.putExtra("participantType", tabIdx);
 			startActivity(i);
 		}
 	}
-
-//	@Override
-//	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-//	}
-//
-//	@Override
-//	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-//		_viewPager.setCurrentItem(tab.getPosition());
-//	}
-//
-//	@Override
-//	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-//	}
-//
-//	class ParticipantsPagerAdapter extends FragmentPagerAdapter {
-//
-//		public ParticipantsPagerAdapter(FragmentManager fm) {
-//			super(fm);
-//		}
-//
-//		@Override
-//		public Fragment getItem(int i) {
-//			Fragment f = ParticipantItemListFragment.newInstance(_model);
-//			return f;
-//		}
-//
-//		@Override
-//		public int getCount() {
-//			return 2;
-//		}
-//	}
 }
 
 

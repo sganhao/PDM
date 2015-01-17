@@ -20,11 +20,11 @@ public class ParticipantItemListFragment extends ListFragment {
 		
 		Bundle args = getArguments();
 		_participantListModel = (ParticipantListModel) args.getSerializable("key");
-
+		int participantType = args.getInt("participantType");
 		this.setListAdapter(
 				new ParticipantsCustomAdapter(getActivity(), 
 						R.layout.participant_list_layout,
-						_participantListModel.getItems(), 
+						_participantListModel.getItems(participantType), 
 						_participantListModel.getImageHandler()));	
 	}
 
@@ -34,10 +34,11 @@ public class ParticipantItemListFragment extends ListFragment {
 		cb.onListItemClick(position);
 	}
 
-	public static ParticipantItemListFragment newInstance(ParticipantListModel model){
+	public static ParticipantItemListFragment newInstance(ParticipantListModel model, int participantType){
 		ParticipantItemListFragment f = new ParticipantItemListFragment();
 		Bundle args = new Bundle();
 		args.putSerializable("key", model);
+		args.putInt("participantType", participantType);
 		f.setArguments(args);
 		return f;
 	}

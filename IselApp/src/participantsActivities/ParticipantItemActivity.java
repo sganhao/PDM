@@ -51,18 +51,19 @@ public class ParticipantItemActivity extends FragmentActivity {
 
 		Intent i = getIntent();
 		_model = (ParticipantListModel)i.getExtras().getSerializable("participantlistmodel");
+		final int participantType = i.getExtras().getInt("participantType");
 		int position = i.getExtras().getInt("position",0);
 
 		pager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()){
 			@Override
 			public Fragment getItem(int pos) {
-				Fragment f = ParticipantItemFragment.newInstance(_model.getItem(pos),_ih);
+				Fragment f = ParticipantItemFragment.newInstance(_model.getItem(participantType,pos),_ih);
 				return f;
 			}
 
 			@Override
 			public int getCount() {
-				return _model.getItems().length;
+				return _model.getItems(participantType).length;
 			}			
 		});
 		pager.setCurrentItem(position);

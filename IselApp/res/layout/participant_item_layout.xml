@@ -20,7 +20,7 @@
         android:id="@+id/participant_item_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageLayout"
+        android:layout_below="@+id/participant_imageLayout"
         android:textSize="20sp" />
 
     <TextView
@@ -35,13 +35,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/participant_item_fullname"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/participant_item_isTeacher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/participant_item_email"
         android:textSize="20sp" />
 
 </RelativeLayout>

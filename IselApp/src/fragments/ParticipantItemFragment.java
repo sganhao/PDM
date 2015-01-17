@@ -50,9 +50,6 @@ public class ParticipantItemFragment extends Fragment {
 		TextView email = (TextView) _view.findViewById(R.id.participant_item_email);
 		email.setText("E-mail: "+  _item.participant_email);
 		
-		TextView participant = (TextView) _view.findViewById(R.id.participant_item_isTeacher);
-		participant.setText("Participation: " + (_item.participant_isTeacher ? "Teacher" : "Student"));
-		
 		ImageView im = (ImageView) _view.findViewById(R.id.participant_item_avatar);
 		_ih.fetchImage(im, _item.participant_avatarUri,_item.participant_number);
 	}
