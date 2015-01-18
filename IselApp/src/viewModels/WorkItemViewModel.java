@@ -1,5 +1,6 @@
 package viewModels;
 
+import android.graphics.Typeface;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,5 +16,6 @@ public class WorkItemViewModel {
 		classFullname = (TextView) view.findViewById(R.id.workitem_classFullname);
 		title = (TextView) view.findViewById(R.id.workitem_title);
 		dueDate = (TextView) view.findViewById(R.id.workitem_duedate);
+		classFullname.setTypeface(null, Typeface.BOLD);
 	}
 }
