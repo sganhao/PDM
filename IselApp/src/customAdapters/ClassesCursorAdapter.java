@@ -4,7 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import participantsActivities.ParticipantsActivity;
-import viewModels.ViewModel;
+import viewModels.ClassesViewModel;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -50,7 +50,7 @@ public class ClassesCursorAdapter extends CursorAdapter implements OnScrollListe
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		ViewModel viewModel = (ViewModel) view.getTag();
+		ClassesViewModel viewModel = (ClassesViewModel) view.getTag();
 		ClassItem classItem = getClassItem(cursor);
 		viewModel.class_fullName.setText(classItem.getFullname());
 		viewModel.class_selectionBox.setChecked(classItem.getShowNews());
@@ -110,7 +110,7 @@ public class ClassesCursorAdapter extends CursorAdapter implements OnScrollListe
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
 		View view = _layoutInflater.inflate(R.layout.settings_item_layout, parent, false);
-		view.setTag(new ViewModel(view));
+		view.setTag(new ClassesViewModel(view));
 		return view;
 	}
 

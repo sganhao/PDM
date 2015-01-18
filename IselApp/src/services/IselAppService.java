@@ -6,13 +6,16 @@ import java.util.List;
 import utils.CalendarEvents;
 import utils.RequestsToThoth;
 import android.app.IntentService;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.RemoteException;
 import android.provider.CalendarContract.Events;
 import android.util.Log;
 import entities.ClassItem;
@@ -70,6 +73,8 @@ public class IselAppService extends IntentService {
 	}
 
 	private void classesOut(int[] classesIdsToRemove) {
+		if(classesIdsToRemove.length == 0)
+			return;
 		for(int id : classesIdsToRemove) {
 			Cursor c = _cr.query(
 					Uri.parse("content://com.example.iselappserver/classes/"+id),
@@ -79,32 +84,46 @@ public class IselAppService extends IntentService {
 					null);
 			c.moveToFirst();
 
-			ContentValues removeShowFromClass = new ContentValues();
-			removeShowFromClass.put("_classShowNews", 0);
+			ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 
-			_cr.update(
-					Uri.parse("content://com.example.iselappserver/classes/"+id), 
-					removeShowFromClass, 
-					null, 
-					null);
+			ops.add(ContentProviderOperation.newUpdate(Uri.parse("content://com.example.iselappserver/classes/"+id)).withValue("_classShowNews", 0).build());
+//			_cr.update(
+//					Uri.parse("content://com.example.iselappserver/classes/"+id), 
+//					removeShowFromClass, 
+//					null, 
+//					null);
+			
+			ops.add(ContentProviderOperation.newDelete(Uri.parse("content://com.example.iselappserver/news"))
+					.withSelection("_newsClassId = ?", new String[]{""+id}).build());
+//			_cr.delete(
+//					Uri.parse("content://com.example.iselappserver/news"), 
+//					"_newsClassId = ?", 
+//					new String[]{""+id});
 
-			_cr.delete(
-					Uri.parse("content://com.example.iselappserver/news"), 
-					"_newsClassId = ?", 
-					new String[]{""+id});
-
-			_calendarEvents.deleteEvents(id);
-
-			_cr.delete(
-					Uri.parse("content://com.example.iselappserver/workItems"), 
-					"_workItem_classId = ?", 
-					new String[]{""+id});
-			c.close();
+			ops.add(ContentProviderOperation.newDelete(Uri.parse("content://com.example.iselappserver/workItems"))
+					.withSelection("_workItem_classId = ?", new String[]{""+id}).build());
+//			_cr.delete(
+//					Uri.parse("content://com.example.iselappserver/workItems"), 
+//					"_workItem_classId = ?", 
+//					new String[]{""+id});
+			try {
+				getContentResolver().applyBatch("com.example.iselappserver", ops);
+				_calendarEvents.deleteEvents(id);
+			} catch (RemoteException e) {
+				Log.d(TAG,e.toString());
+			} catch (OperationApplicationException e) {
+				Log.d(TAG,e.toString());
+			}finally{
+				c.close();
+			}
+			
 		}
 
 	}
 
 	private void classesIn(int[] classesIdsToAdd) {
+		if(classesIdsToAdd.length == 0)
+			return;
 		List<ContentValues> newsItemValues = new ArrayList<ContentValues>();
 		List<ContentValues> workItemsValues = new ArrayList<ContentValues>();
 		for(int id : classesIdsToAdd) {

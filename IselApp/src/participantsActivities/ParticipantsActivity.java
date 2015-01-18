@@ -31,18 +31,18 @@ import entities.ParticipantItem;
 import fragments.ParticipantItemFragment;
 import fragments.ParticipantItemListFragment;
 
-public class ParticipantsActivity extends FragmentActivity implements ParticipantItemListFragment.Callback {
+public class ParticipantsActivity extends FragmentActivity implements ParticipantItemListFragment.Callback, ActionBar.TabListener {
 
 	private static final String TAG = "IselApp";
 	private ParticipantListModel _model;
 	private static SetViewHandler _svh = new SetViewHandler(Looper.getMainLooper());
 	private static ImageHandlerThread _th = new ImageHandlerThread();
 	private static ImageHandler _ih;
-	private int tabIdx;
-	private int classId;
 	private SharedPreferences _pref;
-	//	private ViewPager _viewPager;
-	//	private ParticipantsPagerAdapter _participantsPageAdapter;
+	private ViewPager pager;
+	private int _tabIdx;
+	private int _classId;
+
 
 	static {
 		_th.start();
@@ -58,74 +58,13 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.participant_masterdetail);
 		_pref = getSharedPreferences("classId",0);
-		classId = _pref.getInt("id",0);
+		_classId = _pref.getInt("id",0);
 		_pref.edit().putInt("id", 0).commit();
-		if(classId == 0)
-			classId = getIntent().getIntExtra("classId", 0);
-		final ViewPager pager = new ViewPager(this);	
+		if(_classId == 0)
+			_classId = getIntent().getIntExtra("classId", 0);
+
+		pager = new ViewPager(this);	
 		pager.setId(R.id.viewPager);
-		final ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-		ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-			public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-				tabIdx = tab.getPosition();
-				if(_model == null){
-					
-					ParticipantsAsyncTask n = new ParticipantsAsyncTask(classId){
-
-						@Override
-						protected void onPostExecute(List<ParticipantItem[]> result) {
-							if (result != null) {
-								_model = new ParticipantListModel(result, _ih);
-								pager.setCurrentItem(tabIdx);
-
-								FragmentManager fm = getSupportFragmentManager();
-								ParticipantItemListFragment f;
-								if(fm.findFragmentById(R.id.participant_list_fragmentPlaceholder) == null){
-									f = ParticipantItemListFragment.newInstance(_model,tabIdx);			
-									fm.beginTransaction()
-									.add(R.id.participant_list_fragmentPlaceholder, f)
-									.commit();
-								}else{
-									f = ParticipantItemListFragment.newInstance(_model,tabIdx);
-									fm.beginTransaction().replace(R.id.participant_list_fragmentPlaceholder, f).commit();
-								}
-							}	
-
-						}			
-					};
-					n.execute();
-				}else{
-					pager.setCurrentItem(tabIdx);
-
-					FragmentManager fm = getSupportFragmentManager();
-					ParticipantItemListFragment f;
-					if(fm.findFragmentById(R.id.participant_list_fragmentPlaceholder) == null){
-						f = ParticipantItemListFragment.newInstance(_model,tabIdx);			
-						fm.beginTransaction()
-						.add(R.id.participant_list_fragmentPlaceholder, f)
-						.commit();
-					}else{
-						f = ParticipantItemListFragment.newInstance(_model,tabIdx);
-						fm.beginTransaction().replace(R.id.participant_list_fragmentPlaceholder, f).commit();
-					}
-				}
-			}
-
-			@Override
-			public void onTabReselected(Tab tab, FragmentTransaction ft) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-				// TODO Auto-generated method stub
-
-			}
-		};
 
 		pager.setOnPageChangeListener(
 				new ViewPager.SimpleOnPageChangeListener() {
@@ -135,10 +74,16 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 					}
 				});
 
+		final ActionBar actionBar = getActionBar();
 		actionBar.addTab(actionBar.newTab().setText("Teachers")
-				.setTabListener(tabListener));
+				.setTabListener(this));
 		actionBar.addTab(actionBar.newTab().setText("Students")
-				.setTabListener(tabListener));
+				.setTabListener(this));
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		_tabIdx = _pref.getInt("tabIdx", 0);
+		actionBar.setSelectedNavigationItem(_tabIdx);
+
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item){
@@ -151,22 +96,71 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 		return super.onOptionsItemSelected(item);
 	}
 
-	
+
 	@Override
 	public void onListItemClick(int position) {
 		if (findViewById(R.id.participant_Detail_fragmentPlaceholder) != null) {
 			FragmentManager fm = getSupportFragmentManager();
-			ParticipantItemFragment newFrag = ParticipantItemFragment.newInstance(_model.getItem(tabIdx,position),_ih);
+			ParticipantItemFragment newFrag = ParticipantItemFragment.newInstance(_model.getItem(_tabIdx,position),_ih);
 			fm.beginTransaction().replace(R.id.participant_Detail_fragmentPlaceholder, newFrag).commit();
 		} else {
-			_pref.edit().putInt("id", classId).commit();
+			_pref.edit().putInt("id", _classId).commit();
+			_pref.edit().putInt("tabIdx", _tabIdx).commit();
 			Intent i = new Intent(this, ParticipantItemActivity.class);
 			i.putExtra("participantlistmodel", _model);
 			i.putExtra("position", position);
-			i.putExtra("participantType", tabIdx);
+			i.putExtra("participantType", _tabIdx);
 			startActivity(i);
 		}
 	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		_tabIdx = tab.getPosition();
+		pager.setCurrentItem(_tabIdx);
+		if(_model == null){
+			ParticipantsAsyncTask n = new ParticipantsAsyncTask(_classId){
+				@Override
+				protected void onPostExecute(List<ParticipantItem[]> result) {
+					if (result != null) {
+						_model = new ParticipantListModel(result, _ih);
+						getFragment(getSupportFragmentManager(),_model);
+					}	
+				}
+			};
+			n.execute();
+		}else{
+			getFragment(getSupportFragmentManager(),_model);
+		}
+
+	}		
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	private void getFragment(FragmentManager supportFragmentManager, ParticipantListModel _model) {
+		FragmentManager fm = getSupportFragmentManager();
+		ParticipantItemListFragment f;
+		if(fm.findFragmentById(R.id.participant_list_fragmentPlaceholder) == null){
+			f = ParticipantItemListFragment.newInstance(_model,_tabIdx);			
+			fm.beginTransaction()
+			.add(R.id.participant_list_fragmentPlaceholder, f)
+			.commit();
+		}else{
+			f = ParticipantItemListFragment.newInstance(_model,_tabIdx);
+			fm.beginTransaction().replace(R.id.participant_list_fragmentPlaceholder, f).commit();
+		}
+		
+	}	
 }
 
 

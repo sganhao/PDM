@@ -56,10 +56,10 @@ public class IselAppSyncAdapter extends AbstractThreadedSyncAdapter {
 			ContentProviderClient provider, SyncResult syncResult) {
 		Log.d(TAG,"onPerformSync");
 		if(extras.getBoolean("classes")){
-			Log.d(TAG,"onPerformSync - classes" + Calendar.getInstance().toString());
+			Log.d(TAG,"onPerformSync - Syncing classes");
 			checkForNewClasses();
 		}else if(extras.isEmpty()){
-			Log.d(TAG,"onPerformSync - other" + Calendar.getInstance().toString());
+			Log.d(TAG,"onPerformSync - Syncing news and workitems");
 			checkForNewNewsItems();
 			checkForNewWorkItems();
 

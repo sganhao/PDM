@@ -9,6 +9,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import asyncTasks.WorkItemsAsyncTask;
 import classesActivities.SettingsActivity;
@@ -23,6 +25,25 @@ public class WorkItemsActivity extends Activity implements LoaderCallbacks<Curso
 	private static final String TAG = "IselApp";
 	private final Uri _workItems = Uri.parse("content://com.example.iselappserver/workItems");
 	private ListView _listView;
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.workitems_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			Intent i = new Intent(this, SettingsActivity.class);
+			startActivityForResult(i, 0);
+			return true;
+		}else if(id == R.id.action_news){
+			finish();
+		}
+		return super.onOptionsItemSelected(item);
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

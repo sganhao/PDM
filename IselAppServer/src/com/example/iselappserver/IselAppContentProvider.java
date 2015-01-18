@@ -1,9 +1,14 @@
 package com.example.iselappserver;
 
+import java.util.ArrayList;
+
 import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -168,7 +173,7 @@ public class IselAppContentProvider extends ContentProvider{
 		getContext().getContentResolver().notifyChange(uri, null);
 		return rawsUpdated;
 	}
-	
+
 	@Override
 	public int bulkInsert(Uri uri, ContentValues [] values){
 		//ToDo - Inserir várias linhas duma so vez
@@ -204,5 +209,26 @@ public class IselAppContentProvider extends ContentProvider{
 		db.setTransactionSuccessful();
 		db.endTransaction();
 		return count;
+	}
+
+	@Override
+	public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations){
+		Log.d(TAG, "ApllyBatch");
+		ContentProviderResult [] result = new ContentProviderResult[operations.size()];
+		int i = 0;
+		SQLiteDatabase db = _ds.getWritableDatabase();
+		db.beginTransaction();
+		try {
+			for(ContentProviderOperation op : operations){
+
+				result[i++] = op.apply(this, result, i);
+			}
+			db.setTransactionSuccessful();
+		}catch (OperationApplicationException e) {
+			Log.d(TAG,e.toString());
+		}finally{
+			db.endTransaction();
+		}
+		return result;
 	}
 }

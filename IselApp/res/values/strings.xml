@@ -5,6 +5,7 @@
     <string name="news_name">News</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Choose Classes</string>
+    <string name="action_news">See News</string>
     <string name="action_workitems">See WorkItems</string>
     <string name="settings_name">Classes</string>
     <string name="SeeNews">See News</string>

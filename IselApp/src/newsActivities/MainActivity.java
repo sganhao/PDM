@@ -57,18 +57,12 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 			return true;
 		}else if(id == R.id.action_workitems){
 			Intent i = new Intent(this, WorkItemsActivity.class);
-			startActivityForResult(i, 0);
+			startActivity(i);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	protected void onActivityResult(int reqCode, int resCode, Intent data){
-		if(reqCode == 0 && resCode == RESULT_OK){
-			getLoaderManager().initLoader(1, null, this);
-		}
-	}
 	
 	private void callAsyncTask(Cursor c){
 		Log.d(TAG,"MainActivity - callAsyncTask");

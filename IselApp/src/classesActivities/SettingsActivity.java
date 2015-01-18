@@ -52,7 +52,6 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 
 				getApplicationContext().startService(service);
 
-				SettingsActivity.this.setResult(Activity.RESULT_OK);
 				SettingsActivity.this.finish();
 			}
 

@@ -1,7 +1,7 @@
 package customAdapters;
 
 import services.IselAppService;
-import viewModels.ViewModelGroup;
+import viewModels.NewsViewModel;
 import entities.NewsItem;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 
-public class NewsCustomAdapter extends BaseAdapter implements OnItemClickListener{
+public class NewsCustomAdapter extends BaseAdapter{
 
 	private LayoutInflater _layoutInflater;
 	private NewsItem[] _news;
@@ -48,7 +48,7 @@ public class NewsCustomAdapter extends BaseAdapter implements OnItemClickListene
 
 		if (view == null) {
 			view = _layoutInflater.inflate(_layout, null);
-			view.setTag(new ViewModelGroup(view));
+			view.setTag(new NewsViewModel(view));
 		}
 
 		bindModelGroup(item, view.getTag());
@@ -57,7 +57,7 @@ public class NewsCustomAdapter extends BaseAdapter implements OnItemClickListene
 	}
 
 	private void bindModelGroup(NewsItem newsItem, Object viewModelObject) {
-		ViewModelGroup viewModel = (ViewModelGroup) viewModelObject;
+		NewsViewModel viewModel = (NewsViewModel) viewModelObject;
 		viewModel._news_classFullname.setText(newsItem.news_classFullname);
 		viewModel._news_title.setText(newsItem.news_title);
 		viewModel._news_date.setText(newsItem.printDate());
@@ -71,18 +71,4 @@ public class NewsCustomAdapter extends BaseAdapter implements OnItemClickListene
 		}		
 	}
 
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View view, int groupPosition, long id) {
-		NewsItem item = (NewsItem) getItem(groupPosition);
-		if(item.news_isViewed)
-			return;
-		else{
-			item.news_isViewed = true;
-			Intent service = new Intent(_context, IselAppService.class);
-			service.putExtra("newId", item.news_id);
-			service.setAction("userUpdateNews");
-			_context.startService(service);
-		}
-		return;
-	}
 }
