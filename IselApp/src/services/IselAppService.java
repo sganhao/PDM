@@ -8,17 +8,13 @@ import utils.RequestsToThoth;
 import android.app.IntentService;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
-import android.provider.CalendarContract.Events;
 import android.util.Log;
-import entities.ClassItem;
 import entities.NewsItem;
 import entities.WorkItem;
 
@@ -87,25 +83,13 @@ public class IselAppService extends IntentService {
 			ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 
 			ops.add(ContentProviderOperation.newUpdate(Uri.parse("content://com.example.iselappserver/classes/"+id)).withValue("_classShowNews", 0).build());
-//			_cr.update(
-//					Uri.parse("content://com.example.iselappserver/classes/"+id), 
-//					removeShowFromClass, 
-//					null, 
-//					null);
 			
 			ops.add(ContentProviderOperation.newDelete(Uri.parse("content://com.example.iselappserver/news"))
 					.withSelection("_newsClassId = ?", new String[]{""+id}).build());
-//			_cr.delete(
-//					Uri.parse("content://com.example.iselappserver/news"), 
-//					"_newsClassId = ?", 
-//					new String[]{""+id});
 
 			ops.add(ContentProviderOperation.newDelete(Uri.parse("content://com.example.iselappserver/workItems"))
 					.withSelection("_workItem_classId = ?", new String[]{""+id}).build());
-//			_cr.delete(
-//					Uri.parse("content://com.example.iselappserver/workItems"), 
-//					"_workItem_classId = ?", 
-//					new String[]{""+id});
+
 			try {
 				getContentResolver().applyBatch("com.example.iselappserver", ops);
 				_calendarEvents.deleteEvents(id);
@@ -115,10 +99,8 @@ public class IselAppService extends IntentService {
 				Log.d(TAG,e.toString());
 			}finally{
 				c.close();
-			}
-			
+			}			
 		}
-
 	}
 
 	private void classesIn(int[] classesIdsToAdd) {
@@ -179,7 +161,6 @@ public class IselAppService extends IntentService {
 		values.put("_workItemDueDate",Long.toString(item.workItem_dueDate.getTimeInMillis()));
 		values.put("_workItemEventId",item.workItem_eventId);
 		return values;
-
 	}
 
 	public ContentValues getNewsItemContentValues(NewsItem item) {
@@ -193,5 +174,4 @@ public class IselAppService extends IntentService {
 		values.put("_newsIsViewed", 0);
 		return values;
 	}
-
 }

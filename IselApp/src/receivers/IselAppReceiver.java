@@ -18,9 +18,7 @@ public class IselAppReceiver extends BroadcastReceiver {
 	private final long UPDATE_CLASSES = 24 * 60 * 60;
 	private final String AUTHORITY = "com.example.iselappserver";
 	private final String ACCOUNT_TYPE = "iselapp.com";
-	private final String ACCOUNT = "dummy_account";
-	
-	
+	private final String ACCOUNT = "dummy_account";	
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -44,12 +42,10 @@ public class IselAppReceiver extends BroadcastReceiver {
 						AUTHORITY, 
 						Bundle.EMPTY, 
 						OTHER_UPDATE);
-
 			}else{
 				Log.d(TAG,"Removing Periodic Syncs");
 				ContentResolver.cancelSync(account, AUTHORITY);
 			}
 		}
 	}
-
 }

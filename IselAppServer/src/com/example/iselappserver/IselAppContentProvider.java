@@ -7,7 +7,6 @@ import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -176,7 +175,6 @@ public class IselAppContentProvider extends ContentProvider{
 
 	@Override
 	public int bulkInsert(Uri uri, ContentValues [] values){
-		//ToDo - Inserir várias linhas duma so vez
 		Log.d(TAG, "bulkInsert :P");
 		int rowsInserted = 0;
 		switch (_matcher.match(uri)) {

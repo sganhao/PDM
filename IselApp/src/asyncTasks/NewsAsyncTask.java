@@ -11,7 +11,6 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewsItem[]>{
 	private NewsItem[] _newsItem;
 	private Cursor _cursor;
 
-
 	public NewsAsyncTask (Cursor c) {
 		_cursor = c;
 	}
@@ -35,7 +34,7 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, NewsItem[]>{
 					_cursor.getString(_cursor.getColumnIndex("_newsContent")),
 					_cursor.getInt(_cursor.getColumnIndex("_newsIsViewed")) == 1 ? true : false
 					);
-
+			
 			idx++;
 		}while (_cursor.moveToNext());
 

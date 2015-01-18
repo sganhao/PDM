@@ -1,4 +1,4 @@
-package com.example.iselapp;
+package syncAdapters;
 
 import android.app.Service;
 import android.content.Intent;

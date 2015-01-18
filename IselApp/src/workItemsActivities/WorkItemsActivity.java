@@ -106,8 +106,5 @@ public class WorkItemsActivity extends Activity implements LoaderCallbacks<Curso
 	}
 
 	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onLoaderReset(Loader<Cursor> arg0) {}
 }

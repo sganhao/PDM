@@ -1,19 +1,14 @@
 package customAdapters;
 
-import viewModels.ParticipantViewModel;
-import entities.ParticipantItem;
 import handlers.ImageHandler;
+import viewModels.ParticipantViewModel;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import entities.ParticipantItem;
 
 public class ParticipantsCustomAdapter extends BaseAdapter {
 
@@ -79,5 +74,4 @@ public class ParticipantsCustomAdapter extends BaseAdapter {
 	private Object createViewHolderFor(View view) {
 		return new ParticipantViewModel(view);
 	}
-
 }

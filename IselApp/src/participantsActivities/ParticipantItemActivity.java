@@ -15,12 +15,9 @@ import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MenuItem;
-
-import classesActivities.SettingsActivity;
 
 import com.example.iselapp.R;
 
@@ -39,9 +36,7 @@ public class ParticipantItemActivity extends FragmentActivity {
 		} catch (IOException e) {
 			Log.d(TAG,e.toString());
 		} 
-	}
-	
-	
+	}	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

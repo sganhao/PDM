@@ -1,9 +1,6 @@
 package fragments;
 
-import com.example.iselapp.R;
-
 import handlers.ImageHandler;
-import entities.ParticipantItem;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.iselapp.R;
+
+import entities.ParticipantItem;
 
 public class ParticipantItemFragment extends Fragment {
 

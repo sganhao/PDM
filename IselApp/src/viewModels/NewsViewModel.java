@@ -1,10 +1,10 @@
 package viewModels;
 
-import com.example.iselapp.R;
-
 import android.graphics.Typeface;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.iselapp.R;
 
 public class NewsViewModel {
 	

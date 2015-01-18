@@ -1,12 +1,12 @@
 package workItemsActivities;
 
-import com.example.iselapp.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
+
+import com.example.iselapp.R;
 
 public class WorkItemLinkActivity extends Activity {
 

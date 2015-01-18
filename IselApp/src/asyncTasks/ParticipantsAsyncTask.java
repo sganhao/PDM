@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utils.RequestsToThoth;
-import entities.ParticipantItem;
-import android.content.ContentValues;
 import android.os.AsyncTask;
+import entities.ParticipantItem;
 
 public class ParticipantsAsyncTask extends AsyncTask<Void, Void, List<ParticipantItem[]>>{
 

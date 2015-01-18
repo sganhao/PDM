@@ -1,4 +1,4 @@
-package com.example.iselapp;
+package syncAdapters;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -15,8 +15,7 @@ public class IselAppAuthenticator extends AbstractAccountAuthenticator {
 
 	@Override
 	public Bundle editProperties(AccountAuthenticatorResponse response,
-			String accountType) {
-		
+			String accountType) {		
 		return null;
 	}
 
@@ -24,15 +23,13 @@ public class IselAppAuthenticator extends AbstractAccountAuthenticator {
 	public Bundle addAccount(AccountAuthenticatorResponse response,
 			String accountType, String authTokenType,
 			String[] requiredFeatures, Bundle options)
-			throws NetworkErrorException {
-		
+			throws NetworkErrorException {		
 		return null;
 	}
 
 	@Override
 	public Bundle confirmCredentials(AccountAuthenticatorResponse response,
-			Account account, Bundle options) throws NetworkErrorException {
-		
+			Account account, Bundle options) throws NetworkErrorException {		
 		return null;
 	}
 
@@ -40,29 +37,24 @@ public class IselAppAuthenticator extends AbstractAccountAuthenticator {
 	public Bundle getAuthToken(AccountAuthenticatorResponse response,
 			Account account, String authTokenType, Bundle options)
 			throws NetworkErrorException {
-		
 		return null;
 	}
 
 	@Override
-	public String getAuthTokenLabel(String authTokenType) {
-		
+	public String getAuthTokenLabel(String authTokenType) {		
 		return null;
 	}
 
 	@Override
 	public Bundle updateCredentials(AccountAuthenticatorResponse response,
 			Account account, String authTokenType, Bundle options)
-			throws NetworkErrorException {
-		
+			throws NetworkErrorException {		
 		return null;
 	}
 
 	@Override
 	public Bundle hasFeatures(AccountAuthenticatorResponse response,
-			Account account, String[] features) throws NetworkErrorException {
-		
+			Account account, String[] features) throws NetworkErrorException {		
 		return null;
 	}
-
 }

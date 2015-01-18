@@ -15,12 +15,10 @@ public class NotificationLaunch {
 	private Context _ctx;
 	private int _notificationId;
 
-
 	public NotificationLaunch(Context context){
 		_ctx = context;
 		_notificationId = 0;
 	}
-
 
 	public void launchNotification(String str) {
 		RemoteViews rv = new RemoteViews("com.example.iselapp",R.layout.notification_layout);

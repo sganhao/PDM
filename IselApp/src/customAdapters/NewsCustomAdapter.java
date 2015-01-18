@@ -1,17 +1,13 @@
 package customAdapters;
 
-import services.IselAppService;
 import viewModels.NewsViewModel;
-import entities.NewsItem;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import entities.NewsItem;
 
 public class NewsCustomAdapter extends BaseAdapter{
 
@@ -70,5 +66,4 @@ public class NewsCustomAdapter extends BaseAdapter{
 			viewModel._news_title.setTextColor(Color.BLACK);
 		}		
 	}
-
 }

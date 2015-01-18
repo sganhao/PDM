@@ -37,7 +37,6 @@ public class ClassesCursorAdapter extends CursorAdapter implements OnScrollListe
 	private Context _context;
 	private ClassItem[] classes;
 
-
 	public ClassesCursorAdapter(Context context, Cursor c, int flags) {
 		super(context, c, flags);
 		_layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -144,7 +143,6 @@ public class ClassesCursorAdapter extends CursorAdapter implements OnScrollListe
 			}.execute();
 		}			
 	}
-
 
 	public Set<Integer> getClassesIdsToAdd() {
 		return _classesIdsToAdd;

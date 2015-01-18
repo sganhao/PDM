@@ -46,8 +46,7 @@ public class NewsItemActivity extends FragmentActivity {
 			service.putExtra("newId", _model.getItem(position).news_id);
 			service.setAction("userUpdateNews");
 			_context.startService(service);
-		}
-		
+		}		
 
 		pager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()){
 			@Override

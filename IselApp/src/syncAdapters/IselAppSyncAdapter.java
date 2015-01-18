@@ -1,41 +1,31 @@
-package com.example.iselapp;
+package syncAdapters;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import com.example.iselapp.R;
-
-import newsActivities.*;
-import entities.ClassItem;
-import entities.NewsItem;
-import entities.WorkItem;
 import utils.CalendarEvents;
 import utils.NotificationLaunch;
 import utils.RequestsToThoth;
 import android.accounts.Account;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.RemoteViews;
+import entities.ClassItem;
+import entities.NewsItem;
+import entities.WorkItem;
 
 public class IselAppSyncAdapter extends AbstractThreadedSyncAdapter {
 	private final String TAG = "IselApp";
 	private ContentResolver _cr;
 	private RequestsToThoth _requests;
 	private NotificationLaunch _notificationLaunch;
-
 
 	public IselAppSyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
@@ -62,12 +52,8 @@ public class IselAppSyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.d(TAG,"onPerformSync - Syncing news and workitems");
 			checkForNewNewsItems();
 			checkForNewWorkItems();
-
 		}
 	}
-
-
-
 
 	public void checkForNewClasses(){
 		Cursor classesSelectedCursor = _cr.query(
@@ -172,8 +158,7 @@ public class IselAppSyncAdapter extends AbstractThreadedSyncAdapter {
 				workItemsValues.toArray(values);
 				_cr.bulkInsert(Uri.parse("content://com.example.iselappserver/workItems"), values);
 
-				_notificationLaunch.launchNotification("Class " + className + ": Added " + countWorkItemsAdded + " WorkItems");;
-
+				_notificationLaunch.launchNotification("Class " + className + ": Added " + countWorkItemsAdded + " WorkItems");
 			}
 		}
 		classesSelectedCursor.close();
@@ -202,7 +187,6 @@ public class IselAppSyncAdapter extends AbstractThreadedSyncAdapter {
 		values.put("_workItemDueDate",Long.toString(item.workItem_dueDate.getTimeInMillis()));
 		values.put("_workItemEventId",item.workItem_eventId);
 		return values;
-
 	}
 
 	private void insertClassesItem(ClassItem classItem) {
@@ -211,7 +195,6 @@ public class IselAppSyncAdapter extends AbstractThreadedSyncAdapter {
 		values.put("_classFullname", classItem.getFullname());
 		values.put("_classShowNews", 0);
 		_cr.insert(Uri.parse("content://com.example.iselappserver/classes"), values);
-
 	}
 
 	public ContentValues getNewsItemContentValues(NewsItem item) {
@@ -225,5 +208,4 @@ public class IselAppSyncAdapter extends AbstractThreadedSyncAdapter {
 		values.put("_newsIsViewed", 0);
 		return values;
 	}
-
 }

@@ -24,13 +24,11 @@ import entities.NewsItem;
 import fragments.NewsItemFragment;
 import fragments.NewsItemListFragment;
 
-
 public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cursor>, NewsItemListFragment.Callback {
 
 	private String TAG = "IselApp";
 	private final Uri _news = Uri.parse("content://com.example.iselappserver/news");
 	private NewsListModel _model;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +38,6 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 		Log.d(TAG, "onCreate loadManagerInit");
 		getLoaderManager().initLoader(1, null, this);
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,7 +59,6 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
 	
 	private void callAsyncTask(Cursor c){
 		Log.d(TAG,"MainActivity - callAsyncTask");
@@ -90,8 +86,7 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 			}
 		};
 		newsAsync.execute();
-	}
-	
+	}	
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -104,7 +99,6 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 				"_newsIsViewed asc, _newsWhen desc");
 	}
 
-
 	@Override
 	public void onLoadFinished(Loader<Cursor> loaders, Cursor data) {
 		Log.d(TAG, "onLoadFinish");
@@ -116,12 +110,10 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 			callAsyncTask(data);
 	}
 
-
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		Log.d(TAG, "onLoaderReset");
 	}
-
 
 	@Override
 	public void onListItemClick(int position) {
@@ -137,7 +129,6 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Cu
 				service.setAction("userUpdateNews");
 				startService(service);				
 			}
-
 		} else {
 			Intent i = new Intent(this, NewsItemActivity.class);
 			i.putExtra("newslistmodel", _model);

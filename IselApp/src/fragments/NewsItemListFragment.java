@@ -1,14 +1,15 @@
 package fragments;
 
-import com.example.iselapp.R;
-
-import customAdapters.NewsCustomAdapter;
 import listModels.NewsListModel;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+
+import com.example.iselapp.R;
+
+import customAdapters.NewsCustomAdapter;
 
 public class NewsItemListFragment extends ListFragment {
 

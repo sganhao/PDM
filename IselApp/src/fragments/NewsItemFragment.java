@@ -1,8 +1,5 @@
 package fragments;
 
-import com.example.iselapp.R;
-
-import entities.NewsItem;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
+
+import com.example.iselapp.R;
+
+import entities.NewsItem;
 
 public class NewsItemFragment extends Fragment{
 	

@@ -10,7 +10,6 @@ import java.util.List;
 import listModels.ParticipantListModel;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
-import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,7 +19,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import asyncTasks.ParticipantsAsyncTask;
 import classesActivities.SettingsActivity;
@@ -42,7 +40,6 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 	private ViewPager pager;
 	private int _tabIdx;
 	private int _classId;
-
 
 	static {
 		_th.start();
@@ -83,7 +80,6 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		_tabIdx = _pref.getInt("tabIdx", 0);
 		actionBar.setSelectedNavigationItem(_tabIdx);
-
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item){
@@ -95,7 +91,6 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
 
 	@Override
 	public void onListItemClick(int position) {
@@ -115,10 +110,7 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 	}
 
 	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {}
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
@@ -138,14 +130,10 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 		}else{
 			getFragment(getSupportFragmentManager(),_model);
 		}
-
 	}		
 
 	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {}
 	
 	private void getFragment(FragmentManager supportFragmentManager, ParticipantListModel _model) {
 		FragmentManager fm = getSupportFragmentManager();
@@ -158,8 +146,7 @@ public class ParticipantsActivity extends FragmentActivity implements Participan
 		}else{
 			f = ParticipantItemListFragment.newInstance(_model,_tabIdx);
 			fm.beginTransaction().replace(R.id.participant_list_fragmentPlaceholder, f).commit();
-		}
-		
+		}		
 	}	
 }
 

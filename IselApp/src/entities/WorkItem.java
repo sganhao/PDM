@@ -40,8 +40,7 @@ public class WorkItem implements Serializable{
 				workItem_startDate.get(Calendar.SECOND) + " - " +
 				workItem_startDate.get(Calendar.DAY_OF_MONTH) + "/" + 
 				(workItem_startDate.get(Calendar.MONTH) + 1) + "/" + 
-				workItem_startDate.get(Calendar.YEAR); 
-				
+				workItem_startDate.get(Calendar.YEAR); 				
 	}
 	
 	public String printDueDate(){
@@ -50,7 +49,6 @@ public class WorkItem implements Serializable{
 				workItem_dueDate.get(Calendar.SECOND) + " - " +
 				workItem_dueDate.get(Calendar.DAY_OF_MONTH) + "/" + 
 				(workItem_dueDate.get(Calendar.MONTH) + 1) + "/" + 
-				workItem_dueDate.get(Calendar.YEAR); 
-				
+				workItem_dueDate.get(Calendar.YEAR); 				
 	}
 }

@@ -28,7 +28,6 @@ public class RequestsToThoth {
 	private final String PARTICIPANTS = "http://thoth.cc.e.ipl.pt/api/v1/classes/{classId}/participants";
 	private final String CONTENT = "http://thoth.cc.e.ipl.pt/api/v1/newsitems/";
 	private final String WORKITEMS = "http://thoth.cc.e.ipl.pt/api/v1/classes/{classId}/workitems";
-	//private final String WORKITEM = "http://thoth.cc.e.ipl.pt/api/v1/workitems/";
 
 	private ParticipantItem[] _participants;
 	private int _posParticipant;
@@ -73,8 +72,6 @@ public class RequestsToThoth {
 		}
 		return classes;
 	}
-
-
 
 	public NewsItem[] requestNews(int classId, String classFullname){
 		Log.d(TAG, "requestNews");
@@ -146,9 +143,7 @@ public class RequestsToThoth {
 		}finally{
 			urlcon.disconnect();
 		}
-	}	
-
-
+	}
 
 	public ParticipantItem[] requestParticipants(int classId) {
 		Log.d(TAG, "request Participant");
@@ -204,8 +199,6 @@ public class RequestsToThoth {
 		_participants[_posParticipant] = part;	
 		_posParticipant++;
 	}
-
-
 
 	public WorkItem[] requestWorkItems(int classId, String classFullname){
 		Log.d(TAG, "requestWorkItems");

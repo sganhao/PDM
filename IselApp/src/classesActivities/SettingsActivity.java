@@ -15,7 +15,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -72,7 +71,6 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		getLoaderManager().initLoader(1, null, this);
 	}
 
-
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		Log.d(TAG, "SettingsActivity - onCreateLoader");
@@ -95,28 +93,19 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 			_adapter = new ClassesCursorAdapter(SettingsActivity.this, data, 0); 
 			_listView.setAdapter(_adapter);
 			_listView.setOnScrollListener(_adapter);
-
 		}
 	}
 
 	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onLoaderReset(Loader<Cursor> arg0) {}
 
 	public static void CreateSyncAccount(Context ctx){
 
 		final Account account = new Account(ACCOUNT, ACCOUNT_TYPE);
-		//É necessário? Nao sei :p
-		//ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
-		//ContentResolver.setIsSyncable(account, AUTHORITY, 1);
 		AccountManager am = (AccountManager) ctx.getSystemService(Activity.ACCOUNT_SERVICE);
 		am.addAccountExplicitly(account, null, null);
 		TriggerRefresh(account);
-
 	}
-
 
 	private static void TriggerRefresh(Account account) {
 		Bundle b = new Bundle();
@@ -124,8 +113,5 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 		b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 		b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 		ContentResolver.requestSync(account,AUTHORITY,b);
-
 	}
-
-
 }

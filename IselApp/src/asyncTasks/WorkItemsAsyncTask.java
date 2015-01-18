@@ -11,6 +11,7 @@ public class WorkItemsAsyncTask extends AsyncTask<Void, Void, WorkItem[]>{
 	private WorkItem[] _workItems;
 	private Cursor _cursor;
 	private int idx;
+	
 	public WorkItemsAsyncTask (Cursor c) {
 		_cursor = c;
 		idx = 0;
@@ -20,7 +21,6 @@ public class WorkItemsAsyncTask extends AsyncTask<Void, Void, WorkItem[]>{
 	protected WorkItem[] doInBackground(Void... arg0) {
 		Log.d(TAG , "WorkItemsAsyncTask - doInBackground");
 		_workItems = new WorkItem[_cursor.getCount()];
-		
 
 		Log.d(TAG, "WorkItemsAsyncTask - doInBackground - starting to go through cursor...");
 		_cursor.moveToFirst();
@@ -46,5 +46,4 @@ public class WorkItemsAsyncTask extends AsyncTask<Void, Void, WorkItem[]>{
 				_cursor.getInt(_cursor.getColumnIndex("_workItemEventId"))
 				);
 	}
-
 }

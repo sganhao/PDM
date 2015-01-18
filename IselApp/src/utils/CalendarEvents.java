@@ -83,6 +83,5 @@ public class CalendarEvents {
 			Log.d(TAG, "No Calendars");
 		}
 		return result;
-
 	}
 }

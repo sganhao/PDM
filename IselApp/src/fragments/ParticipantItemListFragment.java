@@ -46,10 +46,4 @@ public class ParticipantItemListFragment extends ListFragment {
 	public interface Callback{
 		void onListItemClick(int position);
 	}
-	
-//	@Override
-//	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-//		View v = inflater.inflate(R.layout.participant_list_layout, null);
-//		return v;
-//	}
 }
