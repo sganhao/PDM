@@ -112,6 +112,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 
 		b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 		b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+		b.putBoolean("classes", true);
 		ContentResolver.requestSync(account,AUTHORITY,b);
 	}
 }
